@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="xyz.firstmeet.lblog.mapper.ArticleLabelMapper">
+    <resultMap id="labelMap" type="xyz.firstmeet.lblog.object.ArticleLabel">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="coverPic" column="coverPic"/>
+    </resultMap>
+
+    <select id="getTypeById" parameterType="int" resultMap="labelMap">
+        -- 叠加访问量
+        SELECT *
+        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
+              FROM (
+                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
+                       FROM
+
+-- 结果ID获取
+(
+    SELECT SUM(ta.rn) as num, ta.type_id
+    FROM (
+             SELECT 1 as rn, amt.type_id FROM article_map_type amt where amt.type_id = #{typeId}
+         ) ta
+
+    group By ta.type_id
+) rs_list
+-- 结果ID获取结束
+
+    LEFT JOIN article_label al ON rs_list.type_id = al.id
+                   ) a
+                       Left join (SELECT target_id, SUM(count) as count
+                                  FROM visits_count vc
+                                  WHERE vc.`type` = 100
+                                  GROUP BY target_id) v on v.target_id = a.id
+             ) t
+        order by t.name
+        -- 叠加访问量结束
+
+    </select>
+
+    <select id="getLabelById" parameterType="int" resultMap="labelMap">
+        -- 叠加访问量
+        SELECT *
+        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
+              FROM (
+                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
+                       FROM
+
+-- 结果ID获取
+(
+    SELECT SUM(ta.rn) as num, ta.label_id
+    FROM (
+             SELECT 1 as rn, aml.label_id FROM article_map_label aml where aml.label_id = #{labelId}
+         ) ta
+
+    group By ta.label_id
+) rs_list
+-- 结果ID获取结束
+
+    LEFT JOIN article_label al ON rs_list.label_id = al.id
+                   ) a
+                       Left join (SELECT target_id, SUM(count) as count
+                                  FROM visits_count vc
+                                  WHERE vc.`type` = 10
+                                  GROUP BY target_id) v on v.target_id = a.id
+             ) t
+        order by t.name
+        -- 叠加访问量结束
+    </select>
+
+
+    <select id="getArticleTypeById" parameterType="int" resultType="int">
+        SELECT amt.type_id
+        FROM article_map_type amt
+        WHERE amt.article_id = #{articleId}
+    </select>
+
+
+    <insert id="addArticleMapType" parameterType="int">
+        INSERT INTO article_map_type
+            (article_id, type_id)
+        VALUES (#{articleId}, #{typeId});
+
+    </insert>
+
+    <select id="getAllLabel" resultMap="labelMap">
+        -- 叠加访问量
+        SELECT *
+        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
+              FROM (
+                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
+                       FROM
+-- 结果ID获取
+(
+    SELECT SUM(all_rs.rn) as num, all_rs.label_id
+    FROM (
+             SELECT 1 as rn, aml.article_id, aml.label_id, aml.id
+             FROM article_map_label aml
+         ) all_rs
+    GROUP BY all_rs.label_id
+) rs_list
+-- 结果ID获取结束
+    LEFT JOIN article_label al ON rs_list.label_id = al.id
+                   ) a
+                       Left join (SELECT target_id, SUM(count) as count
+                                  FROM visits_count vc
+                                  WHERE vc.`type` = 10
+                                  GROUP BY target_id) v on v.target_id = a.id
+             ) t
+        order by t.name
+        -- 叠加访问量结束
+    </select>
+    <!--通过类型名获取类型-->
+    <select id="getTypeByName" parameterType="String" resultMap="labelMap">
+        SELECT *
+        FROM article_label al
+        WHERE al.name = #{typeName}
+    </select>
+    <!--    通过类型名获取类型结束-->
+</mapper>

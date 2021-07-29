@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="xyz.firstmeet.lblog.mapper.UserMapper">
+    <!--    获取用户喜好分类占比-->
+    <select id="getActivityByUserId" parameterType="int" resultType="map">
+        -- 标签以及值
+        SELECT al.name, getName.all_count as value
+        FROM (
+                 -- 最多文章的四个标签
+                 SELECT rs.label_id, rs.all_count
+                 FROM (
+                          -- 根据标签ID分组查询汇总
+                          SELECT temp_rs.label_id, SUM(temp_rs.num) as all_count
+                          FROM (
+                                   -- 配合标签ID和单位列
+                                   SELECT article_map_label.label_id, 1 as num
+                                   FROM (
+                                            -- 用户所属文章
+                                            SELECT uma.article_id
+                                            FROM user_map_article uma
+                                            WHERE uma.user_id = #{userId}
+                                            -- 用户所属文章结束
+                                        ) article_id_list
+                                            LEFT JOIN article_map_label ON article_id_list.article_id
+
+                                   WHERE article_id_list.article_id = article_map_label.article_id
+                                   -- 配合标签ID和单位列结束
+                               ) temp_rs
+                          GROUP BY temp_rs.label_id
+                          -- 根据标签ID分组查询汇总结束
+                      ) rs
+                 ORDER BY rs.all_count DESC
+                 limit 4
+                 -- 最多文章的四个标签结束
+             ) getName
+                 LEFT JOIN article_label al ON getName.label_id = al.id
+        -- 标签以及值结束
+    </select>
+    <!--    获取用户喜好分类占比 结束-->
+</mapper>

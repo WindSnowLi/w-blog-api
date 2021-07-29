@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="xyz.firstmeet.lblog.mapper.SysConfigMapper">
+    <!--    获取用户配置表-->
+    <select id="getSysUiConfigByUserId" parameterType="int" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT ui_config.id, #{userId} as user_id, ui_config.item, ui_config.value
+        FROM ui_config
+        where ui_config.user_id = #{userId}
+    </select>
+    <!--    获取用户配置表  结束-->
+
+    <!--    删除用户的所有UI配置-->
+    <delete id="deleteUiConfigByUserId" parameterType="int">
+        DELETE
+        FROM ui_config
+        WHERE user_id = #{userId}
+    </delete>
+    <!--    删除用户的所有UI配置  结束-->
+
+    <!--    设置某个用户的UI配置-->
+    <insert id="setUiConfigByUserId">
+
+        REPLACE INTO ui_config(user_id, item, value)
+        VALUES
+        <foreach collection="configMap" index="key" item="value" separator=",">
+            (
+            #{userId}, #{key}, #{value}
+            )
+        </foreach>
+        ;
+
+    </insert>
+    <!--    设置某个用户的UI配置 结束-->
+</mapper>

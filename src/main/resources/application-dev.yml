@@ -1,0 +1,12 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.NonRegisteringDriver
+    url: jdbc:mysql://127.0.0.1/blog?serverTimezone=GMT%2B8
+    username: root
+    password: root
+    name: w-blog-api-dev
+logback:
+  logdir: ./log/w-blog-api
+  appname: w-blog-dev
