@@ -37,4 +37,12 @@ public class SysConfigServiceTest {
         System.out.println(config);
         sysConfigJsonService.setUiConfigByUserId(1, config);
     }
+
+    /**
+     * 获取系统默认配置
+     */
+    @Test
+    public void testGetSysConfig(){
+        System.out.println(sysConfigJsonService.getSysUiConfig());
+    }
 }

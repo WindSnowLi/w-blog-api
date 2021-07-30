@@ -48,7 +48,15 @@ public class SysConfigMapperTest {
      * 获取OSS的相关配置
      */
     @Test
-    public void testGetOSSConfig(){
+    public void testGetOSSConfig() {
         System.out.println(sysConfigMapper.getOSSConfig());
+    }
+
+    /**
+     * 获取系统默认配置
+     */
+    @Test
+    public void testGetSysUiConfig() {
+        System.out.println(sysConfigMapper.getSysUiConfig());
     }
 }

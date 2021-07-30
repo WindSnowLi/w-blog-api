@@ -46,6 +46,13 @@ public interface SysConfigMapper {
     String getOSSConfig();
 
     /**
+     * 获取系统默认配置
+     * @return 系统配置表
+     */
+    @Select("SELECT item, value FROM sys_setting")
+    List<JSONObject> getSysUiConfig();
+
+    /**
      * 设置系统存储配置文件
      * @param config 存储设置整体对象
      */

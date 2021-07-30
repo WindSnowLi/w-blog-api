@@ -39,10 +39,27 @@ public class SysConfigService {
         for (JSONObject json : sysUiConfigByUserId) {
             rs.put(json.getString("item"), json.getString("value"));
         }
+        Map<String, String> sysUiConfig = getSysUiConfig();
+        rs.put("filing_icp",sysUiConfig.getOrDefault("filing_icp",""));
+        rs.put("filing_security",sysUiConfig.getOrDefault("filing_security",""));
         if (sysUiConfigByUserId.size() > 0) {
             rs.put("user_id", sysUiConfigByUserId.get(0).getString("user_id"));
         }
         return JSONObject.parseObject(JSONObject.toJSONString(rs), SystemConfig.class);
+    }
+
+    /**
+     * 获取系统默认配置
+     *
+     * @return 系统配置表
+     */
+    public Map<String, String> getSysUiConfig() {
+        List<JSONObject> sysUiConfig = sysConfigMapper.getSysUiConfig();
+        Map<String, String> rs = new HashMap<>();
+        for (JSONObject temp : sysUiConfig) {
+            rs.put(temp.getString("item"), temp.getString("value"));
+        }
+        return rs;
     }
 
     /**
@@ -60,12 +77,13 @@ public class SysConfigService {
      *
      * @return SystemConfig
      */
-    public JSONObject getStorageConfig(){
+    public JSONObject getStorageConfig() {
         return JSONObject.parseObject(sysConfigMapper.getOSSConfig(), Feature.OrderedField);
     }
 
     /**
      * 设置系统存储配置文件
+     *
      * @param storage 存储设置Json对象
      */
     public void setStorageConfig(JSONObject storage) {
