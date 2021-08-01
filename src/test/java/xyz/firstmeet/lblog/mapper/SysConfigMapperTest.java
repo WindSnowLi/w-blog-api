@@ -57,6 +57,6 @@ public class SysConfigMapperTest {
      */
     @Test
     public void testGetSysUiConfig() {
-        System.out.println(sysConfigMapper.getSysUiConfig());
+        System.out.println(sysConfigMapper.getSysConfig());
     }
 }

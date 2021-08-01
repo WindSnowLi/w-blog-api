@@ -1,5 +1,6 @@
 package xyz.firstmeet.lblog.services;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import xyz.firstmeet.lblog.object.SystemConfig;
 import xyz.firstmeet.lblog.services.base.SysConfigService;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service("sysConfigJsonService")
 public class SysConfigJsonService extends SysConfigService {
@@ -66,4 +68,30 @@ public class SysConfigJsonService extends SysConfigService {
         setStorageConfig(storage);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, null);
     }
+
+    /**
+     * 获取系统配置信息
+     *
+     * @return Msg
+     */
+    public String getSysConfigJson() {
+        //对前端的提交格式描述，OSS的直接合并到了本身配置里
+        String template = "{\"title\":\"系统配置\",\"type\":\"object\",\"properties\":{\"filing_icp\":{\"type\":\"string\",\"title\":\"ICP备案\",\"description\":\"完整ICP备案备案号\"},\"filing_security\":{\"type\":\"string\",\"title\":\"公网备案\",\"description\":\"完整公网备案备案号\"},\"admin_url\":{\"type\":\"string\",\"title\":\"后台url根链接\",\"description\":\"后台url根链接\"}}}";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("template", JSONObject.parseObject(template));
+        jsonObject.put("sys", getSysConfig());
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
+    }
+
+    /**
+     * 设置系统配置
+     *
+     * @param configMap 系统配置表
+     * @return Msg
+     */
+    public String setSysConfigJson(Map<String, String> configMap) {
+        setSysConfig(configMap);
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, null);
+    }
+
 }

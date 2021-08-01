@@ -46,14 +46,23 @@ public interface SysConfigMapper {
     String getOSSConfig();
 
     /**
-     * 获取系统默认配置
+     * 获取系统配置，其中OSS配置信息只有在系统专属设置存储信息时才允许单独查询
+     *
      * @return 系统配置表
      */
-    @Select("SELECT item, value FROM sys_setting")
-    List<JSONObject> getSysUiConfig();
+    @Select("SELECT item, value FROM sys_setting WHERE item != \"oss\"")
+    List<JSONObject> getSysConfig();
+
+    /**
+     * 设置系统配置
+     *
+     * @param configMap 配置表
+     */
+    void setSysConfig(@Param("configMap") Map<String, String> configMap);
 
     /**
      * 设置系统存储配置文件
+     *
      * @param config 存储设置整体对象
      */
     @Insert("UPDATE sys_setting SET value=#{config} WHERE item='oss'")

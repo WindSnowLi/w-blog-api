@@ -33,4 +33,6 @@ public class SystemConfig implements Serializable {
     //系统设置存储信息
     @JSONField(serialize = false)
     private JSONObject oss;
+    //后台URL
+    private String admin_url;
 }

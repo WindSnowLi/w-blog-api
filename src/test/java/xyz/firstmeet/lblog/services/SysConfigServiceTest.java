@@ -43,6 +43,6 @@ public class SysConfigServiceTest {
      */
     @Test
     public void testGetSysConfig(){
-        System.out.println(sysConfigJsonService.getSysUiConfig());
+        System.out.println(sysConfigJsonService.getSysConfigJson());
     }
 }

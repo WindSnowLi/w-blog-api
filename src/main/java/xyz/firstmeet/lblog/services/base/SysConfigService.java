@@ -39,12 +39,14 @@ public class SysConfigService {
         for (JSONObject json : sysUiConfigByUserId) {
             rs.put(json.getString("item"), json.getString("value"));
         }
-        Map<String, String> sysUiConfig = getSysUiConfig();
-        rs.put("filing_icp",sysUiConfig.getOrDefault("filing_icp",""));
-        rs.put("filing_security",sysUiConfig.getOrDefault("filing_security",""));
+        Map<String, String> sysUiConfig = getSysConfig();
+        rs.put("filing_icp", sysUiConfig.getOrDefault("filing_icp", ""));
+        rs.put("filing_security", sysUiConfig.getOrDefault("filing_security", ""));
+        rs.put("admin_url", sysUiConfig.getOrDefault("admin_url", ""));
         if (sysUiConfigByUserId.size() > 0) {
             rs.put("user_id", sysUiConfigByUserId.get(0).getString("user_id"));
         }
+        //oss配置不可轻易发送至前台
         return JSONObject.parseObject(JSONObject.toJSONString(rs), SystemConfig.class);
     }
 
@@ -53,13 +55,22 @@ public class SysConfigService {
      *
      * @return 系统配置表
      */
-    public Map<String, String> getSysUiConfig() {
-        List<JSONObject> sysUiConfig = sysConfigMapper.getSysUiConfig();
+    public Map<String, String> getSysConfig() {
+        List<JSONObject> sysUiConfig = sysConfigMapper.getSysConfig();
         Map<String, String> rs = new HashMap<>();
         for (JSONObject temp : sysUiConfig) {
             rs.put(temp.getString("item"), temp.getString("value"));
         }
         return rs;
+    }
+
+    /**
+     * 设置系统配置
+     *
+     * @param configMap 配置表
+     */
+    public void setSysConfig(Map<String, String> configMap) {
+        sysConfigMapper.setSysConfig(configMap);
     }
 
     /**

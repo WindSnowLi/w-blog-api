@@ -33,4 +33,15 @@
 
     </insert>
     <!--    设置某个用户的UI配置 结束-->
+
+    <update id="setSysConfig">
+        REPLACE INTO sys_setting(item, value)
+        VALUES
+        <foreach collection="configMap" index="key" item="value" separator=",">
+            (
+            #{key}, #{value}
+            )
+        </foreach>
+        ;
+    </update>
 </mapper>
