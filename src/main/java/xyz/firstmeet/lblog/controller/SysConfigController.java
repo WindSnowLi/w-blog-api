@@ -28,17 +28,22 @@ public class SysConfigController {
     }
 
     /**
-     * 获取用户配置
+     * 获取用户Ui配置
      *
-     * @param json {"id":"int"}
+     * @param json {"token":"token"} / { "id": int }
      * @return config Msg
      */
-    @PostMapping(value = "getConfigByUserId")
+    @PostMapping(value = "getUiConfig")
     @PassToken
-    public String getUserConfig(@RequestBody JSONObject json) {
-        int id = json.getIntValue("id");
-        log.info("用户ID：{}  请求getConfigByUserId", id);
-        return sysConfigJsonService.getUserSettingJson(id);
+    public String getUiConfigByUserId(@RequestBody JSONObject json) {
+        int userId;
+        if (json.containsKey("id")) {
+            userId = json.getIntValue("id");
+        } else {
+            userId = JwtUtils.getTokenUserId(json.getString("token"));
+        }
+        log.info("用户ID：{}  请求getUiConfig", userId);
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, sysConfigJsonService.getUiConfigByUserId(userId));
     }
 
     /**
@@ -95,12 +100,16 @@ public class SysConfigController {
     /**
      * 获取系统配置信息
      *
-     * @param json { "token":token }
+     * @param json { "token":token } / null，若为空直接获取默认可公开的系统配置，保留参数
      * @return Msg
      */
     @PostMapping(value = "getSysConfig")
-    @UserLoginToken
+    @PassToken
     public String getSysConfig(@RequestBody JSONObject json) {
+        // 保留项
+        if (!json.containsKey("token")) {
+            return sysConfigJsonService.getSysConfigJson();
+        }
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         log.info("用户ID：{}  getSysConfig", userId);
         if (userId == 1) {

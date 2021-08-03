@@ -1,6 +1,8 @@
 package xyz.firstmeet.lblog.services.base;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.firstmeet.lblog.mapper.ArticleMapper;
@@ -90,5 +92,15 @@ public class UserService {
      */
     public void addUserFile(int userId, String fileName) {
         fileService.addUserFile(userId, fileName);
+    }
+
+    /**
+     * 获取作者关于信息
+     *
+     * @param userId    用户ID
+     * @return String
+     */
+    public String getAboutByUserId(int userId){
+        return userMapper.getAboutByUserId(userId);
     }
 }

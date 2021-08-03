@@ -33,8 +33,8 @@ public class SysConfigService {
      * @param user_id 用户ID
      * @return 配置对象
      */
-    public SystemConfig getUserSetting(int user_id) {
-        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getSysUiConfigByUserId(user_id);
+    public SystemConfig getConfigByUserId(int user_id) {
+        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(user_id);
         HashMap<String, String> rs = new HashMap<>();
         for (JSONObject json : sysUiConfigByUserId) {
             rs.put(json.getString("item"), json.getString("value"));
@@ -48,6 +48,22 @@ public class SysConfigService {
         }
         //oss配置不可轻易发送至前台
         return JSONObject.parseObject(JSONObject.toJSONString(rs), SystemConfig.class);
+    }
+
+    /**
+     * 获取用户UI配置
+     *
+     * @param user_id 用户ID
+     * @return 配置表
+     */
+    public Map<String, String> getUiConfigByUserId(int user_id) {
+        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(user_id);
+        HashMap<String, String> rs = new HashMap<>();
+        for (JSONObject json : sysUiConfigByUserId) {
+            rs.put(json.getString("item"), json.getString("value"));
+        }
+        rs.remove("about");
+        return rs;
     }
 
     /**

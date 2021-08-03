@@ -70,7 +70,7 @@ public class UserController {
     /**
      * 设置用户信息
      *
-     * @param userJson { token:token, user:user}
+     * @param userJson { token:token}
      * @return 如果验证正确返回信息串，验证错误返回空
      */
     @PostMapping(value = "setInfo")
@@ -84,10 +84,10 @@ public class UserController {
     }
 
     /**
-     * 刷新缓存
+     * 登出
      *
-     * @param userJson 用户信息json串，{"id":"userId"}
-     * @return 如果验证正确返回信息串，验证错误返回空
+     * @param userJson 用户信息json串，
+     * @return Msg
      */
     @PostMapping(value = "logout")
     @UserLoginToken
@@ -109,6 +109,7 @@ public class UserController {
     }
 
     /**
+     * 获取文章爱好
      * @param userJson {"token":"token"}
      * @return Msg
      */
@@ -121,6 +122,7 @@ public class UserController {
     }
 
     /**
+     * 设置头像
      * @param userJson {"token":"token", "avatar": url}
      * @return Msg
      */
@@ -135,7 +137,7 @@ public class UserController {
     /**
      * 访客获取作者信息
      *
-     * @param userJson {"avatar": url}
+     * @param userJson {"id": userId}
      * @return Msg
      */
     @PostMapping(value = "visitorGetAuthorInfo")
@@ -144,5 +146,18 @@ public class UserController {
         int userId = userJson.getIntValue("id");
         log.info("visitorGetAuthorInfo\t用户ID：{}", userId);
         return userJsonService.visitorGetAuthorInfo(userId);
+    }
+
+    /**
+     * 获取作者关于信息
+     *
+     * @param userJson {"id": int}
+     * @return Msg
+     */
+    @PostMapping(value = "getAboutByUserId")
+    @PassToken
+    public String getAboutByUserId(@RequestBody JSONObject userJson) {
+        log.info("getAboutByUserId\t用户ID：{}", userJson.getIntValue("id"));
+        return userJsonService.getAboutByUserIdJson(userJson.getIntValue("id"));
     }
 }

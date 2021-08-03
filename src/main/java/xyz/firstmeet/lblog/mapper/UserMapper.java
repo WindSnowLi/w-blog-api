@@ -61,4 +61,13 @@ public interface UserMapper {
      */
     @Select("UPDATE `user` SET avatar=#{avatarUrl} WHERE id=#{userId};")
     void setAvatar(@Param("userId") int userId, @Param("avatarUrl") String avatarUrl);
+
+    /**
+     * 获取作者关于信息
+     *
+     * @param userId    用户ID
+     * @return String
+     */
+    @Select("SELECT value FROM ui_config WHERE user_id = #{userId} AND item = \"about\"")
+    String getAboutByUserId(@Param("userId") int userId);
 }

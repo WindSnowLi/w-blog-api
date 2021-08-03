@@ -116,4 +116,14 @@ public class UserJsonService extends UserService {
         setAvatar(userId, avatarUrl);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, null);
     }
+
+    /**
+     * 获取作者关于信息
+     *
+     * @param userId    用户ID
+     * @return Msg
+     */
+    public String getAboutByUserIdJson(int userId){
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS,Msg.MSG_SUCCESS,getAboutByUserId(userId));
+    }
 }

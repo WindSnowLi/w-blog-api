@@ -1,6 +1,5 @@
 package xyz.firstmeet.lblog.services;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,8 @@ public class SysConfigJsonService extends SysConfigService {
      * @param user_id 用户ID
      * @return 配置Msg
      */
-    public String getUserSettingJson(int user_id) {
-        final SystemConfig userSetting = getUserSetting(user_id);
+    public String getConfigByUserIdJson(int user_id) {
+        final SystemConfig userSetting = getConfigByUserId(user_id);
         if (userSetting.getMain_title() != null) {
             userSetting.setMain_title(userMapper.findUserId(user_id).getNickname());
         }
@@ -39,7 +38,9 @@ public class SysConfigJsonService extends SysConfigService {
         });
         HashMap<String, String> configTable = new HashMap<>();
 
-        for (String key : systemConfig.keySet()) {
+        String []ready={"main_title","topbar_title","footer","background_list"};
+
+        for (String key : ready) {
             configTable.put(key, systemConfig.get(key));
         }
         configTable.remove("user_id");

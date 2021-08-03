@@ -20,7 +20,7 @@ public interface SysConfigMapper {
      * @param userId 用户ID
      * @return 配置表
      */
-    List<JSONObject> getSysUiConfigByUserId(@Param("userId") int userId);
+    List<JSONObject> getUiConfigByUserId(@Param("userId") int userId);
 
     /**
      * 删除用户的所有UI配置

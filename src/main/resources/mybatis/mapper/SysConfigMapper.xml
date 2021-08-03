@@ -4,7 +4,7 @@
 
 <mapper namespace="xyz.firstmeet.lblog.mapper.SysConfigMapper">
     <!--    获取用户配置表-->
-    <select id="getSysUiConfigByUserId" parameterType="int" resultType="com.alibaba.fastjson.JSONObject">
+    <select id="getUiConfigByUserId" parameterType="int" resultType="com.alibaba.fastjson.JSONObject">
         SELECT ui_config.id, #{userId} as user_id, ui_config.item, ui_config.value
         FROM ui_config
         where ui_config.user_id = #{userId}

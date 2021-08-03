@@ -21,7 +21,7 @@ public class SysConfigServiceTest {
      */
     @Test
     public void testGetUserSettingJson() {
-        final SystemConfig userSetting = sysConfigJsonService.getUserSetting(1);
+        final SystemConfig userSetting = sysConfigJsonService.getConfigByUserId(1);
         System.out.println(userSetting);
         System.out.println(userSetting.getBackground_list());
     }

@@ -23,7 +23,7 @@ public class SysConfigMapperTest {
      */
     @Test
     public void testGetSysUiConfigByUserId() {
-        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getSysUiConfigByUserId(1);
+        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(1);
         HashMap<String, String> rs = new HashMap<>();
         for (JSONObject json : sysUiConfigByUserId) {
             rs.put(json.getString("item"), json.getString("value"));
