@@ -70,6 +70,7 @@
     </select>
     <!--    用户各分类访问量结束-->
 
+    <!--    分页查询文章-->
     <select id="getArticlesByPage" resultMap="articleMap">
         SELECT a.id, a.title, a.summary, a.coverPic, a.createTime, a.updateTime, v.count as visitsCount
         FROM (SELECT *
@@ -96,8 +97,36 @@
         <if test="sort == '+id'">
             ORDER BY a.id ASC
         </if>
-        LIMIT #{start},#{end}
+        LIMIT #{limit} OFFSET #{offset}
     </select>
+    <!--    分页查询文章结束-->
+
+    <!--分页获取文章ID-->
+    <select id="getArticleIdByPage" resultType="Integer">
+        SELECT a.id FROM (SELECT article.id
+        FROM article
+        <choose>
+            <when test="status == 'all'">
+
+            </when>
+            <when test="status == 'draft' or status == 'deleted'">
+                WHERE article.status = #{status}
+            </when>
+            <otherwise>
+                WHERE article.status = 'published'
+            </otherwise>
+        </choose>
+        ) a
+        <if test="sort == null or sort == '-id'">
+            ORDER BY a.id DESC
+        </if>
+        <if test="sort == '+id'">
+            ORDER BY a.id ASC
+        </if>
+
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <!--分页获取文章ID结束-->
 
     <!--   获取文章标签 -->
     <select id="getArticleMapLabels" parameterType="int"
@@ -282,7 +311,7 @@
                  SELECT *
                  from article
                  where id in (SELECT article_id from article_map_label aml where aml.label_id = #{label_id})
-                 limit #{start},#{end}
+                 limit #{limit} OFFSET #{offset}
              ) a
                  LEFT JOIN (SELECT target_id, SUM(count) as count
                             FROM visits_count vc

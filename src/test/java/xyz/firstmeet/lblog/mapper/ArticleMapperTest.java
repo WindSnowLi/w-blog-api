@@ -121,5 +121,26 @@ public class ArticleMapperTest {
         System.out.println(articleMapper.addArticle(article));
         System.out.println(article.getId());
     }
+
+    /**
+     * 分页查询文章
+     */
+    @Test
+    public void testGetArticlesByPage() {
+        System.out.println(articleMapper.getArticlesByPage(3, 0, null, "'published'").size());
+        System.out.println(articleMapper.getArticlesByPage(3, 1, null, "'published'").size());
+        System.out.println(articleMapper.getArticlesByPage(3, 2, null, "'published'").size());
+    }
+
+    /**
+     * 分页查询文章Id
+     */
+    @Test
+    public void testGetArticleIdByPage() {
+        System.out.println(articleMapper.getArticleIdByPage(3, 0, null, "'published'"));
+        System.out.println(articleMapper.getArticleIdByPage(3, 1, null, "'published'"));
+        System.out.println(articleMapper.getArticleIdByPage(3, 2, null, "'published'"));
+        System.out.println(JSONObject.toJSONString(articleMapper.getArticleIdByPage(3, 2, null, "'published'")));
+    }
 }
 

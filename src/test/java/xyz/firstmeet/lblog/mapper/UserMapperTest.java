@@ -23,11 +23,6 @@ public class UserMapperTest {
         System.out.println(userMapper.findAdmin());
     }
 
-    @Test
-    public void testGetUserLinks() {
-        System.out.println(userMapper.getUserLinks(1));
-    }
-
     /**
      * 获取用户喜好分类占比
      */

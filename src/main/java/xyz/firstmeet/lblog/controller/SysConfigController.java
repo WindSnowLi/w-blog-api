@@ -2,6 +2,10 @@ package xyz.firstmeet.lblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.model.request.IdModel;
+import xyz.firstmeet.lblog.model.response.UiConfigModel;
 import xyz.firstmeet.lblog.object.Msg;
 import xyz.firstmeet.lblog.services.SysConfigJsonService;
 import xyz.firstmeet.lblog.utils.JwtUtils;
@@ -17,6 +23,7 @@ import xyz.firstmeet.lblog.utils.JwtUtils;
 import java.util.Map;
 
 @Slf4j
+@Api(tags = "系统相关", value = "系统相关")
 @RestController
 @RequestMapping(value = "/api/sys", produces = "application/json;charset=UTF-8")
 public class SysConfigController {
@@ -30,17 +37,22 @@ public class SysConfigController {
     /**
      * 获取用户Ui配置
      *
-     * @param json {"token":"token"} / { "id": int }
+     * @param idModel { "id": int }
      * @return config Msg
      */
+    @ApiOperation(value = "通过用户id获取用户Ui配置")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = UiConfigModel.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getUiConfig")
     @PassToken
-    public String getUiConfigByUserId(@RequestBody JSONObject json) {
+    public String getUiConfig(@RequestBody IdModel idModel) {
         int userId;
-        if (json.containsKey("id")) {
-            userId = json.getIntValue("id");
+        if (idModel.getId() != 0) {
+            userId = idModel.getId();
         } else {
-            userId = JwtUtils.getTokenUserId(json.getString("token"));
+            return Msg.getFailMsg();
         }
         log.info("用户ID：{}  请求getUiConfig", userId);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, sysConfigJsonService.getUiConfigByUserId(userId));

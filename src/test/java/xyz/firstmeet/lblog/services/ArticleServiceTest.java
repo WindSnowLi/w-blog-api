@@ -34,7 +34,7 @@ public class ArticleServiceTest {
 
     @Test
     public void testGetLabelArticlePageJson() {
-        System.out.println(articleJsonService.getLabelArticlePageJson(2, 0, 100));
+        System.out.println(articleJsonService.getLabelArticlePageJson(2, 10, 1));
     }
 
     @Test
@@ -110,5 +110,13 @@ public class ArticleServiceTest {
         jsonObject.put("x", x);
         jsonObject.put("y", y);
         System.out.println(jsonObject.toJSONString());
+    }
+
+    /**
+     * 分页获取文章ID列表
+     */
+    @Test
+    public void testGetArticleIdByPageJson() {
+        System.out.println(articleJsonService.getArticleIdByPageJson(20, 1, "-id", "published"));
     }
 }

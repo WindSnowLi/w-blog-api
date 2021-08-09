@@ -40,12 +40,22 @@ public interface ArticleMapper {
     /**
      * 逆序分页获取文章
      *
-     * @param start 开始条
-     * @param end   结束条
-     * @param sort  排序方式 默认-id,
+     * @param limit  限制量
+     * @param offset 偏移量
+     * @param sort   排序方式 默认-id,
      * @return 文章列表
      */
-    List<Article> getArticlesByPage(@Param("start") int start, @Param("end") int end, @Param("sort") String sort, @Param("status") String status);
+    List<Article> getArticlesByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") String status);
+
+    /**
+     * 分页获取文章ID
+     *
+     * @param limit  限制量
+     * @param offset 偏移量
+     * @param sort   排序方式 默认-id,
+     * @return List<Integer>
+     */
+    List<Integer> getArticleIdByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") String status);
 
     /**
      * 根据ID排序，第一个为所属分类
@@ -91,13 +101,14 @@ public interface ArticleMapper {
     List<ArticleLabel> getHotLabelsByUserId(@Param("user_id") int user_id);
 
     /**
-     * @param id    标签ID
-     * @param start 开始条
-     * @param end   结束条
+     * 获取标签所属文章
+     *
+     * @param id     标签ID
+     * @param limit  限制数
+     * @param offset 偏移量量
      * @return 文章列表
      */
-    List<Article> getLabelArticlePage(@Param("label_id") int id, @Param("start") int start, @Param("end") int end);
-
+    List<Article> getLabelArticlePage(@Param("label_id") int id, @Param("limit") int limit, @Param("offset") int offset);
 
     /**
      * 获取所有分类

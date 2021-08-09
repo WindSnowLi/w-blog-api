@@ -68,15 +68,14 @@ public class ArticleService {
     /**
      * 或许标签所属文章
      *
-     * @param id    标签ID
-     * @param start 开始条
-     * @param end   结束条
+     * @param id     标签ID
+     * @param limit  限制数
+     * @param offset 偏移量量
      * @return 文章列表
      */
-    public List<Article> getLabelArticlePage(int id, int start, int end) {
-        return articleMapper.getLabelArticlePage(id, start, end);
+    public List<Article> getLabelArticlePage(int id, int limit, int offset) {
+        return articleMapper.getLabelArticlePage(id, limit, offset);
     }
-
 
     /**
      * 访问量加一
@@ -234,7 +233,6 @@ public class ArticleService {
         return getDetailById(article.getId());
     }
 
-
     /**
      * 根据文章ID获取文章详情
      *
@@ -250,7 +248,6 @@ public class ArticleService {
         jsonObject.put("user", findArticleAuthor(articleId));
         return jsonObject;
     }
-
 
     /**
      * 设置文章状态

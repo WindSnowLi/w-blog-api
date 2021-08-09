@@ -1,14 +1,10 @@
 package xyz.firstmeet.lblog.services.base;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.firstmeet.lblog.mapper.ArticleMapper;
-import xyz.firstmeet.lblog.mapper.FileMapper;
 import xyz.firstmeet.lblog.mapper.UserMapper;
-import xyz.firstmeet.lblog.object.PersonalLink;
 import xyz.firstmeet.lblog.object.User;
 
 import java.util.List;
@@ -48,10 +44,6 @@ public class UserService {
 
     public User findAdmin() {
         return userMapper.findAdmin();
-    }
-
-    public List<PersonalLink> getUserLinks(int user_id) {
-        return userMapper.getUserLinks(user_id);
     }
 
     /**
@@ -97,10 +89,20 @@ public class UserService {
     /**
      * 获取作者关于信息
      *
-     * @param userId    用户ID
+     * @param userId 用户ID
      * @return String
      */
-    public String getAboutByUserId(int userId){
+    public String getAboutByUserId(int userId) {
         return userMapper.getAboutByUserId(userId);
+    }
+
+    /**
+     * 设置作者关于信息
+     *
+     * @param userId  用户ID
+     * @param content 内容
+     */
+    public void setAboutByUserToken(int userId, String content) {
+        userMapper.setAbout(userId, content);
     }
 }

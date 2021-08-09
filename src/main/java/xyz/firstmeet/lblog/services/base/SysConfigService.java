@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.firstmeet.lblog.mapper.SysConfigMapper;
 import xyz.firstmeet.lblog.mapper.UserMapper;
+import xyz.firstmeet.lblog.model.response.UiConfigModel;
 import xyz.firstmeet.lblog.object.SystemConfig;
 
 import java.util.HashMap;
@@ -56,14 +57,14 @@ public class SysConfigService {
      * @param user_id 用户ID
      * @return 配置表
      */
-    public Map<String, String> getUiConfigByUserId(int user_id) {
+    public UiConfigModel getUiConfigByUserId(int user_id) {
         final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(user_id);
         HashMap<String, String> rs = new HashMap<>();
         for (JSONObject json : sysUiConfigByUserId) {
             rs.put(json.getString("item"), json.getString("value"));
         }
         rs.remove("about");
-        return rs;
+        return JSONObject.parseObject(JSONObject.toJSONString(rs), UiConfigModel.class);
     }
 
     /**

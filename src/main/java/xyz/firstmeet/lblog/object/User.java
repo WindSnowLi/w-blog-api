@@ -1,6 +1,7 @@
 package xyz.firstmeet.lblog.object;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import io.swagger.annotations.ApiModel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +14,10 @@ import java.util.ArrayList;
 @Setter
 @ToString
 @EqualsAndHashCode
+@ApiModel
 public class User implements Serializable {
     //ID
-    private int id;
+    protected int id;
     //账户
     private String account;
     //密码

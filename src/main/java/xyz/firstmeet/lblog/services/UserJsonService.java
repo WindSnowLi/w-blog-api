@@ -17,7 +17,6 @@ public class UserJsonService extends UserService {
 
     public String getSidebarLabels(int user_id) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("links", getUserLinks(user_id));
         jsonObject.put("labels", articleMapper.getHotLabelsByUserId(user_id));
         jsonObject.put("user", findUserById(user_id));
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
@@ -64,6 +63,7 @@ public class UserJsonService extends UserService {
 
     /**
      * 访客获取作者信息
+     *
      * @param userId 作者ID
      * @return 作者信息
      */
@@ -120,10 +120,22 @@ public class UserJsonService extends UserService {
     /**
      * 获取作者关于信息
      *
-     * @param userId    用户ID
+     * @param userId 用户ID
      * @return Msg
      */
-    public String getAboutByUserIdJson(int userId){
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS,Msg.MSG_SUCCESS,getAboutByUserId(userId));
+    public String getAboutByUserIdJson(int userId) {
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getAboutByUserId(userId));
+    }
+
+    /**
+     * 设置作者关于信息
+     *
+     * @param userId  用户ID
+     * @param content 内容
+     * @return Msg
+     */
+    public String setAboutByUserTokenJson(int userId, String content) {
+        setAboutByUserToken(userId, content);
+        return Msg.getSuccessMsg();
     }
 }

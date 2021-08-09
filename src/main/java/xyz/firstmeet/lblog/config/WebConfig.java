@@ -48,11 +48,18 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(codeInterceptor).addPathPatterns("/**");
-        registry.addInterceptor(cros).addPathPatterns("/**");
-        registry.addInterceptor(mappingInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(codeInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html");
+        registry.addInterceptor(cros)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html");
+        registry.addInterceptor(mappingInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html");
         registry.addInterceptor(passTokenInterceptor)
                 // 拦截所有请求，通过判断是否有 @LoginRequired 注解 决定是否需要登录
-                .addPathPatterns("/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html");
     }
 }

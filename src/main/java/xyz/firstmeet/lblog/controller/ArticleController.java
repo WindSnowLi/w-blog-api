@@ -1,6 +1,9 @@
 package xyz.firstmeet.lblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.model.request.ArticlePageModel;
 import xyz.firstmeet.lblog.object.Article;
 import xyz.firstmeet.lblog.object.ArticleLabel;
 import xyz.firstmeet.lblog.object.Msg;
@@ -36,27 +40,56 @@ public class ArticleController {
     /**
      * 分页获取文章列表
      *
-     * @param json {
-     *             "userId":"int",
-     *             "page":int,
-     *             "limit":int,
-     *             "sort":"+id/-id,默认-id",
-     *             "status":"文章状态，默认published，all为全部文章类型"
-     *             }
+     * @param articlePageModel {
+     *                         "userId":"int",
+     *                         "page":int,
+     *                         "limit":int,
+     *                         "sort":"+id/-id,默认-id",
+     *                         "status":"文章状态，默认published，all为全部文章类型"
+     *                         }
      * @return Msg 内含文章列表
      */
+    @ApiOperation(value = "分页获取文章列表")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ArrayList.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getArticlesByPage")
     @PassToken
-    public String getArticlesByPage(@RequestBody JSONObject json) {
-        log.info("getArticlesByPage\t{}", json.toJSONString());
-        String sort = null, status = null;
-        if (json.containsKey("sort")) {
-            sort = json.getString("sort");
-        }
-        if (json.containsKey("status")) {
-            status = json.getString("status");
-        }
-        return articleJsonService.getArticlesByPage(json.getIntValue("userId"), json.getIntValue("page"), json.getIntValue("limit"), sort, status);
+    public String getArticlesByPage(@RequestBody ArticlePageModel articlePageModel) {
+        log.info("getArticlesByPage");
+        return articleJsonService.getArticlesByPageJson(articlePageModel.getUserId(),
+                articlePageModel.getLimit(),
+                articlePageModel.getPage(),
+                articlePageModel.getSort(),
+                articlePageModel.getStatus());
+    }
+
+    /**
+     * 分页获取文章ID列表
+     *
+     * @param articlePageModel {
+     *                         "page":int,
+     *                         "limit":int,
+     *                         "sort":"+id/-id,默认-id",
+     *                         "status":"文章状态，默认published，all为全部文章类型"
+     *                         }
+     * @return Msg 内含文章Id列表
+     */
+    @ApiOperation(value = "分页获取文章ID列表")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ArrayList.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getArticleIdByPage")
+    @PassToken
+    public String getArticleIdByPage(@RequestBody ArticlePageModel articlePageModel) {
+        log.info("getArticleIdByPage");
+        return articleJsonService.getArticleIdByPageJson(
+                articlePageModel.getLimit(),
+                articlePageModel.getPage(),
+                articlePageModel.getSort(),
+                articlePageModel.getStatus());
     }
 
     /**
@@ -226,14 +259,14 @@ public class ArticleController {
     /**
      * 分页获取标签列表
      *
-     * @param json {"id":"int","start":"int","end":"int"}
+     * @param json {"id":"int","limit":"int","page":"int"}
      * @return Msg
      */
     @PostMapping(value = "getArticlesByLabel")
     @PassToken
     public String getLabelArticles(@RequestBody JSONObject json) {
         articleJsonService.addLabelVisitsCount(json.getIntValue("id"));
-        return articleJsonService.getLabelArticlePageJson(json.getIntValue("id"), json.getIntValue("start"), json.getIntValue("end"));
+        return articleJsonService.getLabelArticlePageJson(json.getIntValue("id"), json.getIntValue("limit"), json.getIntValue("page"));
     }
 
     /**

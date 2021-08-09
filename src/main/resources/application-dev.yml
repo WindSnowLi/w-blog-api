@@ -10,3 +10,5 @@ spring:
 logback:
   logdir: ./log/w-blog-api
   appname: w-blog-dev
+knife4j:
+  enable: true

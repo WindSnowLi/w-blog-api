@@ -1,7 +1,6 @@
 package xyz.firstmeet.lblog.mapper;
 
 import org.apache.ibatis.annotations.*;
-import xyz.firstmeet.lblog.object.PersonalLink;
 import xyz.firstmeet.lblog.object.User;
 import org.springframework.stereotype.Repository;
 
@@ -32,10 +31,6 @@ public interface UserMapper {
     @Select("select * from user inner join (select user_id from power p where p.power=0 limit 1) t where t.user_id=user.id")
     User findAdmin();
 
-
-    @Select("SELECT * FROM personal_links where user_id = #{user_id}")
-    List<PersonalLink> getUserLinks(@Param("user_id") int user_id);
-
     /**
      * 设置用户信息
      *
@@ -65,9 +60,18 @@ public interface UserMapper {
     /**
      * 获取作者关于信息
      *
-     * @param userId    用户ID
+     * @param userId 用户ID
      * @return String
      */
     @Select("SELECT value FROM ui_config WHERE user_id = #{userId} AND item = \"about\"")
     String getAboutByUserId(@Param("userId") int userId);
+
+    /**
+     * 设置作者关于信息
+     *
+     * @param userId  用户ID
+     * @param content 内容
+     */
+    @Insert("REPLACE INTO ui_config(user_id, item, value) VALUES (#{userId}, \"about\", #{content})")
+    void setAbout(int userId, String content);
 }

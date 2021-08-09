@@ -1,6 +1,10 @@
 package xyz.firstmeet.lblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.model.request.IdModel;
+import xyz.firstmeet.lblog.model.request.TokenTypeModel;
 import xyz.firstmeet.lblog.object.Msg;
 import xyz.firstmeet.lblog.object.User;
 import xyz.firstmeet.lblog.services.UserJsonService;
@@ -16,6 +22,7 @@ import xyz.firstmeet.lblog.utils.JwtUtils;
 
 @Slf4j
 @RestController
+@Api(tags = "用户个人相关", value = "用户相关")
 @RequestMapping(value = "/api/user", produces = "application/json;charset=UTF-8")
 public class UserController {
     private UserJsonService userJsonService;
@@ -110,6 +117,7 @@ public class UserController {
 
     /**
      * 获取文章爱好
+     *
      * @param userJson {"token":"token"}
      * @return Msg
      */
@@ -123,6 +131,7 @@ public class UserController {
 
     /**
      * 设置头像
+     *
      * @param userJson {"token":"token", "avatar": url}
      * @return Msg
      */
@@ -151,13 +160,37 @@ public class UserController {
     /**
      * 获取作者关于信息
      *
-     * @param userJson {"id": int}
+     * @param idModel { "id":int }
      * @return Msg
      */
+    @ApiOperation(value = "通过用户ID获取用户关于信息")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = String.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getAboutByUserId")
     @PassToken
-    public String getAboutByUserId(@RequestBody JSONObject userJson) {
-        log.info("getAboutByUserId\t用户ID：{}", userJson.getIntValue("id"));
-        return userJsonService.getAboutByUserIdJson(userJson.getIntValue("id"));
+    public String getAbout(@RequestBody IdModel idModel) {
+        log.info("getAboutByUserId\t用户ID：{}", idModel.getId());
+        return userJsonService.getAboutByUserIdJson(idModel.getId());
+    }
+
+    /**
+     * 设置作者关于信息
+     *
+     * @param tokenTypeModel { "token":token, "content":String }
+     * @return Msg
+     */
+    @ApiOperation(value = "设置作者关于信息")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "setAboutByUserToken")
+    @UserLoginToken
+    public String setAbout(@RequestBody TokenTypeModel<String> tokenTypeModel) {
+        int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
+        log.info("setAboutByUserToken\t用户ID：{}", userId);
+        return userJsonService.setAboutByUserTokenJson(userId, tokenTypeModel.getContent());
     }
 }

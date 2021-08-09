@@ -4,4 +4,4 @@
 
 ### 版权声明
 
-版权说明：该项目[MIT](https://github.com/WindSnowLi/w-blog-api/blob/master/LICENSE)授权
+版权说明：[MIT](https://github.com/WindSnowLi/w-blog-api/blob/master/LICENSE)

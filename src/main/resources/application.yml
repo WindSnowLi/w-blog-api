@@ -25,4 +25,3 @@ mybatis:
 logging:
   config: classpath:logback-spring.xml
 
-
