@@ -249,4 +249,22 @@ public interface ArticleMapper {
      */
     @Delete("DELETE FROM article WHERE id=#{articleId};")
     void delArticle(@Param("articleId") int articleId);
+
+    /**
+     * 获取该文章的下一篇文章
+     *
+     * @param articleId 当前文章ID
+     * @return 文章对象
+     */
+    @Select("select * from article a where a.id > #{articleId} limit 1")
+    Article getNextArticle(@Param("articleId") int articleId);
+
+    /**
+     * 获取该文章的上一篇文章
+     *
+     * @param articleId 当前文章ID
+     * @return 文章对象
+     */
+    @Select("select * from article a where a.id < #{articleId} order by a.id desc limit 1")
+    Article getPreArticle(@Param("articleId") int articleId);
 }

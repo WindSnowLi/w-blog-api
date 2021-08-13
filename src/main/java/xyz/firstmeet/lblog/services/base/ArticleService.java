@@ -246,6 +246,8 @@ public class ArticleService {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("article", article);
         jsonObject.put("user", findArticleAuthor(articleId));
+        jsonObject.put("next", getNextArticle(articleId));
+        jsonObject.put("pre", getPreArticle(articleId));
         return jsonObject;
     }
 
@@ -266,5 +268,25 @@ public class ArticleService {
      */
     public void delArticle(int articleId) {
         articleMapper.delArticle(articleId);
+    }
+
+    /**
+     * 获取该文章的下一篇文章
+     *
+     * @param articleId 当前文章ID
+     * @return 文章对象
+     */
+    public Article getNextArticle(@Param("articleId") int articleId) {
+        return articleMapper.getNextArticle(articleId);
+    }
+
+    /**
+     * 获取该文章的上一篇文章
+     *
+     * @param articleId 当前文章ID
+     * @return 文章对象
+     */
+    public Article getPreArticle(@Param("articleId") int articleId) {
+        return articleMapper.getPreArticle(articleId);
     }
 }
