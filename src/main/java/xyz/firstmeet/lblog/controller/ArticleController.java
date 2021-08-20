@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
 import xyz.firstmeet.lblog.model.request.ArticlePageModel;
+import xyz.firstmeet.lblog.model.request.PageModel;
 import xyz.firstmeet.lblog.object.Article;
 import xyz.firstmeet.lblog.object.ArticleLabel;
 import xyz.firstmeet.lblog.object.Msg;
@@ -68,12 +69,12 @@ public class ArticleController {
     /**
      * 分页获取文章ID列表
      *
-     * @param articlePageModel {
-     *                         "page":int,
-     *                         "limit":int,
-     *                         "sort":"+id/-id,默认-id",
-     *                         "status":"文章状态，默认published，all为全部文章类型"
-     *                         }
+     * @param pageModel {
+     *                  "page":int,
+     *                  "limit":int,
+     *                  "sort":"+id/-id,默认-id",
+     *                  "status":"文章状态，默认published，all为全部文章类型"
+     *                  }
      * @return Msg 内含文章Id列表
      */
     @ApiOperation(value = "分页获取文章ID列表")
@@ -83,13 +84,13 @@ public class ArticleController {
     })
     @PostMapping(value = "getArticleIdByPage")
     @PassToken
-    public String getArticleIdByPage(@RequestBody ArticlePageModel articlePageModel) {
+    public String getArticleIdByPage(@RequestBody PageModel<Article.Status> pageModel) {
         log.info("getArticleIdByPage");
         return articleJsonService.getArticleIdByPageJson(
-                articlePageModel.getLimit(),
-                articlePageModel.getPage(),
-                articlePageModel.getSort(),
-                articlePageModel.getStatus());
+                pageModel.getLimit(),
+                pageModel.getPage(),
+                pageModel.getSort(),
+                pageModel.getStatus());
     }
 
     /**

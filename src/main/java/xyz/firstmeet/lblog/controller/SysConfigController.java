@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
 import xyz.firstmeet.lblog.model.request.IdModel;
+import xyz.firstmeet.lblog.model.response.ClientIdModel;
 import xyz.firstmeet.lblog.model.response.UiConfigModel;
 import xyz.firstmeet.lblog.object.Msg;
 import xyz.firstmeet.lblog.services.SysConfigJsonService;
@@ -148,5 +149,21 @@ public class SysConfigController {
         } else {
             return Msg.getFailMsg();
         }
+    }
+
+    /**
+     * 获取Gitee应用程序ID，用于Gitee登录
+     *
+     * @return Msg(client_id)
+     */
+    @ApiOperation(value = "获取Gitee应用程序ID，用于Gitee登录")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ClientIdModel.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getGiteeClientId")
+    @PassToken
+    public String getGiteeClientId() {
+        return Msg.getSuccessMsg(new ClientIdModel(sysConfigJsonService.getGiteeClientId()));
     }
 }

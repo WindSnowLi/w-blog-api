@@ -119,4 +119,31 @@ public class SysConfigService {
         storageConfig.put("storage", storage);
         sysConfigMapper.setStorageConfig(storageConfig.toJSONString());
     }
+
+    /**
+     * 获取Gitee登录配置信息
+     *
+     * @return Gitee的JSON格式信息
+     */
+    public JSONObject getGiteeLoginConfig() {
+        return JSONObject.parseObject(sysConfigMapper.getOtherLoginConfig()).getJSONObject("gitee");
+    }
+
+    /**
+     * 获取Gitee应用程序ID，用于Gitee登录
+     *
+     * @return client_id
+     */
+    public String getGiteeClientId() {
+        return getGiteeLoginConfig().getJSONObject("client").getString("client_id");
+    }
+
+    /**
+     * 获取Gitee应用程序密钥，用于验证Gitee登录
+     *
+     * @return client_secret
+     */
+    public String getGiteeClientSecret() {
+        return getGiteeLoginConfig().getJSONObject("client").getString("client_secret");
+    }
 }

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="xyz.firstmeet.lblog.mapper.CommentMapper">
+    <resultMap id="commentMap" type="xyz.firstmeet.lblog.object.Comment">
+        <id property="id" column="id"/>
+        <result property="targetId" column="target_id"/>
+        <result property="fromUser" column="from_user"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="status" column="status"/>
+        <result property="content" column="content"/>
+        <result property="time" column="time"/>
+        <result property="toUser" column="to_user"/>
+    </resultMap>
+
+    <!--    获取目标的评论-->
+    <select id="getTargetComments" resultMap="commentMap">
+        SELECT id,
+        target_id,
+        session_type,
+        from_user,
+        parent_id,
+        status,
+        content,
+        `time`,
+        to_user
+        FROM comment
+
+        <choose>
+            <when test="targetId == null">
+                WHERE 1 = 1
+            </when>
+            <otherwise>
+                WHERE target_id = #{targetId}
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="sessionType.toString == 'ALL'">
+
+            </when>
+            <otherwise>
+                AND session_type = #{sessionType}
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="status.toString == 'ALL'">
+
+            </when>
+            <otherwise>
+                AND status = #{status}
+            </otherwise>
+        </choose>
+
+        ORDER BY id desc
+    </select>
+    <!--获取目标的评论结束-->
+
+    <!--    查找评论-->
+    <select id="findComment" resultMap="commentMap">
+        SELECT id,
+               target_id,
+               session_type,
+               from_user,
+               parent_id,
+               status,
+               content,
+               `time`,
+               to_user
+        FROM comment
+        WHERE id = #{commentId}
+    </select>
+    <!--    查找评论结束-->
+
+    <!--    获取评论对象列表-->
+    <select id="getCommentList" resultMap="commentMap">
+        SELECT id,
+        target_id,
+        session_type,
+        from_user,
+        parent_id,
+        status,
+        content,
+        `time`,
+        to_user
+        FROM comment
+        <choose>
+            <when test="status.toString == 'ALL'">
+
+            </when>
+            <otherwise>
+                WHERE status = #{status}
+            </otherwise>
+        </choose>
+        ORDER BY id
+        <choose>
+            <when test="sort != '-id'">
+                desc
+            </when>
+            <otherwise>
+                asc
+            </otherwise>
+        </choose>
+        limit #{limit} offset #{offset}
+
+    </select>
+    <!--    获取评论对象列表结束-->
+</mapper>

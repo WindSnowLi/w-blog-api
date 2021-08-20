@@ -1,8 +1,9 @@
 package xyz.firstmeet.lblog.mapper;
 
 import org.apache.ibatis.annotations.*;
-import xyz.firstmeet.lblog.object.User;
 import org.springframework.stereotype.Repository;
+import xyz.firstmeet.lblog.object.OtherUser;
+import xyz.firstmeet.lblog.object.User;
 
 import java.util.List;
 
@@ -27,18 +28,13 @@ public interface UserMapper {
     @Select("select * from user where user.id=#{id}")
     User findUserId(@Param("id") int id);
 
-
-    @Select("select * from user inner join (select user_id from power p where p.power=0 limit 1) t where t.user_id=user.id")
-    User findAdmin();
-
     /**
      * 设置用户信息
      *
-     * @param userId 用户ID
-     * @param user   用户新对象
+     * @param user 用户新对象
      */
-    @Update("UPDATE `user` SET nickname=#{user.nickname}, qq=#{user.qq}, introduction=#{user.introduction} WHERE id=#{userId};")
-    void setInfo(@Param("userId") int userId, @Param("user") User user);
+    @Update("UPDATE `user` SET nickname=#{user.nickname}, qq=#{user.qq}, introduction=#{user.introduction} WHERE id=#{user.id};")
+    void setInfo(@Param("user") User user);
 
     /**
      * 获取用户喜好分类占比
@@ -74,4 +70,46 @@ public interface UserMapper {
      */
     @Insert("REPLACE INTO ui_config(user_id, item, value) VALUES (#{userId}, \"about\", #{content})")
     void setAbout(int userId, String content);
+
+    /**
+     * 添加用户
+     *
+     * @param user 用户对象
+     */
+    void addUser(@Param("user") User user);
+
+    /**
+     * 添加第三方平台登录用户
+     *
+     * @param otherUser 第三方对象
+     */
+    @Insert("INSERT INTO " +
+            "other_user (other_id, other_platform, user_id, " +
+            "access_token, expires_in, refresh_token, scope, created_at) " +
+            "VALUES(#{otherUser.other_id}, #{otherUser.other_platform}, #{otherUser.user_id}," +
+            "#{otherUser.access_token},#{otherUser.expires_in}," +
+            "#{otherUser.refresh_token},#{otherUser.scope},#{otherUser.created_at})")
+    void addOtherUser(@Param("otherUser") OtherUser otherUser);
+
+    /**
+     * 刷新第三方用户验证信息
+     *
+     * @param otherUser 第三方信息对象
+     */
+    @Update("UPDATE other_user " +
+            "SET access_token=#{otherUser.access_token}, refresh_token=#{otherUser.refresh_token}, " +
+            "`scope`=#{otherUser.scope}," +
+            "created_at=#{otherUser.created_at}, expires_in=#{otherUser.expires_in} " +
+            "WHERE other_id=#{otherUser.other_id} AND other_platform=#{otherUser.other_platform}")
+    void refreshInfo(@Param("otherUser") OtherUser otherUser);
+
+    /**
+     * 查找第三方登录账户
+     *
+     * @param other_id 第三方识别码
+     * @param platform 平台
+     * @return 第三方对象
+     */
+    @Select("SELECT id, other_id, other_platform, user_id FROM other_user WHERE other_id=#{other_id} AND other_platform=#{platform}")
+    OtherUser getOtherUser(@Param("other_id") String other_id, @Param("platform") User.Platform platform);
 }

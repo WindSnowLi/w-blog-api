@@ -18,11 +18,6 @@ public class UserMapperTest {
         System.out.println(userMapper.findUserAccount("111111"));
     }
 
-    @Test
-    public void testUserAdmin() {
-        System.out.println(userMapper.findAdmin());
-    }
-
     /**
      * 获取用户喜好分类占比
      */

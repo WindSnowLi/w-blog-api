@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.model.request.CodeUrlModel;
 import xyz.firstmeet.lblog.model.request.IdModel;
+import xyz.firstmeet.lblog.model.request.TokenModel;
 import xyz.firstmeet.lblog.model.request.TokenTypeModel;
 import xyz.firstmeet.lblog.object.Msg;
 import xyz.firstmeet.lblog.object.User;
 import xyz.firstmeet.lblog.services.UserJsonService;
+import xyz.firstmeet.lblog.services.otherlogin.GiteeService;
 import xyz.firstmeet.lblog.utils.JwtUtils;
 
 @Slf4j
@@ -32,6 +35,12 @@ public class UserController {
         this.userJsonService = userJsonService;
     }
 
+    private GiteeService giteeService;
+
+    @Autowired
+    public void setGiteeService(GiteeService giteeService) {
+        this.giteeService = giteeService;
+    }
 
     /**
      * 登录请求
@@ -50,7 +59,7 @@ public class UserController {
     /**
      * 获取用户信息
      *
-     * @param userJson { token:token}
+     * @param userJson { token:token }
      * @return 如果验证正确返回信息串，验证错误返回空
      */
     @PostMapping(value = "getInfo")
@@ -86,8 +95,8 @@ public class UserController {
         int userId = JwtUtils.getTokenUserId(userJson.getString("token"));
         log.info("setInfo\t用户ID：{}", userId);
         User user = JSONObject.parseObject(userJson.getJSONObject("user").toJSONString(), User.class);
-        return userJsonService.setInfoJson(userId, user);
-
+        user.setId(userId);
+        return userJsonService.setInfoJson(user);
     }
 
     /**
@@ -192,5 +201,23 @@ public class UserController {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
         log.info("setAboutByUserToken\t用户ID：{}", userId);
         return userJsonService.setAboutByUserTokenJson(userId, tokenTypeModel.getContent());
+    }
+
+    /**
+     * 通过Gitee授权码获取本地token
+     *
+     * @param codeUrlModel 授权码与重定向信息
+     * @return Msg
+     */
+    @ApiOperation(value = "通过Gitee授权码获取本地Token")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = TokenModel.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "giteeLogin")
+    @PassToken
+    public String giteeLogin(@RequestBody CodeUrlModel codeUrlModel) {
+        log.info("giteeLogin");
+        return Msg.getSuccessMsg(giteeService.getLocalToken(codeUrlModel.getCode(), codeUrlModel.getRedirect()));
     }
 }

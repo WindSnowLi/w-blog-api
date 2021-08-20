@@ -24,7 +24,7 @@ public class ArticleJsonService extends ArticleService {
      * @param status 文章状态，默认published，all为全部文章类型
      * @return Msg 内含文章列表
      */
-    public String getArticlesByPageJson(int userId, int limit, int page, String sort, String status) {
+    public String getArticlesByPageJson(int userId, int limit, int page, String sort, Article.Status status) {
         if (page <= 0) {
             return Msg.getFailMsg();
         }
@@ -47,7 +47,7 @@ public class ArticleJsonService extends ArticleService {
      * @param status 文章状态，默认published，all为全部文章类型
      * @return Msg 内含文章列表
      */
-    public String getArticleIdByPageJson(int limit, int page, String sort, String status) {
+    public String getArticleIdByPageJson(int limit, int page, String sort, Article.Status status) {
         if (page <= 0) {
             return Msg.getFailMsg();
         }

@@ -11,6 +11,13 @@ import lombok.ToString;
 @Setter
 @Getter
 public class TokenModel {
+    public TokenModel(String token) {
+        this.token = token;
+    }
+
+    public TokenModel() {
+    }
+
     // token
     @ApiModelProperty(value = "身份验证信息", required = true)
     protected String token;

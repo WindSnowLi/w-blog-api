@@ -67,4 +67,12 @@ public interface SysConfigMapper {
      */
     @Insert("UPDATE sys_setting SET value=#{config} WHERE item='oss'")
     void setStorageConfig(@Param("config") String config);
+
+    /**
+     * 获取第三方登录配置信息
+     *
+     * @return JSON格式配置信息
+     */
+    @Select("SELECT value FROM sys_setting WHERE item = 'other_login'")
+    String getOtherLoginConfig();
 }

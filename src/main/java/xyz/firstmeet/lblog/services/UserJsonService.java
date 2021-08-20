@@ -29,7 +29,6 @@ public class UserJsonService extends UserService {
      * @return 用户对象Msg
      */
     public String getInfoJson(String token) {
-        // 获取 token 中的 user id
         int userId = JwtUtils.getTokenUserId(token);
         User user = findUserById(userId);
         if (user == null) {
@@ -49,16 +48,12 @@ public class UserJsonService extends UserService {
 
     public String loginJson(User user) {
         User tempUser = userMapper.findUserAccount(user.getAccount());
-        if (tempUser == null) {
+        if (tempUser == null || !tempUser.getPassword().equals(encryptPasswd(user.getPassword()))) {
             return Msg.makeJsonMsg(Msg.CODE_FAIL, Msg.LOGIN_PASSWORD_ORNUMBER_FAIL, null);
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token", JwtUtils.getToken(tempUser));
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
-    }
-
-    public String findAdminJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, findAdmin());
     }
 
     /**
@@ -74,15 +69,14 @@ public class UserJsonService extends UserService {
     /**
      * 设置用户信息
      *
-     * @param userId 用户ID
-     * @param user   用户新对象
+     * @param user 用户新对象
      * @return Msg
      */
-    public String setInfoJson(int userId, User user) {
+    public String setInfoJson(User user) {
         if (user.getNickname().isEmpty()) {
             return Msg.makeJsonMsg(Msg.CODE_FAIL, "昵称不可为空", null);
         }
-        userMapper.setInfo(userId, user);
+        setInfo(user);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, "保存成功", null);
     }
 

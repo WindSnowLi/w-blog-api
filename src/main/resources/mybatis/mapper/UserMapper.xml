@@ -39,4 +39,12 @@
         -- 标签以及值结束
     </select>
     <!--    获取用户喜好分类占比 结束-->
+
+    <!--    添加用户-->
+    <insert id="addUser" parameterType="xyz.firstmeet.lblog.object.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user
+            (account, password, avatar, nickname)
+        VALUES (#{user.account}, #{user.password}, #{user.avatar}, #{user.nickname});
+    </insert>
+    <!--    添加用户结束-->
 </mapper>

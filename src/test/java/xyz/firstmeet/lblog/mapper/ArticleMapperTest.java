@@ -127,9 +127,9 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetArticlesByPage() {
-        System.out.println(articleMapper.getArticlesByPage(3, 0, null, "'published'").size());
-        System.out.println(articleMapper.getArticlesByPage(3, 1, null, "'published'").size());
-        System.out.println(articleMapper.getArticlesByPage(3, 2, null, "'published'").size());
+        System.out.println(articleMapper.getArticlesByPage(3, 0, null, Article.Status.published).size());
+        System.out.println(articleMapper.getArticlesByPage(3, 1, null, Article.Status.published).size());
+        System.out.println(articleMapper.getArticlesByPage(3, 2, null, Article.Status.published).size());
     }
 
     /**
@@ -137,10 +137,10 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetArticleIdByPage() {
-        System.out.println(articleMapper.getArticleIdByPage(3, 0, null, "'published'"));
-        System.out.println(articleMapper.getArticleIdByPage(3, 1, null, "'published'"));
-        System.out.println(articleMapper.getArticleIdByPage(3, 2, null, "'published'"));
-        System.out.println(JSONObject.toJSONString(articleMapper.getArticleIdByPage(3, 2, null, "'published'")));
+        System.out.println(articleMapper.getArticleIdByPage(3, 0, null, Article.Status.published));
+        System.out.println(articleMapper.getArticleIdByPage(3, 1, null, Article.Status.published));
+        System.out.println(articleMapper.getArticleIdByPage(3, 2, null, Article.Status.published));
+        System.out.println(JSONObject.toJSONString(articleMapper.getArticleIdByPage(3, 2, null, Article.Status.published)));
     }
 }
 

@@ -13,7 +13,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Random;
 
 public class CodeUtils {
     /**
@@ -47,22 +46,6 @@ public class CodeUtils {
     }
 
     /**
-     * 获取随机字符串
-     *
-     * @param length 长度
-     * @return 随机字符串
-     */
-    public static String getRandomString(final int length) {
-        StringBuilder rs = new StringBuilder();
-        Random rd = new Random();
-        final String table = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890.+";
-        for (int i = 0; i < length; i++) {
-            rs.append(table.charAt(rd.nextInt(64) % table.length()));
-        }
-        return rs.toString();
-    }
-
-    /**
      * 获取字符串SHA521
      *
      * @param content 内容
@@ -90,10 +73,10 @@ public class CodeUtils {
     }
 
     /**
-     * 获取字符串SHA521
+     * 获取字符串SHA1
      *
      * @param content 内容
-     * @return SHA512
+     * @return SHA1
      */
     public static String strWithSha1(final String content) {
         try {

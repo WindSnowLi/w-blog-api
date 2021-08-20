@@ -276,7 +276,7 @@ public class ArticleService {
      * @param articleId 当前文章ID
      * @return 文章对象
      */
-    public Article getNextArticle(@Param("articleId") int articleId) {
+    public Article getNextArticle(int articleId) {
         return articleMapper.getNextArticle(articleId);
     }
 
@@ -286,7 +286,7 @@ public class ArticleService {
      * @param articleId 当前文章ID
      * @return 文章对象
      */
-    public Article getPreArticle(@Param("articleId") int articleId) {
+    public Article getPreArticle(int articleId) {
         return articleMapper.getPreArticle(articleId);
     }
 }

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.firstmeet.lblog.mapper.ArticleMapper;
 import xyz.firstmeet.lblog.mapper.UserMapper;
+import xyz.firstmeet.lblog.object.OtherUser;
 import xyz.firstmeet.lblog.object.User;
+import xyz.firstmeet.lblog.utils.CodeUtils;
 
 import java.util.List;
 
@@ -41,19 +43,13 @@ public class UserService {
         return userMapper.findUserId(id);
     }
 
-
-    public User findAdmin() {
-        return userMapper.findAdmin();
-    }
-
     /**
      * 设置用户信息
      *
-     * @param userId 用户ID
-     * @param user   用户新对象
+     * @param user 用户新对象
      */
-    public void setInfo(int userId, User user) {
-        userMapper.setInfo(userId, user);
+    public void setInfo(User user) {
+        userMapper.setInfo(user);
     }
 
     /**
@@ -104,5 +100,53 @@ public class UserService {
      */
     public void setAboutByUserToken(int userId, String content) {
         userMapper.setAbout(userId, content);
+    }
+
+    /**
+     * 添加用户
+     *
+     * @param user 用户对象
+     */
+    public void addUser(User user) {
+        userMapper.addUser(user);
+    }
+
+    /**
+     * 添加第三方平台登录用户
+     *
+     * @param otherUser 第三方对象
+     */
+    public void addOtherUser(OtherUser otherUser) {
+        userMapper.addOtherUser(otherUser);
+    }
+
+    /**
+     * 查找第三方登录账户
+     *
+     * @param other_id 第三方识别码
+     * @param platform 平台
+     * @return 第三方对象
+     */
+    public OtherUser getOtherUser(String other_id, User.Platform platform) {
+        return userMapper.getOtherUser(other_id, platform);
+    }
+
+    /**
+     * 刷新第三方用户验证信息
+     *
+     * @param otherUser 第三方信息对象
+     */
+    public void refreshKeyInfo(OtherUser otherUser) {
+        userMapper.refreshInfo(otherUser);
+    }
+
+    /**
+     * 由明文密码计算密文密码
+     *
+     * @param text 明文
+     * @return MD5(SHA512 ( 明文)+明文)
+     */
+    public String encryptPasswd(String text) {
+        return CodeUtils.strWithMd5(CodeUtils.strWithSha512(text));
     }
 }

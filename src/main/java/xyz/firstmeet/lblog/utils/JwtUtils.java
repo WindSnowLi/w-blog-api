@@ -21,9 +21,9 @@ import java.util.Map;
 @Component
 public class JwtUtils {
     /**
-     * token秘钥，请勿泄露，请勿随便修改 backups:JKKLJOoasdlfj
+     * token秘钥:WINDSNOWLI-Blog
      */
-    public static final String SECRET = "JKKLJOoasdlfj";
+    public static final String SECRET = "WINDSNOWLI-Blog";
     /**
      * token 过期时间: 180天
      */

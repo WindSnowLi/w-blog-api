@@ -59,4 +59,9 @@ public class SysConfigMapperTest {
     public void testGetSysUiConfig() {
         System.out.println(sysConfigMapper.getSysConfig());
     }
+
+    @Test
+    void testGetOtherLoginConfig() {
+        System.out.println(sysConfigMapper.getOtherLoginConfig());
+    }
 }

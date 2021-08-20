@@ -11,29 +11,24 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-public class ArticlePageModel {
-
-    //用户ID
-    @ApiModelProperty(value = "身份验证信息")
-    @JSONField(defaultValue = "-1")
-    private int userId;
+public class PageModel<T> {
 
     //页数
     @ApiModelProperty(value = "页数")
     @JSONField(defaultValue = "1")
-    private int page;
+    protected int page;
 
     //一页行数
     @ApiModelProperty(value = "一页行数")
     @JSONField(defaultValue = "10")
-    private int limit;
+    protected int limit;
 
     //排序方式，默认逆序
     @ApiModelProperty(value = "排序方式，默认逆序,+id正序,-id逆序")
     @JSONField(defaultValue = "-id")
-    private String sort;
+    protected String sort;
 
     //分页查询状态
-    @JSONField(defaultValue = "文章状态，默认published，all为全部文章类型")
-    private String status;
+    @JSONField(defaultValue = "状态,ALL为全部文章")
+    protected T status;
 }

@@ -117,6 +117,6 @@ public class ArticleServiceTest {
      */
     @Test
     public void testGetArticleIdByPageJson() {
-        System.out.println(articleJsonService.getArticleIdByPageJson(20, 1, "-id", "published"));
+        System.out.println(articleJsonService.getArticleIdByPageJson(20, 1, "-id", Article.Status.published));
     }
 }

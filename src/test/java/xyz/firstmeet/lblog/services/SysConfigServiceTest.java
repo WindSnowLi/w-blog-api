@@ -42,7 +42,15 @@ public class SysConfigServiceTest {
      * 获取系统默认配置
      */
     @Test
-    public void testGetSysConfig(){
+    public void testGetSysConfig() {
         System.out.println(sysConfigJsonService.getSysConfigJson());
+    }
+
+    /**
+     * 获取Gitee登录配置信息
+     */
+    @Test
+    public void testGetGiteeLoginConfig() {
+        System.out.println(sysConfigJsonService.getGiteeLoginConfig());
     }
 }

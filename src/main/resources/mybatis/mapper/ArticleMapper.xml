@@ -76,10 +76,10 @@
         FROM (SELECT *
         FROM article
         <choose>
-            <when test="status == 'all'">
+            <when test="status.toString == 'all'">
 
             </when>
-            <when test="status == 'draft' or status == 'deleted'">
+            <when test="status.toString == 'draft' or status.toString == 'deleted'">
                 WHERE article.status = #{status}
             </when>
             <otherwise>
@@ -106,10 +106,10 @@
         SELECT a.id FROM (SELECT article.id
         FROM article
         <choose>
-            <when test="status == 'all'">
+            <when test="status.toString == 'all'">
 
             </when>
-            <when test="status == 'draft' or status == 'deleted'">
+            <when test="status.toString == 'draft' or status.toString == 'deleted'">
                 WHERE article.status = #{status}
             </when>
             <otherwise>
@@ -271,10 +271,10 @@
         select amt.article_id from article_map_type amt where amt.type_id = #{label_id}
         )
         <choose>
-            <when test="status == 'all'">
+            <when test="status.toString == 'all'">
 
             </when>
-            <when test="status == 'draft' or status == 'deleted'">
+            <when test="status.toString == 'draft' or status.toString == 'deleted'">
                 AND a.status = #{status}
             </when>
             <otherwise>
@@ -455,10 +455,10 @@
         LEFT JOIN (SELECT *
         FROM article
         <choose>
-            <when test="status == 'all'">
+            <when test="status.toString == 'all'">
 
             </when>
-            <when test="status == 'draft' or status == 'deleted'">
+            <when test="status.toString == 'draft' or status.toString == 'deleted'">
                 WHERE article.status = #{status}
             </when>
             <otherwise>

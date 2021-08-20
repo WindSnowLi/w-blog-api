@@ -45,7 +45,7 @@ public interface ArticleMapper {
      * @param sort   排序方式 默认-id,
      * @return 文章列表
      */
-    List<Article> getArticlesByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") String status);
+    List<Article> getArticlesByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") Article.Status status);
 
     /**
      * 分页获取文章ID
@@ -55,7 +55,7 @@ public interface ArticleMapper {
      * @param sort   排序方式 默认-id,
      * @return List<Integer>
      */
-    List<Integer> getArticleIdByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") String status);
+    List<Integer> getArticleIdByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") Article.Status status);
 
     /**
      * 根据ID排序，第一个为所属分类
