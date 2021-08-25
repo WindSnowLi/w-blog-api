@@ -9,6 +9,7 @@ import xyz.firstmeet.lblog.object.ArticleLabel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service("articleLabelService")
 public class ArticleLabelService {
@@ -149,5 +150,24 @@ public class ArticleLabelService {
         article.setArticleType(typeByName);
         //添加类型映射
         addArticleMapType(article.getId(), article.getArticleType().getId());
+    }
+
+    /**
+     * 按分类获取每个分类多少文章
+     *
+     * @param limit 取最多的前几条
+     * @return [{name=String, value=Object}]
+     */
+    public List<Map<String, Object>> getArticleCountByType(int limit) {
+        return articleLabelMapper.getArticleCountByType(limit);
+    }
+
+    /**
+     * 获取所有分类数量
+     *
+     * @return 分类数量
+     */
+    public int getTypeSize() {
+        return articleLabelMapper.getTypeSize();
     }
 }

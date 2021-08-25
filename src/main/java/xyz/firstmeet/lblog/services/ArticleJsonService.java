@@ -8,9 +8,6 @@ import xyz.firstmeet.lblog.services.base.ArticleService;
 
 import java.beans.Transient;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 @Service("articleJsonService")
 public class ArticleJsonService extends ArticleService {
@@ -116,40 +113,15 @@ public class ArticleJsonService extends ArticleService {
      * 获取所属分类文章
      *
      * @param type   分类ID
-     * @param status 文章状态，默认published，all为全部文章类型
+     * @param status 文章状态，默认PUBLISHED，ALL为全部文章类型
      * @return Msg
      */
-    public String getArticleByTypeJson(int type, String status) {
+    public String getArticleByTypeJson(int type, Article.Status status) {
         ArrayList<JSONObject> arrayList = new ArrayList<>();
         for (Article article : articleMapper.getArticlesByType(type, status)) {
             arrayList.add(getDetailById(article));
         }
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, arrayList);
-    }
-
-    /**
-     * 获取文章创建历史,转化为前端需要的格式
-     *
-     * @param userId 用户ID
-     * @return Msg[{total=int, week_time=String}]
-     */
-    public String getAddArticleLogByWeekJson(int userId) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("title", "创作篇");
-        ArrayList<String> x = new ArrayList<>();
-        ArrayList<Integer> y = new ArrayList<>();
-        final List<Object> addArticleLogByWeek = getAddArticleLogByWeek(userId);
-        for (Object temp : addArticleLogByWeek) {
-            x.add((String) ((HashMap) temp).get("week_time"));
-            y.add(((Long) ((HashMap) temp).get("total")).intValue());
-        }
-        //图从左至右，数据应逆序
-        Collections.reverse(x);
-        Collections.reverse(y);
-        jsonObject.put("x", x);
-        jsonObject.put("y", y);
-        jsonObject.put("articleAllCount", getArticleCountByUserId(userId));
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
     }
 
     /**
@@ -191,12 +163,11 @@ public class ArticleJsonService extends ArticleService {
      * 获取访问最多的文章
      *
      * @param limit  获取截取
-     * @param status 文章状态，默认published，all为全部文章类型
      * @return 文章列表Msg
      */
-    public String getMostVisitsJson(int limit, String status) {
+    public String getMostVisitsJson(int limit) {
         ArrayList<JSONObject> arrayList = new ArrayList<>();
-        for (Article article : getMostVisits(limit, status)) {
+        for (Article article : getMostVisits(limit)) {
             arrayList.add(getDetailById(article));
         }
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, arrayList);

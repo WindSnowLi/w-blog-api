@@ -21,7 +21,6 @@
         where uma.user_id = #{userId}
     </select>
 
-    <!--    用户各分类访问量-->
     <select id="getVisitsAllCountByUserId" parameterType="int" resultType="int">
         SELECT SUM(vc.count)
         from visits_count vc
@@ -29,6 +28,7 @@
           and vc.target_id in (SELECT uma.article_id from user_map_article uma where uma.user_id = #{userId})
     </select>
 
+    <!--    用户各分类访问量-->
     <select id="getVisitCountByTypeByUserId" parameterType="int"
             resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
         -- 分类
@@ -76,14 +76,14 @@
         FROM (SELECT *
         FROM article
         <choose>
-            <when test="status.toString == 'all'">
+            <when test="status != null and status.toString == 'ALL'">
 
             </when>
-            <when test="status.toString == 'draft' or status.toString == 'deleted'">
+            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
                 WHERE article.status = #{status}
             </when>
             <otherwise>
-                WHERE article.status = 'published'
+                WHERE article.status = 'PUBLISHED'
             </otherwise>
         </choose>
         ) a
@@ -106,14 +106,14 @@
         SELECT a.id FROM (SELECT article.id
         FROM article
         <choose>
-            <when test="status.toString == 'all'">
+            <when test="status != null and status.toString == 'ALL'">
 
             </when>
-            <when test="status.toString == 'draft' or status.toString == 'deleted'">
+            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
                 WHERE article.status = #{status}
             </when>
             <otherwise>
-                WHERE article.status = 'published'
+                WHERE article.status = 'PUBLISHED'
             </otherwise>
         </choose>
         ) a
@@ -271,14 +271,14 @@
         select amt.article_id from article_map_type amt where amt.type_id = #{label_id}
         )
         <choose>
-            <when test="status.toString == 'all'">
+            <when test="status != null and status.toString == 'ALL'">
 
             </when>
-            <when test="status.toString == 'draft' or status.toString == 'deleted'">
+            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
                 AND a.status = #{status}
             </when>
             <otherwise>
-                AND a.status = 'published'
+                AND a.status = 'PUBLISHED'
             </otherwise>
         </choose>
         ) a
@@ -292,7 +292,6 @@
 
 
     <select id="findArticleId" parameterType="int" resultMap="articleMap">
-
         SELECT a.*, v.count as visitsCount
         FROM (SELECT * FROM article WHERE id = #{article_id}) a
                  LEFT JOIN (SELECT target_id, SUM(count) as count
@@ -300,8 +299,6 @@
                             WHERE vc.target_id = #{article_id}
                               and vc.`type` = 1
                             GROUP BY target_id) v on a.id = v.target_id
-
-
     </select>
 
 
@@ -342,7 +339,7 @@
              -- 访问计数表结束
         GROUP BY day_time
         ORDER BY day_time DESC
-        limit 0,10;
+        limit 10;
     </select>
 
     <select id="getArticleCreateLogByWeek" parameterType="int" resultType="map">
@@ -444,27 +441,18 @@
     <select id="getMostVisits" parameterType="int" resultMap="articleMap">
         SELECT visits.id, visits.num as visitsCount, a.title, a.summary, a.coverPic, a.createTime, a.updateTime
         FROM (
-        -- 访问前五的文章
-        SELECT vc.target_id as id, SUM(vc.count) as num
-        FROM visits_count vc
-        WHERE vc.`type` = 1
-        GROUP BY target_id
-        ORDER BY num DESC
-        -- 访问前五的文章
-        ) visits
-        LEFT JOIN (SELECT *
-        FROM article
-        <choose>
-            <when test="status.toString == 'all'">
+                 -- 访问前五的文章
+                 SELECT vc.target_id as id, SUM(vc.count) as num
+                 FROM visits_count vc
+                 WHERE vc.`type` = 1
+                 GROUP BY target_id
+                 ORDER BY num DESC
+                 -- 访问前五的文章
+             ) visits
+                 LEFT JOIN (SELECT *
+                            FROM article
 
-            </when>
-            <when test="status.toString == 'draft' or status.toString == 'deleted'">
-                WHERE article.status = #{status}
-            </when>
-            <otherwise>
-                WHERE article.status = 'published'
-            </otherwise>
-        </choose>
+                            WHERE article.status = 'PUBLISHED'
         ) a ON visits.id = a.id
         limit #{limit}
     </select>

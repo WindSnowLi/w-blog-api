@@ -13,5 +13,5 @@ import lombok.ToString;
 public  class TokenTypeModel<T> extends TokenModel{
     // 负载
     @ApiModelProperty(value = "负载信息", required = true)
-    private T content;
+    protected T content;
 }

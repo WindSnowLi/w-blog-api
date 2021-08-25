@@ -12,6 +12,7 @@
         <result property="content" column="content"/>
         <result property="time" column="time"/>
         <result property="toUser" column="to_user"/>
+        <result property="sessionType" column="session_type"/>
     </resultMap>
 
     <!--    获取目标的评论-->
@@ -37,18 +38,14 @@
         </choose>
 
         <choose>
-            <when test="sessionType.toString == 'ALL'">
-
-            </when>
+            <when test="sessionType.toString == 'ALL'"/>
             <otherwise>
                 AND session_type = #{sessionType}
             </otherwise>
         </choose>
 
         <choose>
-            <when test="status.toString == 'ALL'">
-
-            </when>
+            <when test="status.toString == 'ALL'"/>
             <otherwise>
                 AND status = #{status}
             </otherwise>
@@ -107,4 +104,38 @@
 
     </select>
     <!--    获取评论对象列表结束-->
+
+    <!--    获取最近评论趋势-->
+    <select id="getCommentLogByDay" resultType="map">
+        SELECT DATE_FORMAT(t.time,'%Y-%m-%d') day_time,sum(t.unit) total
+        FROM
+        (
+        select 1 as unit, c.time from comment c
+        <choose>
+            <when test="status.toString == 'ALL'">
+
+            </when>
+            <otherwise>
+                WHERE c.status = #{status}
+            </otherwise>
+        </choose>
+        ) t
+        GROUP BY day_time
+        order by day_time DESC
+        limit #{limit}
+
+    </select>
+    <!--    获取最近评论趋势结束-->
+
+    <!--    获取当前状态评论总量-->
+    <select id="getCommentCount" resultType="int">
+        select count(*) from comment c
+        <choose>
+            <when test="status.toString == 'ALL'"/>
+            <otherwise>
+                WHERE c.status = #{status}
+            </otherwise>
+        </choose>
+    </select>
+    <!--    获取当前状态评论总量结束-->
 </mapper>

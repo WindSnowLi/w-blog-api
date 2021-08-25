@@ -6,6 +6,7 @@ import xyz.firstmeet.lblog.object.Comment;
 import xyz.firstmeet.lblog.object.base.CommentBase;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -25,6 +26,7 @@ public interface CommentMapper {
 
     /**
      * 获取目标评论
+     *
      * @param targetId    评论的目标ID
      * @param sessionType 会话类型
      * @param status      评论状态
@@ -60,4 +62,21 @@ public interface CommentMapper {
      * @return 评论列表
      */
     List<Comment> getCommentList(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") CommentBase.Status status);
+
+    /**
+     * 获取最近评论趋势
+     *
+     * @param limit  限制最近多少天，没评论的天忽略不计
+     * @param status 查询的评论状态
+     * @return List<Map>, 日期数值键值对{total=int, day_time=String}
+     */
+    List<Map<String,Object>> getCommentLogByDay(@Param("limit") int limit, @Param("status") CommentBase.Status status);
+
+    /**
+     * 获取当前状态评论总量
+     *
+     * @param status 评论状态
+     * @return 总数
+     */
+    int getCommentCount(@Param("status") CommentBase.Status status);
 }

@@ -1,9 +1,11 @@
 package xyz.firstmeet.lblog.services;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.springframework.stereotype.Service;
+import xyz.firstmeet.lblog.model.response.RspListType;
 import xyz.firstmeet.lblog.object.Comment;
 import xyz.firstmeet.lblog.object.base.CommentBase;
 import xyz.firstmeet.lblog.services.base.CommentService;
@@ -67,15 +69,40 @@ public class CommentJsonService extends CommentService {
      * @param status 评论状态
      * @return 评论列表
      */
-    public JSONArray getCommentListJson(int limit, int offset, String sort, CommentBase.Status status) {
+    public RspListType<JSONObject> getCommentListJson(int limit, int offset, String sort, CommentBase.Status status) {
         List<Comment> commentList = getCommentList(limit, offset, sort, status);
         JSONArray jsonArray = JSONArray.parseArray(JSONArray.toJSONString(commentList));
         for (Object o : jsonArray) {
-            ((JSONObject) o).put("fromUser", userService.findUserById(((JSONObject) o).getInteger("fromUser")));
-            if (((JSONObject) o).containsKey("toUser") && ((JSONObject) o).getInteger("toUser") != null) {
-                ((JSONObject) o).put("toUser", userService.findUserById(((JSONObject) o).getInteger("toUser")));
+            JSONObject temp = ((JSONObject) o);
+            temp.put("fromUser", userService.findUserById(temp.getInteger("fromUser")));
+            if (temp.containsKey("toUser") && ((JSONObject) o).getInteger("toUser") != null) {
+                temp.put("toUser", userService.findUserById(temp.getInteger("toUser")));
             }
+            String title = "";
+            switch (JSON.parseObject("\"" + temp.getString("sessionType") + "\"", CommentBase.SessionType.class)) {
+                case TYPE:
+                    title = "分类页";
+                    break;
+                case TAG:
+                    title = "标签页";
+                    break;
+                case ARTICLE:
+                    title = articleService.findArticle(temp.getInteger("targetId")).getTitle();
+                    break;
+                case MESSAGE:
+                    title = "留言信息";
+                    break;
+                case ABOUT:
+                    title = "关于信息评论";
+                    break;
+            }
+            JSONObject target = new JSONObject();
+            target.put("title", title);
+            temp.put("target", target);
         }
-        return jsonArray;
+        RspListType<JSONObject> rspListType = new RspListType<>();
+        rspListType.setTotal(jsonArray.size());
+        rspListType.setItems(jsonArray.toJavaList(JSONObject.class));
+        return rspListType;
     }
 }

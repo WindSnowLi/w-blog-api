@@ -16,9 +16,10 @@ import java.util.List;
 @EqualsAndHashCode
 public class Article implements Serializable {
     public enum Status {
-        published,
-        draft,
-        deleted
+        PUBLISHED,
+        DRAFT,
+        DELETED,
+        ALL
     }
 
     //文章ID
@@ -43,6 +44,6 @@ public class Article implements Serializable {
     //最后更新时间
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
-    //状态 published发布、draft草稿
+    //状态 PUBLISHED发布、DRAFT草稿
     private Status status;
 }

@@ -1,5 +1,6 @@
 package xyz.firstmeet.lblog.mapper;
 
+import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +43,17 @@ public class CommentMapperTest {
      */
     @Test
     public void testGetCommentList() {
-        System.out.println(commentMapper.getCommentList(5, 2 * 5, "-id", CommentBase.Status.ALL));
+        System.out.println(JSON.toJSONString(commentMapper.getCommentList(5, 2 * 5, "-id", CommentBase.Status.ALL)));
+    }
+
+    /**
+     * 获取最近评论趋势
+     */
+    @Test
+    public void testGetCommentLogByDay() {
+        System.out.println(commentMapper.getCommentLogByDay(10, CommentBase.Status.PASS));
+        System.out.println(commentMapper.getCommentLogByDay(10, CommentBase.Status.VERIFY));
+        System.out.println(commentMapper.getCommentLogByDay(10, CommentBase.Status.DELETE));
+        System.out.println(commentMapper.getCommentLogByDay(10, CommentBase.Status.ALL));
     }
 }

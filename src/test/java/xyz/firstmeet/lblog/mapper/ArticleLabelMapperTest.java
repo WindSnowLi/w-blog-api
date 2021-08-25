@@ -22,4 +22,12 @@ public class ArticleLabelMapperTest {
     public void testGetArticleTypeById() {
         System.out.println(articleLabelMapper.getArticleTypeById(13));
     }
+
+    /**
+     * 按分类获取每个分类多少文章
+     */
+    @Test
+    public void testGetArticleCountByType() {
+        System.out.println(articleLabelMapper.getArticleCountByType(10));
+    }
 }

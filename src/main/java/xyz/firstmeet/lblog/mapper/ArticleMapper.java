@@ -7,6 +7,7 @@ import xyz.firstmeet.lblog.object.ArticleLabel;
 import xyz.firstmeet.lblog.object.User;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -53,6 +54,7 @@ public interface ArticleMapper {
      * @param limit  限制量
      * @param offset 偏移量
      * @param sort   排序方式 默认-id,
+     * @param status 文章状态
      * @return List<Integer>
      */
     List<Integer> getArticleIdByPage(@Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") Article.Status status);
@@ -125,7 +127,7 @@ public interface ArticleMapper {
      * @param status 文章状态，默认published，all为全部文章类型
      * @return List Article
      */
-    List<Article> getArticlesByType(@Param("label_id") int type, @Param("status") String status);
+    List<Article> getArticlesByType(@Param("label_id") int type, @Param("status") Article.Status status);
 
     /**
      * 访问量加一
@@ -150,17 +152,17 @@ public interface ArticleMapper {
      * 获取访问总量和趋势数据
      *
      * @param userId 用户ID
-     * @return List<Map>, 日期数值键值对{total=int, day_time=String}
+     * @return List<Map < String, Object>>, 日期数值键值对{total=int, day_time=String}
      */
-    List<Object> getVisitLogByDay(@Param("userId") int userId);
+    List<Map<String, Object>> getVisitLogByDay(@Param("userId") int userId);
 
     /**
      * 获取文章创建历史
      *
      * @param userId 用户ID
-     * @return List<Map>, 日期数值键值对{total=int, day_time=week_time}
+     * @return List<Map < String, Object>>, 日期数值键值对{total=int, day_time=week_time}
      */
-    List<Object> getArticleCreateLogByWeek(@Param("userId") int userId);
+    List<Map<String, Object>> getArticleCreateLogByWeek(@Param("userId") int userId);
 
     /**
      * 添加文章，不含标签和文章所属用户映射
@@ -212,11 +214,10 @@ public interface ArticleMapper {
     /**
      * 获取访问最多的文章
      *
-     * @param limit  获取截取
-     * @param status 文章状态，默认published，all为全部文章类型
+     * @param limit 获取截取
      * @return 文章列表
      */
-    List<Article> getMostVisits(@Param("limit") int limit, @Param("status") String status);
+    List<Article> getMostVisits(@Param("limit") int limit);
 
     /**
      * 获取用户所有分类信息

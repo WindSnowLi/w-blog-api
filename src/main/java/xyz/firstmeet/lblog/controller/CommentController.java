@@ -103,23 +103,23 @@ public class CommentController {
     }
 
     /**
-     * 修改评论状态
+     * 分页获取评论列表
      *
      * @param pageModel 分页查询对象
      * @return Msg
      */
-    @ApiOperation(value = "获取评论列表")
+    @ApiOperation(value = "分页获取评论列表")
     @ApiResponses({
             @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
-    @PostMapping(value = "getCommentListJson")
+    @PostMapping(value = "getCommentList")
     @UserLoginToken
-    public String getCommentListJson(@RequestBody PageModel<CommentBase.Status> pageModel) {
+    public String getCommentListJson(@RequestBody TokenTypeModel<PageModel<CommentBase.Status>> pageModel) {
         return Msg.getSuccessMsg(commentJsonService.getCommentListJson(
-                pageModel.getLimit(),
-                (pageModel.getPage() - 1) * pageModel.getLimit(),
-                pageModel.getSort(),
-                pageModel.getStatus()));
+                pageModel.getContent().getLimit(),
+                (pageModel.getContent().getPage() - 1) * pageModel.getContent().getLimit(),
+                pageModel.getContent().getSort(),
+                pageModel.getContent().getStatus()));
     }
 }

@@ -3,10 +3,12 @@ package xyz.firstmeet.lblog.mapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import xyz.firstmeet.lblog.object.ArticleLabel;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -51,13 +53,20 @@ public interface ArticleLabelMapper {
      */
     void addArticleMapType(@Param("articleId") int articleId, @Param("typeId") int typeId);
 
-
     /**
      * 获取所有标签
      *
      * @return List ArticleLabel
      */
     List<ArticleLabel> getAllLabel();
+
+    /**
+     * 获取所有分类数量
+     *
+     * @return 分类数量
+     */
+    @Select("select count(distinct amt.type_id) from article_map_type amt")
+    int getTypeSize();
 
     /**
      * 清空文章标签
@@ -74,4 +83,19 @@ public interface ArticleLabelMapper {
      */
     @Delete("DELETE FROM article_map_type WHERE article_id=#{articleId}")
     void deleteType(@Param("articleId") int articleId);
+
+    /**
+     * 按分类获取每个分类多少文章
+     *
+     * @param limit 取最多的前几条
+     * @return [{name=String, value=Object}]
+     */
+    @Select("select t.num as value, al.name from " +
+            "( " +
+            "select count(*) as num, amt.type_id from article_map_type amt group by type_id order by num desc limit #{limit} " +
+            ") " +
+            "t " +
+            "LEFT JOIN article_label al on t.type_id = al.id " +
+            "order by num desc ")
+    List<Map<String, Object>> getArticleCountByType(int limit);
 }

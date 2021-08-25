@@ -1,5 +1,6 @@
 package xyz.firstmeet.lblog.mapper;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class ArticleMapperTest {
 
     @Test
     public void testGetArticleByType() {
-        System.out.println(articleMapper.getArticlesByType(2, "published"));
+        System.out.println(articleMapper.getArticlesByType(2, Article.Status.ALL));
     }
 
     @Test
@@ -63,9 +64,12 @@ public class ArticleMapperTest {
         System.out.println(articleMapper.getVisitsAllCountByUserId(1));
     }
 
+    /**
+     * 获取用户分类的访问量前cut个
+     */
     @Test
     public void testGetVisitCountByType() {
-        System.out.println(articleMapper.getVisitCountByTypeByUserId(1, 5));
+        System.out.println(JSONArray.toJSONString(articleMapper.getVisitCountByTypeByUserId(1, 5)));
     }
 
     /**
@@ -73,18 +77,18 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetVisitHistoryCountByDay() {
-        final List<Object> visitHistoryCountByDay = articleMapper.getVisitLogByDay(1);
-        for (Object temp : visitHistoryCountByDay) {
+        final List<Map<String, Object>> visitHistoryCountByDay = articleMapper.getVisitLogByDay(1);
+        for (Map<String, Object> temp : visitHistoryCountByDay) {
             System.out.println(temp);
-            System.out.println(((HashMap) temp).get("total").getClass().getName());
+            System.out.println(temp.get("total").getClass().getName());
             System.out.println(temp.getClass().getName());
         }
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (Object temp : visitHistoryCountByDay) {
-            x.add((String) ((HashMap) temp).get("day_time"));
-            y.add(((BigDecimal) ((HashMap) temp).get("total")).intValue());
+        for (Map<String, Object> temp : visitHistoryCountByDay) {
+            x.add((String) temp.get("day_time"));
+            y.add(((BigDecimal) temp.get("total")).intValue());
         }
         jsonObject.put("x", x);
         jsonObject.put("y", y);
@@ -99,9 +103,9 @@ public class ArticleMapperTest {
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (Object temp : articleMapper.getArticleCreateLogByWeek(1)) {
-            x.add((String) ((HashMap) temp).get("week_time"));
-            y.add(((Long) ((HashMap) temp).get("total")).intValue());
+        for (Map<String, Object> temp : articleMapper.getArticleCreateLogByWeek(1)) {
+            x.add((String) temp.get("week_time"));
+            y.add(((Long) temp.get("total")).intValue());
         }
         jsonObject.put("x", x);
         jsonObject.put("y", y);
@@ -127,9 +131,9 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetArticlesByPage() {
-        System.out.println(articleMapper.getArticlesByPage(3, 0, null, Article.Status.published).size());
-        System.out.println(articleMapper.getArticlesByPage(3, 1, null, Article.Status.published).size());
-        System.out.println(articleMapper.getArticlesByPage(3, 2, null, Article.Status.published).size());
+        System.out.println(articleMapper.getArticlesByPage(3, 0, null, Article.Status.PUBLISHED).size());
+        System.out.println(articleMapper.getArticlesByPage(3, 1, null, Article.Status.PUBLISHED).size());
+        System.out.println(articleMapper.getArticlesByPage(3, 2, null, Article.Status.PUBLISHED).size());
     }
 
     /**
@@ -137,10 +141,10 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetArticleIdByPage() {
-        System.out.println(articleMapper.getArticleIdByPage(3, 0, null, Article.Status.published));
-        System.out.println(articleMapper.getArticleIdByPage(3, 1, null, Article.Status.published));
-        System.out.println(articleMapper.getArticleIdByPage(3, 2, null, Article.Status.published));
-        System.out.println(JSONObject.toJSONString(articleMapper.getArticleIdByPage(3, 2, null, Article.Status.published)));
+        System.out.println(articleMapper.getArticleIdByPage(3, 0, null, Article.Status.PUBLISHED));
+        System.out.println(articleMapper.getArticleIdByPage(3, 1, null, Article.Status.PUBLISHED));
+        System.out.println(articleMapper.getArticleIdByPage(3, 2, null, Article.Status.PUBLISHED));
+        System.out.println(JSONObject.toJSONString(articleMapper.getArticleIdByPage(3, 2, null, Article.Status.PUBLISHED)));
     }
 }
 

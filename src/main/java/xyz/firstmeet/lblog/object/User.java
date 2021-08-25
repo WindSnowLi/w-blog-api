@@ -24,13 +24,6 @@ public class User implements Serializable {
         LOCAL
     }
 
-    public enum Status {
-        //        停用
-        STOP,
-        //        正常使用
-        NORMAL
-    }
-
     //ID
     protected int id;
     //账户
@@ -48,6 +41,4 @@ public class User implements Serializable {
     private String introduction;
     //角色
     private ArrayList<String> roles;
-    //帐号状态
-    private Status status;
 }

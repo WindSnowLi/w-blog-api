@@ -40,7 +40,7 @@ public class ArticleServiceTest {
     @Test
     public void testGetAllVisitCountByType() {
         int userId = 1;
-        final List<ArticleLabel> visitCountByTypeByUserId = articleJsonService.getVisitCountByTypeByUserId(userId);
+        final List<ArticleLabel> visitCountByTypeByUserId = articleJsonService.getVisitCountByTypeByUserId(userId, 10);
 
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> dataName = new ArrayList<>();
@@ -117,6 +117,6 @@ public class ArticleServiceTest {
      */
     @Test
     public void testGetArticleIdByPageJson() {
-        System.out.println(articleJsonService.getArticleIdByPageJson(20, 1, "-id", Article.Status.published));
+        System.out.println(articleJsonService.getArticleIdByPageJson(20, 1, "-id", Article.Status.PUBLISHED));
     }
 }

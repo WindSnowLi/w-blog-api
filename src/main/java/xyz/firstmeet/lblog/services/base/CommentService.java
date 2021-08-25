@@ -1,3 +1,10 @@
+/*
+ *  CommentService.java, 2021-08-23
+ *
+ *  Copyright 2021 by WindSnowLi, Inc. All rights reserved.
+ *
+ */
+
 package xyz.firstmeet.lblog.services.base;
 
 import com.alibaba.fastjson.JSONObject;
@@ -10,6 +17,7 @@ import xyz.firstmeet.lblog.object.base.CommentBase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("commentService")
@@ -26,6 +34,13 @@ public class CommentService {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    protected ArticleService articleService;
+
+    @Autowired
+    public void setArticleService(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     /**
@@ -95,4 +110,25 @@ public class CommentService {
     public List<Comment> getCommentList(int limit, int offset, String sort, CommentBase.Status status) {
         return commentMapper.getCommentList(limit, offset, sort, status);
     }
+
+    /**
+     * 获取评论历史
+     *
+     * @return List<Map>, 日期数值键值对{total=int, day_time=String}
+     */
+    public List<Map<String, Object>> getCommentLogByDay(int limit, CommentBase.Status status) {
+        return commentMapper.getCommentLogByDay(limit, status);
+    }
+
+    /**
+     * 获取当前状态评论总量
+     *
+     * @param status 评论状态
+     * @return 总数
+     */
+    public int getCommentCount(CommentBase.Status status) {
+        return commentMapper.getCommentCount(status);
+    }
+
+
 }
