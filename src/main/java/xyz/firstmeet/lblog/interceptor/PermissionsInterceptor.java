@@ -2,9 +2,11 @@ package xyz.firstmeet.lblog.interceptor;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import xyz.firstmeet.lblog.annotation.PassToken;
+import xyz.firstmeet.lblog.annotation.Permission;
 import xyz.firstmeet.lblog.annotation.UserLoginToken;
 import xyz.firstmeet.lblog.object.Msg;
 import xyz.firstmeet.lblog.object.User;
+import xyz.firstmeet.lblog.services.base.PermissionService;
 import xyz.firstmeet.lblog.services.base.UserService;
 import xyz.firstmeet.lblog.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,12 @@ public class PassTokenInterceptor implements HandlerInterceptor {
         this.userService = userService;
     }
 
+    private PermissionService permissionService;
+
+    @Autowired
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
@@ -41,40 +49,22 @@ public class PassTokenInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(UserLoginToken.class) || method.getDeclaringClass().isAnnotationPresent(UserLoginToken.class)) {
-            UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class) == null ? method.getDeclaringClass().getAnnotation(UserLoginToken.class) : method.getAnnotation(UserLoginToken.class);
-            if (userLoginToken == null) {
-                return false;
-            }
-            if (userLoginToken.required()) {
+        if (method.isAnnotationPresent(Permission.class) || method.getDeclaringClass().isAnnotationPresent(Permission.class)) {
+            Permission permission = method.getAnnotation(Permission.class) == null ?
+                    method.getDeclaringClass().getAnnotation(Permission.class) :
+                    method.getAnnotation(Permission.class);
+            if (permission.value().length == 0) {
+                return true;
+            } else {
                 // 从 http 请求头中取出 token
                 String token = request.getHeader("token");
-                // 执行认证
-                if (token == null) {
-                    response.getWriter().println(Msg.getFailMsg());
-                    return false;
-                }
                 // 获取 token 中的 user id
-                int userId;
-                // 验证 token
-                try {
-                    userId = JwtUtils.getTokenUserId(token);
-                } catch (JWTVerificationException e) {
-                    response.getWriter().println(Msg.getFailMsg());
-                    return false;
-                }
-
+                int userId = JwtUtils.getTokenUserId(token);
                 User user = userService.findUserById(userId);
-                if (user == null) {
-                    response.getWriter().println(Msg.getFailMsg());
-                    return false;
-                }
-
                 String userAccount = JwtUtils.getTokenUserAccount(token);
                 String userPassword = JwtUtils.getTokenUserPassword(token);
-                if (!user.getAccount().equals(userAccount) || !user.getPassword().equals(userPassword)) {
-                    response.getWriter().println(Msg.getFailMsg());
+                for (String value : permission.value()) {
+
                 }
             }
         }
