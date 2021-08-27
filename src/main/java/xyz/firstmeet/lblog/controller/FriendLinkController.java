@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.annotation.Permission;
 import xyz.firstmeet.lblog.model.request.IdTypeModel;
 import xyz.firstmeet.lblog.model.request.ReqFriendLinkModel;
 import xyz.firstmeet.lblog.model.request.ReqFriendLinkStatusModel;
@@ -82,7 +82,7 @@ public class FriendLinkController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "setFriendLinkStatus")
-    @UserLoginToken
+    @Permission(value = {"VERIFY-LINK"})
     public String setFriendLinkStatus(@RequestBody TokenTypeModel<IdTypeModel<FriendLink.Status>> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
         log.info("setFriendLinkStatus");

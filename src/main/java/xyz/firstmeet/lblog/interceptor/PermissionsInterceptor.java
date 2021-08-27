@@ -1,28 +1,37 @@
+/*
+ *  PermissionsInterceptor.java, 2021-08-26
+ *
+ *  Copyright 2021 by WindSnowLi, Inc. All rights reserved.
+ *
+ */
+
 package xyz.firstmeet.lblog.interceptor;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.Permission;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
-import xyz.firstmeet.lblog.object.Msg;
-import xyz.firstmeet.lblog.object.User;
-import xyz.firstmeet.lblog.services.base.PermissionService;
-import xyz.firstmeet.lblog.services.base.UserService;
-import xyz.firstmeet.lblog.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import xyz.firstmeet.lblog.annotation.PassToken;
+import xyz.firstmeet.lblog.annotation.Permission;
+import xyz.firstmeet.lblog.object.Msg;
+import xyz.firstmeet.lblog.object.Role;
+import xyz.firstmeet.lblog.object.User;
+import xyz.firstmeet.lblog.object.base.PermissionRole;
+import xyz.firstmeet.lblog.services.base.PermissionService;
+import xyz.firstmeet.lblog.services.base.RoleService;
+import xyz.firstmeet.lblog.services.base.UserService;
+import xyz.firstmeet.lblog.utils.JwtUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * @author windSnowLi
  */
 @Component
-public class PassTokenInterceptor implements HandlerInterceptor {
+public class PermissionsInterceptor implements HandlerInterceptor {
 
     private UserService userService;
 
@@ -38,6 +47,12 @@ public class PassTokenInterceptor implements HandlerInterceptor {
         this.permissionService = permissionService;
     }
 
+    private RoleService roleService;
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
+    }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
         HandlerMethod handlerMethod = (HandlerMethod) object;
@@ -50,21 +65,39 @@ public class PassTokenInterceptor implements HandlerInterceptor {
             }
         }
         if (method.isAnnotationPresent(Permission.class) || method.getDeclaringClass().isAnnotationPresent(Permission.class)) {
-            Permission permission = method.getAnnotation(Permission.class) == null ?
+            Permission permissionClass = method.getAnnotation(Permission.class) == null ?
                     method.getDeclaringClass().getAnnotation(Permission.class) :
                     method.getAnnotation(Permission.class);
-            if (permission.value().length == 0) {
-                return true;
+            if (permissionClass.value().length == 0) {
+                response.getWriter().println(Msg.getFailMsg());
+                return false;
             } else {
                 // 从 http 请求头中取出 token
                 String token = request.getHeader("token");
-                // 获取 token 中的 user id
-                int userId = JwtUtils.getTokenUserId(token);
-                User user = userService.findUserById(userId);
-                String userAccount = JwtUtils.getTokenUserAccount(token);
-                String userPassword = JwtUtils.getTokenUserPassword(token);
-                for (String value : permission.value()) {
+                List<String> rolePermissionsName;
+                if (token == null || token.equals("")) {
+                    //获取默认的访问角色权限
+                    rolePermissionsName = permissionService.getRolePermissionsName(
+                            roleService.getRoleByName(Role.VISITOR).getId(), PermissionRole.Status.NORMAL);
+                } else {
+                    // 获取 token 中的 user id
+                    int userId = JwtUtils.getTokenUserId(token);
+                    User user = userService.findUserById(userId);
+                    String userAccount = JwtUtils.getTokenUserAccount(token);
+                    String userPassword = JwtUtils.getTokenUserPassword(token);
+                    if (user == null || !user.getPassword().equals(userPassword) || !user.getAccount().equals(userAccount)) {
+                        response.getWriter().println(Msg.getFailMsg());
+                        return false;
+                    }
+                    rolePermissionsName = permissionService.getUserPermissionsName(userId);
+                }
 
+                for (String value : permissionClass.value()) {
+                    // 如果用户不包含所需权限则不允许访问
+                    if (!rolePermissionsName.contains(value)) {
+                        response.getWriter().println(Msg.getFailMsg());
+                        return false;
+                    }
                 }
             }
         }

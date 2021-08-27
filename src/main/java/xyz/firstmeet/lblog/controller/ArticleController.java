@@ -1,19 +1,16 @@
 package xyz.firstmeet.lblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
-import xyz.firstmeet.lblog.model.request.ArticlePageModel;
-import xyz.firstmeet.lblog.model.request.PageModel;
+import xyz.firstmeet.lblog.annotation.Permission;
+import xyz.firstmeet.lblog.model.request.*;
 import xyz.firstmeet.lblog.object.Article;
 import xyz.firstmeet.lblog.object.ArticleLabel;
 import xyz.firstmeet.lblog.object.Msg;
@@ -25,6 +22,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Api(tags = "文章相关", value = "文章相关")
 @RequestMapping(value = "/api/article", produces = "application/json;charset=UTF-8")
 public class ArticleController {
 
@@ -93,16 +91,20 @@ public class ArticleController {
     /**
      * 根据文章ID获取文章信息
      *
-     * @param articleJson {"id":"articleId"}
+     * @param idModel {"id":"articleId"}
      * @return Msg
      */
+    @ApiOperation(value = "根据文章ID获取文章详情")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = Article.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getArticleById")
     @PassToken
-    public String getArticleById(@RequestBody JSONObject articleJson) {
-        int articleId = articleJson.getIntValue("id");
-        log.info("getArticleById\t文章ID：{}", articleId);
-        articleJsonService.addArticleVisits(articleId);
-        return articleJsonService.findArticleJson(articleId);
+    public String getArticleById(@RequestBody IdModel idModel) {
+        log.info("getArticleById\t文章ID：{}", idModel.getId());
+        articleJsonService.addArticleVisits(idModel.getId());
+        return articleJsonService.findArticleJson(idModel.getId());
     }
 
     /**
@@ -114,6 +116,11 @@ public class ArticleController {
      * data: [{value:"",label:""}]
      * }
      */
+    @ApiOperation(value = "文章可选标签")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "labels")
     @PassToken
     public String labels() {
@@ -131,13 +138,18 @@ public class ArticleController {
     /**
      * 根据文章ID获取作者
      *
-     * @param articleJson {"id":"articleId"}
+     * @param idModel {"id":"articleId"}
      * @return Msg
      */
+    @ApiOperation(value = "根据文章ID获取作者")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getAuthorByArticleId")
     @PassToken
-    public String findArticleAuthor(@RequestBody JSONObject articleJson) {
-        return articleJsonService.findArticleAuthorJson(articleJson.getIntValue("id"));
+    public String findArticleAuthor(@RequestBody IdModel idModel) {
+        return articleJsonService.findArticleAuthorJson(idModel.getId());
     }
 
     /**
@@ -145,6 +157,11 @@ public class ArticleController {
      *
      * @return Msg
      */
+    @ApiOperation(value = "获取热门标签列表")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getHotLabels")
     @PassToken
     public String getHotLabels() {
@@ -154,14 +171,21 @@ public class ArticleController {
     /**
      * 分页获取标签列表
      *
-     * @param json {"id":"int","limit":"int","page":"int"}
+     * @param pageBaseModelIdModel {"id":"int",content: {"limit":"int","page":"int"}}
      * @return Msg
      */
+    @ApiOperation(value = "分页获取标签列表")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getArticlesByLabel")
     @PassToken
-    public String getLabelArticles(@RequestBody JSONObject json) {
-        articleJsonService.addLabelVisitsCount(json.getIntValue("id"));
-        return articleJsonService.getLabelArticlePageJson(json.getIntValue("id"), json.getIntValue("limit"), json.getIntValue("page"));
+    public String getLabelArticles(@RequestBody IdTypeModel<PageBaseModel> pageBaseModelIdModel) {
+        articleJsonService.addLabelVisitsCount(pageBaseModelIdModel.getId());
+        return articleJsonService.getLabelArticlePageJson(pageBaseModelIdModel.getId(),
+                pageBaseModelIdModel.getContent().getLimit(),
+                pageBaseModelIdModel.getContent().getPage());
     }
 
     /**
@@ -169,6 +193,11 @@ public class ArticleController {
      *
      * @return Msg
      */
+    @ApiOperation(value = "获取所有标签")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getAllLabels")
     @PassToken
     public String getAllLabelsJson() {
@@ -179,14 +208,19 @@ public class ArticleController {
     /**
      * 获取用户所有分类
      *
-     * @param json 用户信息{id:int}
+     * @param idModel 用户信息{id:int}
      * @return 分类表
      */
+    @ApiOperation(value = "获取用户所有分类")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getAllTypeByUserId")
     @PassToken
-    public String getAllTypeByUserId(@RequestBody JSONObject json) {
+    public String getAllTypeByUserId(@RequestBody IdModel idModel) {
         log.info("getAllTypeByUserId");
-        return articleJsonService.getAllTypeByUserIdJson(json.getIntValue("id"));
+        return articleJsonService.getAllTypeByUserIdJson(idModel.getId());
     }
 
     /**
@@ -194,6 +228,11 @@ public class ArticleController {
      *
      * @return Msg
      */
+    @ApiOperation(value = "获取所有分类")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getAllClassify")
     @PassToken
     public String getAllType() {
@@ -205,39 +244,54 @@ public class ArticleController {
     /**
      * 获取所属分类文章
      *
-     * @param json {
-     *             "id":"int",
-     *             "status":文章状态，默认published，all为全部文章类型
-     *             }
+     * @param idTypeModel {
+     *                    "id":"int",
+     *                    "content": {
+     *                    "status":文章状态，默认PUBLISHED，ALL为全部文章类型
+     *                    }
+     *                    }
      * @return Msg
      */
+    @ApiOperation(value = "获取所属分类文章")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getArticlesByType")
     @PassToken
-    public String getArticleByType(@RequestBody JSONObject json) {
-        log.info("getArticlesByType\t文章ID：{}", json.getIntValue("id"));
-        Article.Status status = JSONObject.parseObject(json.getString("status"), Article.Status.class);
+    public String getArticleByType(@RequestBody IdTypeModel<Article.Status> idTypeModel) {
+        log.info("getArticlesByType\t文章ID：{}", idTypeModel.getId());
+        Article.Status status = idTypeModel.getContent();
         if (status == null) {
             status = Article.Status.PUBLISHED;
         }
-        articleJsonService.addTypeVisitsCount(json.getIntValue("id"));
+        articleJsonService.addTypeVisitsCount(idTypeModel.getId());
         return articleJsonService.getArticleByTypeJson(
-                json.getIntValue("id"), status);
+                idTypeModel.getId(), status);
     }
 
     /**
      * 创建文章
      *
-     * @param json {"article":article,"token":token}
+     * @param tokenTypeModel {
+     *                       "token":token,
+     *                       "content: article,"
+     *                       }
      * @return Msg
      */
+    @ApiOperation(value = "创建文章")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "createArticle")
-    @UserLoginToken
-    public String createArticle(@RequestBody JSONObject json) {
-        int userId = JwtUtils.getTokenUserId(json.getString("token"));
+    @Permission(value = {"CREATE-ARTICLE"})
+    public String createArticle(@RequestBody TokenTypeModel<JSONObject> tokenTypeModel) {
+        int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
         log.info("createArticle\t用户ID：{}", userId);
         // 整理标签
         ArrayList<ArticleLabel> articleLabels = new ArrayList<>();
-        JSONObject articleJson = (JSONObject) JSONObject.toJSON(json.get("article"));
+        JSONObject articleJson = tokenTypeModel.getContent();
         for (Object labelName : articleJson.getObject("labels", List.class)) {
             ArticleLabel temp = new ArticleLabel();
             temp.setName((String) labelName);
@@ -258,16 +312,19 @@ public class ArticleController {
     }
 
     /**
-     * 创建文章
+     * 更新文章
      *
-     * @param json {"article":article,"token":token}
+     * @param articleJson {"article":article}
      * @return Msg
      */
+    @ApiOperation(value = "更新文章")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "updateArticle")
-    @UserLoginToken
-    public String updateArticle(@RequestBody JSONObject json) {
-        int userId = JwtUtils.getTokenUserId(json.getString("token"));
-        JSONObject articleJson = (JSONObject) JSONObject.toJSON(json.get("article"));
+    @Permission(value = {"UPDATE-ARTICLE"})
+    public String updateArticle(@RequestBody JSONObject articleJson) {
         articleJson.remove("visitsCount");
         //整理分类
         String articleTypeName = (String) articleJson.get("articleType");
@@ -285,55 +342,65 @@ public class ArticleController {
         Article article = JSONObject.parseObject(articleJson.toJSONString(), Article.class);
         article.setArticleType(articleType);
         article.setLabels(articleLabels);
-        log.info("updateArticle\t用户ID：{}\t文章ID：{}", userId, article.getId());
-        return articleJsonService.updateArticleJson(article, userId);
+        log.info("updateArticle 文章ID：{}", article.getId());
+        return articleJsonService.updateArticleJson(article);
     }
 
 
     /**
      * 获取访问最多的文章
      *
-     * @param json {
-     *             "limit":"int"
-     *             }
+     * @param jsonObject { "limit":"int" }
      * @return Msg
      */
+    @ApiOperation(value = "获取访问最多的文章")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "getMostVisitsJson")
     @PassToken
-    public String getMostVisitsJson(@RequestBody JSONObject json) {
-        log.info("getMostVisitsJson\t限制条数：{}", json.getIntValue("limit"));
-        return articleJsonService.getMostVisitsJson(json.getIntValue("limit"));
+    public String getMostVisitsJson(@RequestBody JSONObject jsonObject) {
+        log.info("getMostVisitsJson\t限制条数：{}", jsonObject.getIntValue("limit"));
+        return articleJsonService.getMostVisitsJson(jsonObject.getIntValue("limit"));
     }
 
     /**
      * 设置文章状态
      *
-     * @param json { articleId:int, token:"", status:"Article.status" }
+     * @param idTypeModel {
+     *                    id:文章ID,
+     *                    "content": status:"Article.status"
+     *                    }
      * @return Msg
      */
+    @ApiOperation(value = "根据文章ID设置文章状态")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "setStatus")
-    @UserLoginToken
-    public String setStatus(@RequestBody JSONObject json) {
-        int userId = JwtUtils.getTokenUserId(json.getString("token"));
-        json.remove("token");
-        log.info("setStatus\tuserId：{}", userId);
-        int articleId = json.getInteger("articleId");
-        json.remove("articleId");
-        Article statusArticle = JSONObject.parseObject(json.toJSONString(), Article.class);
-        return articleJsonService.setStatusJson(userId, articleId, statusArticle.getStatus());
+    @Permission(value = {"UPDATE-ARTICLE"})
+    public String setStatus(@RequestBody IdTypeModel<Article.Status> idTypeModel) {
+        log.info("setStatus");
+        return articleJsonService.setStatusJson(idTypeModel.getId(), idTypeModel.getContent());
     }
 
     /**
      * 删除文章
      *
-     * @param json { articleId:int, token:"" }
+     * @param idModel { id:int }
      * @return Msg
      */
+    @ApiOperation(value = "根据文章ID设置文章状态")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
     @PostMapping(value = "delArticle")
-    @UserLoginToken
-    public String delArticle(@RequestBody JSONObject json) {
-        int userId = JwtUtils.getTokenUserId(json.getString("token"));
-        log.info("delArticle\tuserId：{}", userId);
-        return articleJsonService.setStatusJson(userId, json.getInteger("articleId"), Article.Status.DELETED);
+    @Permission(value = {"DELETE-ARTICLE"})
+    public String delArticle(@RequestBody IdModel idModel) {
+        log.info("delArticle");
+        return articleJsonService.setStatusJson(idModel.getId(), Article.Status.DELETED);
     }
 }

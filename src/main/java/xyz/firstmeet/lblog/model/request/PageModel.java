@@ -11,17 +11,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-public class PageModel<T> {
-
-    //页数
-    @ApiModelProperty(value = "页数")
-    @JSONField(defaultValue = "1")
-    protected int page;
-
-    //一页行数
-    @ApiModelProperty(value = "一页行数")
-    @JSONField(defaultValue = "10")
-    protected int limit;
+public class PageModel<T> extends PageBaseModel{
 
     //排序方式，默认逆序
     @ApiModelProperty(value = "排序方式，默认逆序,+id正序,-id逆序")
@@ -29,6 +19,6 @@ public class PageModel<T> {
     protected String sort;
 
     //分页查询状态
-    @JSONField(defaultValue = "状态,ALL为全部文章")
+    @JSONField(defaultValue = "状态,ALL为全部")
     protected T status;
 }

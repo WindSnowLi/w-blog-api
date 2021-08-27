@@ -3,7 +3,7 @@ package xyz.firstmeet.lblog.config;
 import xyz.firstmeet.lblog.interceptor.CodeInterceptor;
 import xyz.firstmeet.lblog.interceptor.CrosInterceptor;
 import xyz.firstmeet.lblog.interceptor.MappingInterceptor;
-import xyz.firstmeet.lblog.interceptor.PassTokenInterceptor;
+import xyz.firstmeet.lblog.interceptor.PermissionsInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -31,11 +31,11 @@ public class WebConfig implements WebMvcConfigurer {
         this.mappingInterceptor = mappingInterceptor;
     }
 
-    private PassTokenInterceptor passTokenInterceptor;
+    private PermissionsInterceptor permissionsInterceptor;
 
     @Autowired
-    public void setPassTokenInterceptor(PassTokenInterceptor passTokenInterceptor) {
-        this.passTokenInterceptor = passTokenInterceptor;
+    public void setPassTokenInterceptor(PermissionsInterceptor permissionsInterceptor) {
+        this.permissionsInterceptor = permissionsInterceptor;
     }
 
 
@@ -57,7 +57,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(mappingInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html");
-        registry.addInterceptor(passTokenInterceptor)
+        registry.addInterceptor(permissionsInterceptor)
                 // 拦截所有请求，通过判断是否有 @LoginRequired 注解 决定是否需要登录
                 .addPathPatterns("/**")
                 .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html");

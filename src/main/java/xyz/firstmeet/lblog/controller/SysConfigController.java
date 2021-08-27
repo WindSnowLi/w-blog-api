@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.annotation.Permission;
 import xyz.firstmeet.lblog.model.request.IdModel;
 import xyz.firstmeet.lblog.model.response.ClientIdModel;
 import xyz.firstmeet.lblog.model.response.UiConfigModel;
@@ -66,7 +66,7 @@ public class SysConfigController {
      * @return Msg
      */
     @PostMapping(value = "setUiConfig")
-    @UserLoginToken
+    @Permission(value = {"UI-SETTING"})
     public String setUiConfig(@RequestBody JSONObject json) {
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         log.info("用户ID：{}  setUiConfig", userId);
@@ -80,7 +80,7 @@ public class SysConfigController {
      * @return Msg
      */
     @PostMapping(value = "getStorageConfig")
-    @UserLoginToken
+    @Permission(value = {"STORE-SETTING"})
     public String getStorageConfig(@RequestBody JSONObject json) {
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         log.info("用户ID：{}  getStorageConfig", userId);
@@ -98,7 +98,7 @@ public class SysConfigController {
      * @return Msg
      */
     @PostMapping(value = "setStorageConfig")
-    @UserLoginToken
+    @Permission(value = {"STORE-SETTING"})
     public String setStorageConfig(@RequestBody JSONObject json) {
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         JSONObject storage = json.getJSONObject("storage");
@@ -125,11 +125,7 @@ public class SysConfigController {
         }
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         log.info("用户ID：{}  getSysConfig", userId);
-        if (userId == 1) {
-            return sysConfigJsonService.getSysConfigJson();
-        } else {
-            return Msg.getFailMsg();
-        }
+        return sysConfigJsonService.getSysConfigJson();
     }
 
     /**
@@ -139,7 +135,7 @@ public class SysConfigController {
      * @return Msg
      */
     @PostMapping(value = "setSysConfig")
-    @UserLoginToken
+    @Permission(value = {"SYS-SETTING"})
     public String setSysConfig(@RequestBody JSONObject json) {
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         log.info("用户ID：{}  getSysConfig", userId);

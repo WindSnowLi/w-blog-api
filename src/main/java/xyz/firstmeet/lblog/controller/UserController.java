@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.annotation.Permission;
 import xyz.firstmeet.lblog.model.request.CodeUrlModel;
 import xyz.firstmeet.lblog.model.request.IdModel;
 import xyz.firstmeet.lblog.model.request.TokenModel;
@@ -63,7 +63,7 @@ public class UserController {
      * @return 如果验证正确返回信息串，验证错误返回空
      */
     @PostMapping(value = "getInfo")
-    @UserLoginToken
+    @Permission(value = {"BACKGROUND-LOGIN"})
     public String getInfo(@RequestBody JSONObject userJson) {
         int userId = JwtUtils.getTokenUserId(userJson.getString("token"));
         log.info("getInfo\t用户ID：{}", userId);
@@ -90,7 +90,7 @@ public class UserController {
      * @return 如果验证正确返回信息串，验证错误返回空
      */
     @PostMapping(value = "setInfo")
-    @UserLoginToken
+    @Permission(value = {"USER-BASE-INFO"})
     public String setInfo(@RequestBody JSONObject userJson) {
         int userId = JwtUtils.getTokenUserId(userJson.getString("token"));
         log.info("setInfo\t用户ID：{}", userId);
@@ -106,7 +106,7 @@ public class UserController {
      * @return Msg
      */
     @PostMapping(value = "logout")
-    @UserLoginToken
+    @PassToken
     public String logout(@RequestBody JSONObject userJson) {
         log.info("logout\t用户ID：{}", JwtUtils.getTokenUserId(userJson.getString("token")));
         return Msg.getSuccessMsg();
@@ -131,7 +131,7 @@ public class UserController {
      * @return Msg
      */
     @PostMapping(value = "getWork")
-    @UserLoginToken
+    @Permission(value = {"BACKGROUND-LOGIN"})
     public String getActivity(@RequestBody JSONObject userJson) {
         int userId = JwtUtils.getTokenUserId(userJson.getString("token"));
         log.info("getWork\t用户ID：{}", userId);
@@ -145,7 +145,7 @@ public class UserController {
      * @return Msg
      */
     @PostMapping(value = "setAvatar")
-    @UserLoginToken
+    @Permission(value = {"USER-BASE-INFO"})
     public String setAvatar(@RequestBody JSONObject userJson) {
         int userId = JwtUtils.getTokenUserId(userJson.getString("token"));
         log.info("setAvatar\t用户ID：{}", userId);
@@ -196,7 +196,7 @@ public class UserController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "setAboutByUserToken")
-    @UserLoginToken
+    @Permission(value = {"ABOUT-INFO"})
     public String setAbout(@RequestBody TokenTypeModel<String> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
         log.info("setAboutByUserToken\t用户ID：{}", userId);

@@ -48,6 +48,9 @@ public class ArticleService {
      */
     public Article findArticle(int article_id) {
         Article article = articleMapper.findArticleId(article_id);
+        if (article == null) {
+            return null;
+        }
         article.setLabels(articleMapper.getArticleMapLabels(article_id));
         return article;
     }
@@ -154,7 +157,7 @@ public class ArticleService {
      * 获取访问总量和趋势数据
      *
      * @param userId 用户ID
-     * @return List<Map<String, Object>>, 日期数值键值对{total=int, day_time=String}
+     * @return List<Map < String, Object>>, 日期数值键值对{total=int, day_time=String}
      */
     public List<Map<String, Object>> getVisitLogByDay(int userId) {
         return articleMapper.getVisitLogByDay(userId);
@@ -164,7 +167,7 @@ public class ArticleService {
      * 获取文章创建历史
      *
      * @param userId 用户ID
-     * @return List<Map<String, Object>>, 日期数值键值对{total=int, week_time=String}
+     * @return List<Map < String, Object>>, 日期数值键值对{total=int, week_time=String}
      */
     public List<Map<String, Object>> getAddArticleLogByWeek(int userId) {
         return articleMapper.getArticleCreateLogByWeek(userId);
@@ -217,7 +220,7 @@ public class ArticleService {
     /**
      * 获取访问最多的文章
      *
-     * @param limit  获取截取
+     * @param limit 获取截取
      * @return 文章列表
      */
     public List<Article> getMostVisits(int limit) {

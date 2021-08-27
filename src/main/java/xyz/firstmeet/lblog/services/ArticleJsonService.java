@@ -142,17 +142,12 @@ public class ArticleJsonService extends ArticleService {
      * 更新文章
      *
      * @param article 文章对象
-     * @param userId  文章所属用户用户ID
      * @return Msg更新状态
      */
     @Transient
-    public String updateArticleJson(Article article, int userId) {
+    public String updateArticleJson(Article article) {
         if (article.getId() < 1) {
             return Msg.makeJsonMsg(Msg.CODE_FAIL, "文章不存在", null);
-        }
-        int actualUserId = findArticleAuthor(article.getId()).getId();
-        if (actualUserId != userId) {
-            return Msg.makeJsonMsg(Msg.CODE_FAIL, "文章所属权异常", null);
         }
         updateArticle(article);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, "编辑成功", null);
@@ -162,12 +157,15 @@ public class ArticleJsonService extends ArticleService {
     /**
      * 获取访问最多的文章
      *
-     * @param limit  获取截取
+     * @param limit 获取截取
      * @return 文章列表Msg
      */
     public String getMostVisitsJson(int limit) {
         ArrayList<JSONObject> arrayList = new ArrayList<>();
         for (Article article : getMostVisits(limit)) {
+            if (findArticle(article.getId()) == null) {
+                continue;
+            }
             arrayList.add(getDetailById(article));
         }
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, arrayList);
@@ -178,15 +176,11 @@ public class ArticleJsonService extends ArticleService {
      *
      * @param articleId 文章ID
      * @param status    状态
-     * @param userId    用户ID
      * @return Msg状态
      */
-    public String setStatusJson(int userId, int articleId, Article.Status status) {
-        if (userId == findArticleAuthor(articleId).getId()) {
-            setStatus(articleId, status);
-            return Msg.getSuccessMsg();
-        }
-        return Msg.getFailMsg();
+    public String setStatusJson(int articleId, Article.Status status) {
+        setStatus(articleId, status);
+        return Msg.getSuccessMsg();
     }
 
     /**

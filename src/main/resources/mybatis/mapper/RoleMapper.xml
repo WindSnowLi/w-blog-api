@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~  RoleMapper.xml, 2021-08-26
+  ~
+  ~  Copyright 2021 by WindSnowLi, Inc. All rights reserved.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="xyz.firstmeet.lblog.mapper.RoleMapper">
+    <resultMap id="roleMap" type="xyz.firstmeet.lblog.object.Role">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="info" column="info"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <sql id="user_roles_id">
+        from
+        (
+        select umr.role_id
+        from user_map_role umr
+        where umr.user_id = #{userId}
+        )
+        umr
+        left join
+        `role` r
+        on umr.role_id = r.id
+        <choose>
+            <when test="status.toString == 'ALL'"/>
+            <otherwise>
+                where r.status = #{status}
+            </otherwise>
+        </choose>
+
+    </sql>
+    <!--    根据用户ID和角色状态获取角色对象列表-->
+    <select id="getRoles" resultMap="roleMap">
+        select r.*
+        <include refid="user_roles_id"/>
+    </select>
+    <!--    根据用户ID和角色状态获取角色对象列表结束-->
+    <!--    根据用户ID和角色状态获取角色ID列表-->
+    <select id="getRolesId">
+        select r.id
+        <include refid="user_roles_id"/>
+    </select>
+    <!--    根据用户ID和角色状态获取角色ID列表结束-->
+    <!--    根据用户ID和角色状态获取角色name列表-->
+    <select id="getRolesName">
+        select r.name
+        <include refid="user_roles_id"/>
+    </select>
+    <!--    根据用户ID和角色状态获取角色name列表结束-->
+</mapper>

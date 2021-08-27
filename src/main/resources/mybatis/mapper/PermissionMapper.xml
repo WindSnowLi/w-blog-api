@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~  PermissionMapper.xml, 2021-08-26
+  ~
+  ~  Copyright 2021 by WindSnowLi, Inc. All rights reserved.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="xyz.firstmeet.lblog.mapper.PermissionMapper">
+    <resultMap id="permissionMap" type="xyz.firstmeet.lblog.object.Permission">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="info" column="info"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+    </resultMap>
+
+    <!--    角色ID和权限状态获取权限ID列表-->
+    <sql id="role_permissions_id">
+        from
+        (
+            select permission_id
+            from role_map_permission rmp
+            where rmp.role_id = #{roleId}
+        )
+        permission_list
+                 left join
+             permission p on permission_list.permission_id = p.id
+        where p.status =
+        #{status}
+    </sql>
+    <select id="getRolePermissionsId" resultType="Integer">
+        select p.id
+        <include refid="role_permissions_id"/>
+    </select>
+    <!--    角色ID和权限状态获取权限ID列表结束-->
+    <!--    根据角色ID和权限状态获取权限对象列表-->
+    <select id="getRolePermissions" resultMap="permissionMap">
+        select p.*
+        <include refid="role_permissions_id"/>
+    </select>
+    <!--    根据角色ID和权限状态获取权限对象列表结束-->
+    <!--    根据角色ID和权限状态获取权限名称列表-->
+    <select id="getRolePermissionsName" resultType="String">
+        select p.name
+        <include refid="role_permissions_id"/>
+    </select>
+    <!--    根据角色ID和权限状态获取权限名称列表结束-->
+
+
+    <!--    用户ID和权限状态获取权限ID列表-->
+    <sql id="user_permissions_id">
+        from
+        (
+            select rmp.permission_id
+            from role_map_permission rmp
+            where rmp.role_id
+                      in
+                  (
+                      select umr.role_id
+                      from user_map_role umr
+                               left join `role` r on umr.role_id = r.id
+                      where umr.user_id = #{userId}
+                        and r.status = 'NORMAL'
+                  )
+        )
+        permission_list
+                 left join permission p on permission_list.permission_id = p.id
+        where p.status = 'NORMAL'
+    </sql>
+    <select id="getUserPermissionsId" resultType="Integer">
+        select p.id
+        <include refid="user_permissions_id"/>
+    </select>
+    <!--    用户ID和权限状态获取权限ID列表结束-->
+    <!--    根据用户ID和权限状态获取权限对象列表-->
+    <select id="getUserPermissions" resultMap="permissionMap">
+        select p.*
+        <include refid="user_permissions_id"/>
+    </select>
+    <!--    根据用户色ID和权限状态获取权限对象列表结束-->
+    <!--    根据用户ID和权限状态获取权限名称列表-->
+    <select id="getUserPermissionsName" resultType="String">
+        select p.name
+        <include refid="user_permissions_id"/>
+    </select>
+    <!--    根据用户ID和权限状态获取权限名称列表结束-->
+
+</mapper>

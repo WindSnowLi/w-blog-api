@@ -1,11 +1,12 @@
 package xyz.firstmeet.lblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.annotation.Permission;
 import xyz.firstmeet.lblog.object.Msg;
 import xyz.firstmeet.lblog.services.FileJsonService;
 import xyz.firstmeet.lblog.services.UserJsonService;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@Api(tags = "文件相关", value = "文件相关")
 @RequestMapping(value = "/api/file", produces = "application/json;charset=UTF-8")
 public class FileController {
     private FileJsonService fileJsonService;
@@ -57,7 +59,7 @@ public class FileController {
      * @return Msg  {urlParams: 上传签名Url对象, GetUrl: Get请求Url}
      */
     @PostMapping(value = "getUploadAvatarUrl")
-    @UserLoginToken
+    @Permission(value = {"UPLOAD-FILE"})
     public String getUploadAvatarUrl(@RequestBody JSONObject tokenJson) {
         int userId = JwtUtils.getTokenUserId(tokenJson.getString("token"));
         log.info("getUploadAvatarUrl\t用户ID：{}", userId);
@@ -71,7 +73,7 @@ public class FileController {
      * @return Msg  {host: 上传服务的url, urlParams: 上传签名Url对象, GetUrl: Get请求Url}
      */
     @PostMapping(value = "getUploadArticleCoverImageUrl")
-    @UserLoginToken
+    @Permission(value = {"UPLOAD-FILE"})
     public String getUploadArticleCoverImageUrl(@RequestBody JSONObject tokenJson) {
         int userId = JwtUtils.getTokenUserId(tokenJson.getString("token"));
         log.info("getUploadArticleCoverImageUrl\t用户ID：{}", userId);
@@ -85,7 +87,7 @@ public class FileController {
      * @return Msg  {host: 上传服务的url, urlParams: 上传签名Url对象, GetUrl: Get请求Url}
      */
     @PostMapping(value = "getUploadArticleImageUrl")
-    @UserLoginToken
+    @Permission(value = {"UPLOAD-FILE"})
     public String getUploadArticleImageUrl(@RequestBody JSONObject tokenJson) {
         int userId = JwtUtils.getTokenUserId(tokenJson.getString("token"));
         log.info("getUploadArticleImageUrl\t用户ID：{}", userId);
@@ -98,7 +100,7 @@ public class FileController {
      * @param json {"token":String, objectName: filePath}
      */
     @PostMapping(value = "deleteObject")
-    @UserLoginToken
+    @Permission(value = {"DELETE-FILE"})
     public String deleteObject(@RequestBody JSONObject json) {
         int userId = JwtUtils.getTokenUserId(json.getString("token"));
         log.info("deleteObject\t用户ID：{}", userId);

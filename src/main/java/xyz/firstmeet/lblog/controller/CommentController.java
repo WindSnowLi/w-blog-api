@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.firstmeet.lblog.annotation.PassToken;
-import xyz.firstmeet.lblog.annotation.UserLoginToken;
+import xyz.firstmeet.lblog.annotation.Permission;
 import xyz.firstmeet.lblog.model.request.IdTypeModel;
 import xyz.firstmeet.lblog.model.request.PageModel;
 import xyz.firstmeet.lblog.model.request.ReqCommentModel;
@@ -47,7 +47,7 @@ public class CommentController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "addComment")
-    @UserLoginToken
+    @Permission(value = {"COMMENT"})
     public String addComment(@RequestBody TokenTypeModel<Comment> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
         log.info("用户ID：{}  addComment", userId);
@@ -92,7 +92,7 @@ public class CommentController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "setCommentStatus")
-    @UserLoginToken
+    @Permission(value = {"VERIFY-COMMENT"})
     public String setCommentStatus(@RequestBody TokenTypeModel<IdTypeModel<CommentBase.Status>> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
         if (userId != 1) {
@@ -114,7 +114,7 @@ public class CommentController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "getCommentList")
-    @UserLoginToken
+    @Permission(value = {"VERIFY-COMMENT"})
     public String getCommentListJson(@RequestBody TokenTypeModel<PageModel<CommentBase.Status>> pageModel) {
         return Msg.getSuccessMsg(commentJsonService.getCommentListJson(
                 pageModel.getContent().getLimit(),

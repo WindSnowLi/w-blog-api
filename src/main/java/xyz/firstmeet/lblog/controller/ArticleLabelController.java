@@ -1,6 +1,7 @@
 package xyz.firstmeet.lblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import xyz.firstmeet.lblog.services.ArticleLabelJsonService;
 
 @Slf4j
 @RestController
+@Api(tags = "文章标签相关", value = "文章标签相关")
 @RequestMapping(value = "/api/articleLabel", produces = "application/json;charset=UTF-8")
 public class ArticleLabelController {
     private ArticleLabelJsonService articleLabelJsonService;
