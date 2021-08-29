@@ -1,5 +1,6 @@
 package com.hiyj.blog.mapper;
 
+import com.alibaba.fastjson.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,5 +30,23 @@ public class ArticleLabelMapperTest {
     @Test
     public void testGetArticleCountByType() {
         System.out.println(articleLabelMapper.getArticleCountByType(10));
+    }
+
+    /**
+     * 获取用户分类的访问量前cut个
+     */
+    @Test
+    public void testGetVisitCountByType() {
+        System.out.println(JSONArray.toJSONString(articleLabelMapper.getVisitCountByTypeByUserId(1, 5)));
+    }
+
+    @Test
+    public void testGetHotLabels() {
+        System.out.println(articleLabelMapper.getLabels());
+    }
+
+    @Test
+    public void testGetAllTypes() {
+        System.out.println(articleLabelMapper.getTypes());
     }
 }

@@ -15,13 +15,6 @@ import java.util.List;
 @Service("userJsonService")
 public class UserJsonService extends UserService {
 
-    public String getSidebarLabels(int user_id) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("labels", articleMapper.getHotLabelsByUserId(user_id));
-        jsonObject.put("user", findUserById(user_id));
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
-    }
-
     /**
      * 获取用户信息
      *

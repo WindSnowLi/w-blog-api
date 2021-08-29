@@ -10,8 +10,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 
-<mapper namespace="xyz.firstmeet.lblog.mapper.RoleMapper">
-    <resultMap id="roleMap" type="xyz.firstmeet.lblog.object.Role">
+<mapper namespace="com.hiyj.blog.mapper.RoleMapper">
+    <resultMap id="roleMap" type="com.hiyj.blog.object.Role">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="info" column="info"/>

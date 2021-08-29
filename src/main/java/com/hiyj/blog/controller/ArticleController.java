@@ -1,22 +1,24 @@
 package com.hiyj.blog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.annotation.PassToken;
+import com.hiyj.blog.annotation.Permission;
 import com.hiyj.blog.model.request.*;
+import com.hiyj.blog.object.Article;
+import com.hiyj.blog.object.ArticleLabel;
+import com.hiyj.blog.object.Msg;
+import com.hiyj.blog.services.ArticleJsonService;
+import com.hiyj.blog.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.hiyj.blog.annotation.PassToken;
-import com.hiyj.blog.annotation.Permission;
-import xyz.firstmeet.lblog.model.request.*;
-import com.hiyj.blog.object.Article;
-import com.hiyj.blog.object.ArticleLabel;
-import com.hiyj.blog.object.Msg;
-import com.hiyj.blog.services.ArticleJsonService;
-import com.hiyj.blog.utils.JwtUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,34 +111,6 @@ public class ArticleController {
     }
 
     /**
-     * 文章可选标签
-     *
-     * @return {
-     * code: 20000,
-     * message: "请求成功",
-     * data: [{value:"",label:""}]
-     * }
-     */
-    @ApiOperation(value = "文章可选标签")
-    @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
-            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
-    })
-    @PostMapping(value = "labels")
-    @PassToken
-    public String labels() {
-        final List<ArticleLabel> allLabels = articleJsonService.getAllLabels();
-        final ArrayList<JSONObject> labelList = new ArrayList<>();
-        for (ArticleLabel label : allLabels) {
-            JSONObject temp = new JSONObject();
-            temp.put("value", label.getName());
-            temp.put("label", label.getName());
-            labelList.add(temp);
-        }
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, labelList);
-    }
-
-    /**
      * 根据文章ID获取作者
      *
      * @param idModel {"id":"articleId"}
@@ -151,22 +125,6 @@ public class ArticleController {
     @PassToken
     public String findArticleAuthor(@RequestBody IdModel idModel) {
         return articleJsonService.findArticleAuthorJson(idModel.getId());
-    }
-
-    /**
-     * 获取热门标签列表
-     *
-     * @return Msg
-     */
-    @ApiOperation(value = "获取热门标签列表")
-    @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
-            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
-    })
-    @PostMapping(value = "getHotLabels")
-    @PassToken
-    public String getHotLabels() {
-        return articleJsonService.getHotLabelsJson();
     }
 
     /**
@@ -188,59 +146,6 @@ public class ArticleController {
                 pageBaseModelIdModel.getContent().getLimit(),
                 pageBaseModelIdModel.getContent().getPage());
     }
-
-    /**
-     * 获取所有标签
-     *
-     * @return Msg
-     */
-    @ApiOperation(value = "获取所有标签")
-    @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
-            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
-    })
-    @PostMapping(value = "getAllLabels")
-    @PassToken
-    public String getAllLabelsJson() {
-        log.info("getAllLabels");
-        return articleJsonService.getAllLabelsJson();
-    }
-
-    /**
-     * 获取用户所有分类
-     *
-     * @param idModel 用户信息{id:int}
-     * @return 分类表
-     */
-    @ApiOperation(value = "获取用户所有分类")
-    @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
-            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
-    })
-    @PostMapping(value = "getAllTypeByUserId")
-    @PassToken
-    public String getAllTypeByUserId(@RequestBody IdModel idModel) {
-        log.info("getAllTypeByUserId");
-        return articleJsonService.getAllTypeByUserIdJson(idModel.getId());
-    }
-
-    /**
-     * 获取所有分类
-     *
-     * @return Msg
-     */
-    @ApiOperation(value = "获取所有分类")
-    @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
-            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
-    })
-    @PostMapping(value = "getAllClassify")
-    @PassToken
-    public String getAllType() {
-        log.info("getAllClassify");
-        return articleJsonService.getAllTypeJson();
-    }
-
 
     /**
      * 获取所属分类文章
@@ -315,7 +220,10 @@ public class ArticleController {
     /**
      * 更新文章
      *
-     * @param articleJson {"article":article}
+     * @param tokenTypeModel {
+     *                       "token":token,
+     *                       "content: article,"
+     *                       }
      * @return Msg
      */
     @ApiOperation(value = "更新文章")
@@ -325,28 +233,27 @@ public class ArticleController {
     })
     @PostMapping(value = "updateArticle")
     @Permission(value = {"UPDATE-ARTICLE"})
-    public String updateArticle(@RequestBody JSONObject articleJson) {
-        articleJson.remove("visitsCount");
+    public String updateArticle(@RequestBody ContentModel<JSONObject> contentModel) {
+        contentModel.getContent().remove("visitsCount");
         //整理分类
-        String articleTypeName = (String) articleJson.get("articleType");
+        String articleTypeName = (String) contentModel.getContent().get("articleType");
         ArticleLabel articleType = new ArticleLabel();
         articleType.setName(articleTypeName);
-        articleJson.remove("articleType");
+        contentModel.getContent().remove("articleType");
         // 整理标签
         ArrayList<ArticleLabel> articleLabels = new ArrayList<>();
-        for (Object labelName : articleJson.getObject("labels", List.class)) {
+        for (Object labelName : contentModel.getContent().getObject("labels", List.class)) {
             ArticleLabel temp = new ArticleLabel();
             temp.setName((String) labelName);
             articleLabels.add(temp);
         }
-        articleJson.remove("labels");
-        Article article = JSONObject.parseObject(articleJson.toJSONString(), Article.class);
+        contentModel.getContent().remove("labels");
+        Article article = JSONObject.parseObject(contentModel.getContent().toJSONString(), Article.class);
         article.setArticleType(articleType);
         article.setLabels(articleLabels);
         log.info("updateArticle 文章ID：{}", article.getId());
         return articleJsonService.updateArticleJson(article);
     }
-
 
     /**
      * 获取访问最多的文章

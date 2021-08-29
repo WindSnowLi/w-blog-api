@@ -39,7 +39,6 @@ public class OtherController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "getPanel")
-    @PassToken
     public String getPanel(@RequestBody TokenModel tokenModel) {
         int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
         log.info("getPanel");
@@ -58,7 +57,6 @@ public class OtherController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "getChart")
-    @PassToken
     public String getChart(@RequestBody TokenModel tokenModel) {
         int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
         log.info("getChart");

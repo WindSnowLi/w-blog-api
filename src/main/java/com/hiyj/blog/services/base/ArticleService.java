@@ -55,18 +55,8 @@ public class ArticleService {
         return article;
     }
 
-
     public User findArticleAuthor(int article_id) {
         return articleMapper.findArticleAuthor(article_id);
-    }
-
-
-    public List<ArticleLabel> getAllLabels() {
-        return articleMapper.getAllLabels();
-    }
-
-    public List<ArticleLabel> getHotLabels() {
-        return articleMapper.getHotLabels();
     }
 
     /**
@@ -172,19 +162,6 @@ public class ArticleService {
     public List<Map<String, Object>> getAddArticleLogByWeek(int userId) {
         return articleMapper.getArticleCreateLogByWeek(userId);
     }
-
-
-    /**
-     * 获取用户分类的访问量前10个
-     *
-     * @param userId 用户ID
-     * @param cut    前cut个
-     * @return List<ArticleLabel>
-     */
-    public List<ArticleLabel> getVisitCountByTypeByUserId(int userId, int cut) {
-        return articleMapper.getVisitCountByTypeByUserId(userId, cut);
-    }
-
 
     /**
      * 添加文章

@@ -21,7 +21,6 @@ public interface ArticleMapper {
      */
     int getArticleCountByUserId(@Param("userId") int userId);
 
-
     /**
      * 获取用户所有访问量
      *
@@ -29,14 +28,6 @@ public interface ArticleMapper {
      * @return 访问量
      */
     int getVisitsAllCountByUserId(@Param("userId") int userId);
-
-    /**
-     * 获取用户分类的访问量前cut个
-     *
-     * @param cut 前cut个
-     * @return list分类
-     */
-    List<ArticleLabel> getVisitCountByTypeByUserId(@Param("userId") int userId, @Param("cut") int cut);
 
     /**
      * 逆序分页获取文章
@@ -85,24 +76,6 @@ public interface ArticleMapper {
     User findArticleAuthor(@Param("article_id") int article_id);
 
     /**
-     * 获取所有标签
-     *
-     * @return 标签列表
-     */
-    List<ArticleLabel> getAllLabels();
-
-    @Select("SELECT id, name FROM article_label limit 0,10")
-    List<ArticleLabel> getHotLabels();
-
-    /**
-     * 获取用户所属热门标签
-     *
-     * @param user_id 用户ID
-     * @return ArticleLabel List
-     */
-    List<ArticleLabel> getHotLabelsByUserId(@Param("user_id") int user_id);
-
-    /**
      * 获取标签所属文章
      *
      * @param id     标签ID
@@ -111,14 +84,6 @@ public interface ArticleMapper {
      * @return 文章列表
      */
     List<Article> getLabelArticlePage(@Param("label_id") int id, @Param("limit") int limit, @Param("offset") int offset);
-
-    /**
-     * 获取所有分类
-     *
-     * @return List ArticleLabel
-     */
-    List<ArticleLabel> getAllTypes();
-
 
     /**
      * 获取所属分类文章
@@ -181,29 +146,6 @@ public interface ArticleMapper {
     void addUserMapArticle(@Param("userId") int userId, @Param("articleId") int articleId);
 
     /**
-     * 添加新标签
-     *
-     * @param articleLabels 标签列表
-     */
-    void addLabels(@Param("articleLabels") List<ArticleLabel> articleLabels);
-
-    /**
-     * 根据名字批量检查已经存在的标签
-     *
-     * @param articleLabels 文章标签对象列表
-     * @return 已经存在的标签
-     */
-    List<ArticleLabel> batchCheckLabelByNames(@Param("articleLabels") List<ArticleLabel> articleLabels);
-
-    /**
-     * 根据标签名批量查询标签对象
-     *
-     * @param articleLabels 文章标签对象列表
-     * @return 标签对象列表
-     */
-    List<ArticleLabel> batchFindLabelByNames(@Param("articleLabels") List<ArticleLabel> articleLabels);
-
-    /**
      * 添加文章——标签映射
      *
      * @param articleId     文章ID
@@ -218,14 +160,6 @@ public interface ArticleMapper {
      * @return 文章列表
      */
     List<Article> getMostVisits(@Param("limit") int limit);
-
-    /**
-     * 获取用户所有分类信息
-     *
-     * @param userId 用户ID
-     * @return 分类信息
-     */
-    List<ArticleLabel> getAllTypeByUserId(@Param("userId") int userId);
 
     /**
      * 修改文章

@@ -4,8 +4,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.NonRegisteringDriver
     url: jdbc:mysql://127.0.0.1/blog?serverTimezone=GMT%2B8
-    username: root
-    password: root
+    username: blog
+    password: 1999blog
     name: w-blog-api-prod
 logback:
   logdir: /var/log/w-blog-api

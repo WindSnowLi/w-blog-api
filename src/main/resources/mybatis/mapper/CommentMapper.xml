@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="xyz.firstmeet.lblog.mapper.CommentMapper">
-    <resultMap id="commentMap" type="xyz.firstmeet.lblog.object.Comment">
+<mapper namespace="com.hiyj.blog.mapper.CommentMapper">
+    <resultMap id="commentMap" type="com.hiyj.blog.object.Comment">
         <id property="id" column="id"/>
         <result property="targetId" column="target_id"/>
         <result property="fromUser" column="from_user"/>

@@ -98,4 +98,77 @@ public interface ArticleLabelMapper {
             "LEFT JOIN article_label al on t.type_id = al.id " +
             "order by num desc ")
     List<Map<String, Object>> getArticleCountByType(int limit);
+
+    /**
+     * 获取所有分类
+     *
+     * @return List ArticleLabel
+     */
+    List<ArticleLabel> getTypes();
+
+    /**
+     * 获取所有标签
+     *
+     * @return 标签列表
+     */
+    List<ArticleLabel> getLabels();
+
+
+    int getLabelVisitsCount(@Param("labelId") int labelId);
+
+    /**
+     * 获取热门标签
+     *
+     * @return 标签列表
+     */
+    @Select("SELECT id, name FROM article_label limit 0,10")
+    List<ArticleLabel> getHotLabels();
+
+    /**
+     * 获取用户所属热门标签
+     *
+     * @param user_id 用户ID
+     * @return ArticleLabel List
+     */
+    List<ArticleLabel> getHotLabelsByUserId(@Param("user_id") int user_id);
+
+    /**
+     * 添加新标签
+     *
+     * @param articleLabels 标签列表
+     */
+    void addLabels(@Param("articleLabels") List<ArticleLabel> articleLabels);
+
+    /**
+     * 根据名字批量检查已经存在的标签
+     *
+     * @param articleLabels 文章标签对象列表
+     * @return 已经存在的标签
+     */
+    List<ArticleLabel> batchCheckLabelByNames(@Param("articleLabels") List<ArticleLabel> articleLabels);
+
+    /**
+     * 根据标签名批量查询标签对象
+     *
+     * @param articleLabels 文章标签对象列表
+     * @return 标签对象列表
+     */
+    List<ArticleLabel> batchFindLabelByNames(@Param("articleLabels") List<ArticleLabel> articleLabels);
+
+    /**
+     * 获取用户分类的访问量前cut个
+     *
+     * @param cut 前cut个
+     * @return list分类
+     */
+    List<ArticleLabel> getVisitCountByTypeByUserId(@Param("userId") int userId, @Param("cut") int cut);
+
+    /**
+     * 获取用户所有分类信息
+     *
+     * @param userId 用户ID
+     * @return 分类信息
+     */
+    List<ArticleLabel> getAllTypeByUserId(@Param("userId") int userId);
+
 }

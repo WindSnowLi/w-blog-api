@@ -1,5 +1,7 @@
 package com.hiyj.blog.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.object.ArticleLabel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,6 +18,7 @@ import com.hiyj.blog.object.Msg;
 import com.hiyj.blog.services.ArticleLabelJsonService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -54,7 +57,7 @@ public class ArticleLabelController {
      */
     @ApiOperation(value = "获取所有标签")
     @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ArrayList.class),
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "getAllLabel")
@@ -81,6 +84,52 @@ public class ArticleLabelController {
     public String getLabelByIdJson(@RequestBody IdModel idModel) {
         log.info("getLabelByIdJson\t标签ID{}", idModel.getId());
         return articleLabelJsonService.getLabelByIdJson(idModel.getId());
+    }
+
+    /**
+     * 文章可选标签
+     *
+     * @return {
+     * code: 20000,
+     * message: "请求成功",
+     * data: [{value:"",label:""}]
+     * }
+     */
+    @ApiOperation(value = "文章可选标签")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "labels")
+    @PassToken
+    public String labels() {
+        final List<ArticleLabel> allLabels = articleLabelJsonService.getAllLabels();
+        final ArrayList<JSONObject> labelList = new ArrayList<>();
+        for (ArticleLabel label : allLabels) {
+            JSONObject temp = new JSONObject();
+            temp.put("value", label.getName());
+            temp.put("label", label.getName());
+            labelList.add(temp);
+        }
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, labelList);
+    }
+
+    /**
+     * 获取用户所有分类
+     *
+     * @param idModel 用户信息{id:int}
+     * @return 分类表
+     */
+    @ApiOperation(value = "获取用户所有分类")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getAllTypeByUserId")
+    @PassToken
+    public String getAllTypeByUserId(@RequestBody IdModel idModel) {
+        log.info("getAllTypeByUserId");
+        return articleLabelJsonService.getAllTypeByUserIdJson(idModel.getId());
     }
 }
 

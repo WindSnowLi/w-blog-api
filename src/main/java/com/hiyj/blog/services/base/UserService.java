@@ -20,6 +20,8 @@ public class UserService {
 
     protected FileService fileService;
 
+    protected ArticleLabelService articleLabelService;
+
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         this.userMapper = userMapper;
@@ -33,6 +35,11 @@ public class UserService {
     @Autowired
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
+    }
+
+    @Autowired
+    public void setArticleLabelService(ArticleLabelService articleLabelService) {
+        this.articleLabelService = articleLabelService;
     }
 
     public User findUserByAccount(String account) {

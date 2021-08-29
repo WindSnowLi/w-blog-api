@@ -188,7 +188,7 @@ public class OtherService {
         // 访问量圆饼图数据
         return getCakeChartOfData(
                 JSON.parseObject(JSONObject.toJSONString(
-                        articleJsonService.getVisitCountByTypeByUserId(userId, 9)), new TypeReference<>() {
+                        articleLabelService.getVisitCountByTypeByUserId(userId, 9)), new TypeReference<>() {
                 }),
                 articleJsonService.getVisitsCountByUserId(userId), "visitsCount");
     }

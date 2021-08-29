@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="xyz.firstmeet.lblog.mapper.ArticleMapper">
-    <resultMap id="articleMap" type="xyz.firstmeet.lblog.object.Article">
+<mapper namespace="com.hiyj.blog.mapper.ArticleMapper">
+    <resultMap id="articleMap" type="com.hiyj.blog.object.Article">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="summary" column="summary"/>
@@ -11,7 +11,7 @@
         <result property="cover_pic" column="cover_pic"/>
         <result property="time" column="time"/>
         <result property="visitsCount" column="visitsCount"/>
-        <collection property="labels" javaType="ArrayList" ofType="xyz.firstmeet.lblog.object.ArticleLabel"
+        <collection property="labels" javaType="ArrayList" ofType="com.hiyj.blog.object.ArticleLabel"
                     select="getArticleMapLabels" column="id"/>
     </resultMap>
 
@@ -22,53 +22,11 @@
     </select>
 
     <select id="getVisitsAllCountByUserId" parameterType="int" resultType="int">
-        SELECT SUM(vc.count)
+        SELECT IFNULL(SUM(vc.count), 0)
         from visits_count vc
         where vc.`type` = 1
           and vc.target_id in (SELECT uma.article_id from user_map_article uma where uma.user_id = #{userId})
     </select>
-
-    <!--    用户各分类访问量-->
-    <select id="getVisitCountByTypeByUserId" parameterType="int"
-            resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
-        -- 分类
-        SELECT al.*, v_count.visitsCount
-        FROM article_label al
-                 right join
-             -- 访问量
-                 (SELECT vc.target_id as id, IFNULL(sum(vc.count), 0) as visitsCount
-                  FROM
--- 用户分类ID
-(
-    SELECT DISTINCT all_rs.type_id as target_id
-    FROM (
-             SELECT aml.article_id, aml.type_id, aml.id
-             FROM (
-                      -- 用户文章
-                      SELECT distinct uma.article_id FROM user_map_article uma WHERE uma.user_id = #{userId}
-                      -- 用户文章结束
-                  ) u_a
-
-                      LEFT JOIN article_map_type aml
-                                on u_a.article_id = aml.article_id
-         ) all_rs
-) u_l_i
-    -- 用户分类ID结束
-
-
-    LEFT JOIN (
-    select *
-    from visits_count vc
-    WHERE vc.`type` = 100
-) vc on u_l_i.target_id
-                  WHERE vc.target_id = u_l_i.target_id
-                  GROUP by vc.target_id) v_count ON v_count.id = al.id
-        limit 0,#{cut}
-        -- 访问量结束
--- 分类结束
-
-    </select>
-    <!--    用户各分类访问量结束-->
 
     <!--    分页查询文章-->
     <select id="getArticlesByPage" resultMap="articleMap">
@@ -130,7 +88,7 @@
 
     <!--   获取文章标签 -->
     <select id="getArticleMapLabels" parameterType="int"
-            resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
+            resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
 
         SELECT a.id, a.name, IFNULL(v.count, 0) as visitsCount
         FROM (
@@ -149,116 +107,6 @@
         ORDER BY a.aml_id
     </select>
     <!--   获取文章标签结束 -->
-
-    <select id="getHotLabelsByUserId" parameterType="int"
-            resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
-
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT *
-                       from article_label al
-                       where al.id in (SELECT DISTINCT aml.label_id
-                                       from article_map_label aml
-                                       where aml.article_id in
-                                             (select DISTINCT uma.article_id
-                                              from user_map_article uma
-                                              WHERE uma.user_id = #{user_id}))
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 10
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY visitsCount
-
-
-    </select>
-
-    <select id="getAllLabels" resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
-
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT *
-                       from article_label al
-                       where al.id in (SELECT distinct aml.label_id from article_map_label aml)
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 10
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY t.name
-
-    </select>
-
-    <!--    获取用户所有分类信息-->
-    <select id="getAllTypeByUserId" resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
-
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
--- 结果ID获取
-(
-    SELECT SUM(all_rs.rn) as num, all_rs.type_id
-    FROM (
-             SELECT 1 as rn, amt.article_id, amt.type_id, amt.id
-             FROM (
-                      -- 用户文章
-                      SELECT distinct uma.article_id FROM user_map_article uma WHERE uma.user_id = #{userId}
-                      -- 用户文章结束
-                  ) u_a
-
-                      LEFT JOIN article_map_type amt
-                                on u_a.article_id = amt.article_id
-         ) all_rs
-    GROUP BY all_rs.type_id
-) rs_list
--- 结果ID获取结束
-    LEFT JOIN article_label al ON rs_list.type_id = al.id
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 100
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY t.name
-        -- 叠加访问量结束
-
-    </select>
-    <!--    获取用户所有分类信息结束-->
-
-    <select id="getAllTypes">
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
--- 结果ID获取
-(
-    SELECT SUM(all_rs.rn) as num, all_rs.type_id
-    FROM (
-             SELECT 1 as rn, amt.article_id, amt.type_id, amt.id
-             FROM article_map_type amt
-         ) all_rs
-    GROUP BY all_rs.type_id
-) rs_list
--- 结果ID获取结束
-    LEFT JOIN article_label al ON rs_list.type_id = al.id
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 100
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY t.name
-        -- 叠加访问量结束
-    </select>
 
     <!--    获取分类所属文章-->
     <select id="getArticlesByType" parameterType="int" resultMap="articleMap">
@@ -365,7 +213,7 @@
         limit 0,10
     </select>
     <!--添加文章，不含标签和文章所属用户映射-->
-    <insert id="addArticle" parameterType="xyz.firstmeet.lblog.object.Article" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addArticle" parameterType="com.hiyj.blog.object.Article" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO article(title, summary, content, coverPic, status)
         VALUES (#{article.title},
                 #{article.summary},
@@ -383,44 +231,6 @@
 
     </insert>
     <!--    添加用户——文章映射   >>end<<-->
-
-    <!-- 添加新标签-->
-    <insert id="addLabels" parameterType="List" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO article_label
-        (name)
-        VALUES
-        <foreach collection="articleLabels" item="articleLabel" separator=",">
-            (
-            #{articleLabel.name}
-            )
-        </foreach>
-        ;
-
-    </insert>
-    <!-- 添加新标签   >>end<<-->
-
-    <!--    批量检查已经存在的标签-->
-    <select id="batchCheckLabelByNames" parameterType="List"
-            resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
-        SELECT *
-        FROM article_label al2
-        WHERE al2.name NOT IN
-        (SELECT al.name FROM article_label al WHERE al.name NOT IN
-        <foreach collection="articleLabels" item="articleLabel" open="(" close=")" separator=",">
-            #{articleLabel.name}
-        </foreach>)
-    </select>
-    <!--    批量检查已经存在的标签 >>end<<-->
-
-    <!--  根据标签名批量查询标签对象  -->
-    <select id="batchFindLabelByNames" parameterType="List"
-            resultMap="xyz.firstmeet.lblog.mapper.ArticleLabelMapper.labelMap">
-        SELECT al2.id ,al2.name FROM article_label al2 WHERE al2.name IN
-        <foreach collection="articleLabels" item="articleLabel" open="(" close=")" separator=",">
-            #{articleLabel.name}
-        </foreach>
-    </select>
-    <!-- 根据标签名批量查询标签对象  >>end<< -->
 
     <!-- 添加文章——标签映射   -->
     <select id="addArticleMapLabels" parameterType="List">
@@ -459,7 +269,7 @@
     <!--    获取访问最多的文章结束-->
 
     <!--    修改文章-->
-    <update id="updateArticle" parameterType="xyz.firstmeet.lblog.object.Article">
+    <update id="updateArticle" parameterType="com.hiyj.blog.object.Article">
         UPDATE article
         SET title=#{article.title},
             summary=#{article.summary},

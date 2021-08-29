@@ -23,7 +23,7 @@ public class ArticleLabelJsonService extends ArticleLabelService {
      * @return ArticleLabel
      */
     public String getAllLabelJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.getSuccessMsg(), this.getAllLabel());
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, this.getAllLabel());
     }
 
     /**
@@ -35,4 +35,33 @@ public class ArticleLabelJsonService extends ArticleLabelService {
     public String getLabelByIdJson(int labelId) {
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.getSuccessMsg(), this.getLabelById(labelId));
     }
+
+    /**
+     * 获取用户所有分类信息
+     *
+     * @param userId 用户ID
+     * @return Msg
+     */
+    public String getAllTypeByUserIdJson(int userId) {
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, articleLabelMapper.getAllTypeByUserId(userId));
+    }
+
+
+    /**
+     * 获取文章所有分类
+     *
+     * @return Msg
+     */
+    public String getAllTypeJson() {
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, articleLabelMapper.getTypes());
+    }
+
+    public String getAllLabelsJson() {
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getAllLabels());
+    }
+
+    public String getHotLabelsJson() {
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getHotLabels());
+    }
+
 }

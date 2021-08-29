@@ -30,18 +30,8 @@ public class ArticleMapperTest {
     }
 
     @Test
-    public void testGetHotLabels() {
-        System.out.println(articleMapper.getAllLabels());
-    }
-
-    @Test
     public void testGetLabelArticlePage() {
         System.out.println(articleMapper.getLabelArticlePage(2, 0, 100));
-    }
-
-    @Test
-    public void testGetAllTypes() {
-        System.out.println(articleMapper.getAllTypes());
     }
 
     @Test
@@ -62,14 +52,6 @@ public class ArticleMapperTest {
     @Test
     public void testGetVisitsAllCountByUserId() {
         System.out.println(articleMapper.getVisitsAllCountByUserId(1));
-    }
-
-    /**
-     * 获取用户分类的访问量前cut个
-     */
-    @Test
-    public void testGetVisitCountByType() {
-        System.out.println(JSONArray.toJSONString(articleMapper.getVisitCountByTypeByUserId(1, 5)));
     }
 
     /**

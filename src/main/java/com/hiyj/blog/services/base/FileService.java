@@ -9,6 +9,7 @@ import com.hiyj.blog.mapper.FileMapper;
 import com.hiyj.blog.oss.OssUtils;
 import com.hiyj.blog.utils.CodeUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -38,6 +39,8 @@ public class FileService {
     protected String avatarImagePath;
     //文章内容图片路径
     protected String articleImagePath;
+    //是否开启上传
+    protected boolean status;
 
     /**
      * 获取OSS工具对象
@@ -45,8 +48,7 @@ public class FileService {
      * @return OssUtils
      */
     public OssUtils getOssUtils() {
-        final String ossConfigStr = sysConfigService.getStorageConfig().getString("storage");
-        final JSONObject ossConfigJson = JSONObject.parseObject(ossConfigStr);
+        final JSONObject ossConfigJson = JSONObject.parseObject(sysConfigService.getStorageConfig().getString("storage"));
         rootPath = ossConfigJson.getString("rootPath");
         ossConfigJson.remove("ossConfigJson");
         articleCoverImagePath = ossConfigJson.getString("articleCoverImagePath");
@@ -55,7 +57,26 @@ public class FileService {
         ossConfigJson.remove("avatarImagePath");
         articleImagePath = ossConfigJson.getString("articleImagePath");
         ossConfigJson.remove("articleImagePath");
+        status = ossConfigJson.getBoolean("status");
+        ossConfigJson.remove("status");
         return JSONObject.parseObject(ossConfigJson.toJSONString(), OssUtils.class);
+    }
+
+    /**
+     * 获取OSS上传参数表
+     *
+     * @param path  存储路径
+     * @param token 验证信息
+     * @return 返回链接和Object路径
+     */
+    protected Map<String, Object> getUploadMap(String path, String token) {
+        OssUtils ossUtils = getOssUtils();
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+        if (status) {
+            map.putAll(ossUtils.getUploadUrl(path + "/" + CodeUtils.getUUID(), "&token=" + token, true));
+        }
+        return map;
     }
 
     /**
@@ -64,7 +85,7 @@ public class FileService {
      * @return 返回上传的头像链接和Object路径
      */
     public Map<String, Object> getUploadAvatarMap(String token) {
-        return getOssUtils().getUploadUrl(avatarImagePath + "/" + CodeUtils.getUUID(), "&token=" + token, true);
+        return getUploadMap(avatarImagePath, token);
     }
 
     /**
@@ -73,7 +94,7 @@ public class FileService {
      * @return 返回上传的文章封面链接和Object路径
      */
     public Map<String, Object> getUploadArticleCoverImageUrl(String token) {
-        return getOssUtils().getUploadUrl(articleCoverImagePath + "/" + CodeUtils.getUUID(), "&token=" + token, true);
+        return getUploadMap(articleCoverImagePath, token);
     }
 
     /**
@@ -82,7 +103,7 @@ public class FileService {
      * @return 返回上传的文章封面链接和Object路径
      */
     public Map<String, Object> getUploadArticleImageUrl(String token) {
-        return getOssUtils().getUploadUrl(articleImagePath + "/" + CodeUtils.getUUID(), "&token=" + token, true);
+        return getUploadMap(articleImagePath, token);
     }
 
     /**

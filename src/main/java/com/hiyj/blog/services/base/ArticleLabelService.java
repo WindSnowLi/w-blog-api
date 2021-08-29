@@ -115,7 +115,7 @@ public class ArticleLabelService {
         //文章标签信息
         List<ArticleLabel> labels = article.getLabels();
         //已经存在的标签
-        List<ArticleLabel> articleLabels = articleMapper.batchCheckLabelByNames(labels);
+        List<ArticleLabel> articleLabels = articleLabelMapper.batchCheckLabelByNames(labels);
         if (articleLabels.size() != 0) {
             //先添加已存在的标签
             articleMapper.addArticleMapLabels(article.getId(), articleLabels);
@@ -135,7 +135,7 @@ public class ArticleLabelService {
         }
         if (noExistentLabels.size() != 0) {
             //新添加的标签
-            articleMapper.addLabels(noExistentLabels);
+            articleLabelMapper.addLabels(noExistentLabels);
             //添加之前不存在的标签
             articleMapper.addArticleMapLabels(article.getId(), noExistentLabels);
         }
@@ -145,7 +145,7 @@ public class ArticleLabelService {
             ArrayList<ArticleLabel> typeList = new ArrayList<>();
             typeList.add(article.getArticleType());
             //新添加的标签
-            articleMapper.addLabels(typeList);
+            articleLabelMapper.addLabels(typeList);
         }
         article.setArticleType(typeByName);
         //添加类型映射
@@ -169,5 +169,34 @@ public class ArticleLabelService {
      */
     public int getTypeSize() {
         return articleLabelMapper.getTypeSize();
+    }
+
+    /**
+     * 获取所有标签
+     *
+     * @return 标签列表
+     */
+    public List<ArticleLabel> getAllLabels() {
+        return articleLabelMapper.getLabels();
+    }
+
+    /**
+     * 获取热门标签
+     *
+     * @return 标签列表
+     */
+    public List<ArticleLabel> getHotLabels() {
+        return articleLabelMapper.getHotLabels();
+    }
+
+    /**
+     * 获取用户分类的访问量前10个
+     *
+     * @param userId 用户ID
+     * @param cut    前cut个
+     * @return List<ArticleLabel>
+     */
+    public List<ArticleLabel> getVisitCountByTypeByUserId(int userId, int cut) {
+        return articleLabelMapper.getVisitCountByTypeByUserId(userId, cut);
     }
 }

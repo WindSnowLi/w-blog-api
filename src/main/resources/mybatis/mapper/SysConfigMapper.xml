@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="xyz.firstmeet.lblog.mapper.SysConfigMapper">
+<mapper namespace="com.hiyj.blog.mapper.SysConfigMapper">
     <!--    获取用户配置表-->
     <select id="getUiConfigByUserId" parameterType="int" resultType="com.alibaba.fastjson.JSONObject">
         SELECT ui_config.id, #{userId} as user_id, ui_config.item, ui_config.value

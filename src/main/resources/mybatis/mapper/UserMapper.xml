@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="xyz.firstmeet.lblog.mapper.UserMapper">
+<mapper namespace="com.hiyj.blog.mapper.UserMapper">
     <!--    获取用户喜好分类占比-->
     <select id="getActivityByUserId" parameterType="int" resultType="map">
         -- 标签以及值
@@ -41,7 +41,7 @@
     <!--    获取用户喜好分类占比 结束-->
 
     <!--    添加用户-->
-    <insert id="addUser" parameterType="xyz.firstmeet.lblog.object.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addUser" parameterType="com.hiyj.blog.object.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user
             (account, password, avatar, nickname)
         VALUES (#{user.account}, #{user.password}, #{user.avatar}, #{user.nickname});

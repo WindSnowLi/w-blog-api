@@ -3,6 +3,7 @@ package com.hiyj.blog.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.hiyj.blog.model.response.ClientModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -169,4 +170,38 @@ public class SysConfigController {
     public String getGiteeClientId() {
         return Msg.getSuccessMsg(new ClientIdModel(sysConfigJsonService.getGiteeClientId()));
     }
+
+    /**
+     * 获取Gitee的登录配置信息
+     *
+     * @return Msg(client_id, client_secret)
+     */
+    @ApiOperation(value = "获取Gitee的登录配置信息")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ClientModel.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getGiteeConfig")
+    @Permission(value = {"SYS-SETTING"})
+    public String getGiteeConfig() {
+        return Msg.getSuccessMsg(sysConfigJsonService.getGiteeLoginConfig());
+    }
+
+    /**
+     * 设置Gitee登录配置
+     *
+     * @return Msg
+     */
+    @ApiOperation(value = "获取Gitee的登录配置信息")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ClientModel.class),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "setGiteeConfig")
+    @Permission(value = {"SYS-SETTING"})
+    public String setGiteeConfig() {
+        //TODO
+        return "";
+    }
+
 }

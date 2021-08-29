@@ -58,14 +58,6 @@ public class ArticleJsonService extends ArticleService {
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, rs);
     }
 
-    public String getAllLabelsJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getAllLabels());
-    }
-
-    public String getHotLabelsJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getHotLabels());
-    }
-
     public String findArticleJson(int articleId) {
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getDetailById(articleId));
     }
@@ -88,25 +80,6 @@ public class ArticleJsonService extends ArticleService {
             arrayList.add(getDetailById(article));
         }
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, arrayList);
-    }
-
-    /**
-     * 获取文章所有分类
-     *
-     * @return Msg
-     */
-    public String getAllTypeJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, articleMapper.getAllTypes());
-    }
-
-    /**
-     * 获取用户所有分类信息
-     *
-     * @param userId 用户ID
-     * @return Msg
-     */
-    public String getAllTypeByUserIdJson(int userId) {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, articleMapper.getAllTypeByUserId(userId));
     }
 
     /**
