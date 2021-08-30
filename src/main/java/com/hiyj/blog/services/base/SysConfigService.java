@@ -2,12 +2,14 @@ package com.hiyj.blog.services.base;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.hiyj.blog.mapper.SysConfigMapper;
 import com.hiyj.blog.mapper.UserMapper;
+import com.hiyj.blog.model.response.ClientIdModel;
 import com.hiyj.blog.model.response.UiConfigModel;
+import com.hiyj.blog.model.share.ClientModel;
 import com.hiyj.blog.object.SystemConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -134,16 +136,36 @@ public class SysConfigService {
      *
      * @return client_id
      */
-    public String getGiteeClientId() {
-        return getGiteeLoginConfig().getJSONObject("client").getString("client_id");
+    public ClientIdModel getGiteeClientId() {
+        return getGiteeLoginConfig().getJSONObject("client").toJavaObject(ClientIdModel.class);
     }
 
     /**
-     * 获取Gitee应用程序密钥，用于验证Gitee登录
-     *
-     * @return client_secret
+     * 设置Gitee登录配置
      */
-    public String getGiteeClientSecret() {
-        return getGiteeLoginConfig().getJSONObject("client").getString("client_secret");
+    public void setGiteeConfig(ClientModel clientModel) {
+        JSONObject config = JSONObject.parseObject(sysConfigMapper.getOtherLoginConfig());
+        config.getJSONObject("gitee").put("client", clientModel);
+        sysConfigMapper.setGiteeConfig(config.toJSONString());
+    }
+
+    /**
+     * 获取杂项设置,含格式描述
+     *
+     * @return Msg
+     */
+    public JSONObject getSundry() {
+        return JSONObject.parseObject(sysConfigMapper.getSundry());
+    }
+
+    /**
+     * 设置杂项
+     *
+     * @param config 杂项配置
+     */
+    public void setSundry(JSONObject config) {
+        JSONObject sundry = getSundry();
+        sundry.put("sundry", config);
+        sysConfigMapper.setSundry(sundry.toJSONString());
     }
 }

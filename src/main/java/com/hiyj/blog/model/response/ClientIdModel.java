@@ -21,4 +21,8 @@ public class ClientIdModel {
     // token
     @ApiModelProperty(value = "客户端ID", required = true)
     protected String clientId;
+
+    //是否开启Gitee登录
+    @ApiModelProperty(value = "是否开启Gitee登录", required = true)
+    protected boolean status;
 }

@@ -3,7 +3,7 @@ package com.hiyj.blog.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.hiyj.blog.model.response.ClientModel;
+import com.hiyj.blog.model.share.ClientModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -168,7 +168,7 @@ public class SysConfigController {
     @PostMapping(value = "getGiteeClientId")
     @PassToken
     public String getGiteeClientId() {
-        return Msg.getSuccessMsg(new ClientIdModel(sysConfigJsonService.getGiteeClientId()));
+        return Msg.getSuccessMsg(sysConfigJsonService.getGiteeClientId());
     }
 
     /**
@@ -194,14 +194,46 @@ public class SysConfigController {
      */
     @ApiOperation(value = "获取Gitee的登录配置信息")
     @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ClientModel.class),
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "setGiteeConfig")
     @Permission(value = {"SYS-SETTING"})
-    public String setGiteeConfig() {
-        //TODO
-        return "";
+    public String setGiteeConfig(@RequestBody ClientModel clientModel) {
+        sysConfigJsonService.setGiteeConfig(clientModel);
+        return Msg.getSuccessMsg();
     }
 
+    /**
+     * 获取杂项设置,含格式描述
+     *
+     * @return Msg
+     */
+    @ApiOperation(value = "获取杂项设置,含格式描述")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getSundry")
+    @PassToken
+    public String getSundry() {
+        return Msg.getSuccessMsg(sysConfigJsonService.getSundry());
+    }
+
+    /**
+     * 设置杂项
+     *
+     * @return Msg
+     */
+    @ApiOperation(value = "设置杂项")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "setSundry")
+    @Permission(value = {"SYS-SETTING"})
+    public String setSundry(@RequestBody ContentModel<JSONObject> contentModel) {
+        sysConfigJsonService.setSundry(contentModel.getContent());
+        return Msg.getSuccessMsg();
+    }
 }

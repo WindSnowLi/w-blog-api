@@ -47,10 +47,10 @@ public class GiteeService {
         String url = "https://gitee.com/oauth/token?" +
                 "grant_type=authorization_code&" +
                 "code={code}&".replace("{code}", code) +
-                "client_id={client_id}&".replace("{client_id}", giteeLoginConfig.getString("client_id")) +
+                "client_id={client_id}&".replace("{client_id}", giteeLoginConfig.getString("clientId")) +
                 "redirect_uri={redirect_uri}".replace("{redirect_uri}", redirect);
         JSONObject paramMap = new JSONObject();
-        paramMap.put("client_secret", giteeLoginConfig.getString("client_secret"));
+        paramMap.put("client_secret", giteeLoginConfig.getString("clientSecret"));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("user-agent", "Mozilla/5.0 WindSnowLi-Blog");

@@ -1,5 +1,6 @@
-package com.hiyj.blog.model.response;
+package com.hiyj.blog.model.share;
 
+import com.hiyj.blog.model.response.ClientIdModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

@@ -1,10 +1,8 @@
 package com.hiyj.blog.mapper;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import com.hiyj.blog.model.share.ClientModel;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -75,4 +73,25 @@ public interface SysConfigMapper {
      */
     @Select("SELECT value FROM sys_setting WHERE item = 'other_login'")
     String getOtherLoginConfig();
+
+    /**
+     * 设置Gitee登录配置
+     */
+    @Update("UPDATE sys_setting SET value=#{config} WHERE item='other_login'")
+    void setGiteeConfig(@Param("config") String config);
+
+    /**
+     * 设置杂项
+     *
+     * @param config 杂项配置
+     */
+    void setSundry(String config);
+
+    /**
+     * 获取杂项设置,含格式描述
+     *
+     * @return Msg
+     */
+    @Select("SELECT value FROM sys_setting WHERE item = 'sundry'")
+    String getSundry();
 }

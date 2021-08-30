@@ -44,4 +44,10 @@
         </foreach>
         ;
     </update>
+    <!--    设置杂项-->
+    <update id="setSundry">
+        REPLACE INTO sys_setting(item, value)
+        VALUES('sundry', #{config})
+    </update>
+    <!--    设置杂项结束-->
 </mapper>
