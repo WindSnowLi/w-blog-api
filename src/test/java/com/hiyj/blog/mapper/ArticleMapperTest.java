@@ -59,19 +59,17 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetVisitHistoryCountByDay() {
-        final List<Map<String, Object>> visitHistoryCountByDay = articleMapper.getVisitLogByDay(1);
-        for (Map<String, Object> temp : visitHistoryCountByDay) {
-            System.out.println(temp);
-            System.out.println(temp.get("total").getClass().getName());
-            System.out.println(temp.getClass().getName());
-        }
+        List<Map<String, Object>> visitHistoryCountByDay = articleMapper.getVisitLogByDay(1);
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (Map<String, Object> temp : visitHistoryCountByDay) {
-            x.add((String) temp.get("day_time"));
-            y.add(((BigDecimal) temp.get("total")).intValue());
+        if (visitHistoryCountByDay != null && !visitHistoryCountByDay.contains(null)) {
+            for (Map<String, Object> temp : visitHistoryCountByDay) {
+                x.add((String) temp.get("day_time"));
+                y.add(((BigDecimal) temp.get("total")).intValue());
+            }
         }
+
         jsonObject.put("x", x);
         jsonObject.put("y", y);
         System.out.println(jsonObject.toJSONString());
@@ -99,13 +97,14 @@ public class ArticleMapperTest {
      */
     @Test
     public void addArticle() {
-        Article article = new Article();
-        article.setContent("TEST");
-        article.setSummary("TEST");
-        article.setTitle("TEST");
-        article.setCoverPic("TEST");
-        System.out.println(articleMapper.addArticle(article));
-        System.out.println(article.getId());
+//        Article article = new Article();
+//        article.setContent("TEST");
+//        article.setSummary("TEST");
+//        article.setTitle("TEST");
+//        article.setCoverPic("TEST");
+//        article.setStatus(Article.Status.PUBLISHED);
+//        System.out.println(articleMapper.addArticle(article));
+//        System.out.println(article.getId());
     }
 
     /**

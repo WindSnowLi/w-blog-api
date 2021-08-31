@@ -15,7 +15,7 @@ public class HttpRequestTest {
      */
     @Test
     public void testPostRequest() {
-        String url = "https://www.blog.firstmeet.xyz/api/article/getArticleById";
+        String url = "https://www.blog.hiyj.cn/api/article/getArticleById";
         //        请求表
         JSONObject paramMap = new JSONObject();
         paramMap.put("id", 93);
@@ -39,7 +39,7 @@ public class HttpRequestTest {
      */
     @Test
     public void testGetRequest() {
-        String url = "https://www.blog.firstmeet.xyz/";
+        String url = "https://www.blog.hiyj.cn/";
         //         请求客户端
         RestTemplate client = new RestTemplate();
         //      发起请求

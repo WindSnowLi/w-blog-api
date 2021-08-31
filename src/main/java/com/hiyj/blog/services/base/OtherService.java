@@ -1,8 +1,7 @@
 /*
- *  OtherService.java, 2021-08-23
+ * OtherService.java, 2021 - 8 - 31
  *
- *  Copyright 2021 by WindSnowLi, Inc. All rights reserved.
- *
+ * Copyright 2021 by WindSnowLi, Inc. All rights reserved.
  */
 
 package com.hiyj.blog.services.base;
@@ -62,10 +61,12 @@ public class OtherService {
         JSONObject data = new JSONObject();
         ArrayList<String> dataX = new ArrayList<>();
         ArrayList<Integer> dataY = new ArrayList<>();
-        for (Map<String, Object> temp : logByDay) {
-            dataX.add((String) temp.get(timeKey));
-            // 被BigDecimal和Long搞无语了
-            dataY.add(Integer.parseInt(temp.get("total").toString()));
+        if (logByDay != null && !logByDay.contains(null)) {
+            for (Map<String, Object> temp : logByDay) {
+                dataX.add((String) temp.get(timeKey));
+                // 被BigDecimal和Long搞无语了
+                dataY.add(Integer.parseInt(temp.get("total").toString()));
+            }
         }
         data.put("total", total);
         data.put("title", title);

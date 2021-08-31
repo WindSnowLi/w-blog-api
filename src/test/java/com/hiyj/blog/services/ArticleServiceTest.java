@@ -8,10 +8,7 @@ import com.hiyj.blog.object.Article;
 import com.hiyj.blog.object.ArticleLabel;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 public class ArticleServiceTest {
@@ -42,20 +39,20 @@ public class ArticleServiceTest {
      */
     @Test
     public void testCreateArticle() {
-        Article article = new Article();
-        article.setContent("TEST");
-        article.setSummary("TEST");
-        article.setTitle("TEST");
-        article.setCoverPic("TEST");
-        ArrayList<ArticleLabel> labbels = new ArrayList<>();
-        ArticleLabel label1 = new ArticleLabel();
-        label1.setName("C++");
-        labbels.add(label1);
-        ArticleLabel label2 = new ArticleLabel();
-        labbels.add(label2);
-        label2.setName("TEST");
-        article.setLabels(labbels);
-        articleJsonService.createArticle(article, 1);
+//        Article article = new Article();
+//        article.setContent("TEST");
+//        article.setSummary("TEST");
+//        article.setTitle("TEST");
+//        article.setCoverPic("TEST");
+//        ArrayList<ArticleLabel> labbels = new ArrayList<>();
+//        ArticleLabel label1 = new ArticleLabel();
+//        label1.setName("C++");
+//        labbels.add(label1);
+//        ArticleLabel label2 = new ArticleLabel();
+//        labbels.add(label2);
+//        label2.setName("TEST");
+//        article.setLabels(labbels);
+//        articleJsonService.createArticle(article, 1);
     }
 
     /**
@@ -66,9 +63,12 @@ public class ArticleServiceTest {
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (Object temp : articleJsonService.getVisitLogByDay(1)) {
-            x.add((String) ((HashMap) temp).get("day_time"));
-            y.add(((BigDecimal) ((HashMap) temp).get("total")).intValue());
+        List<Map<String, Object>> visitLogByDay = articleJsonService.getVisitLogByDay(1);
+        if (visitLogByDay != null && !visitLogByDay.contains(null)) {
+            for (Object temp : visitLogByDay) {
+                x.add((String) ((HashMap) temp).get("day_time"));
+                y.add(((BigDecimal) ((HashMap) temp).get("total")).intValue());
+            }
         }
         jsonObject.put("visitsAllCount", articleJsonService.getVisitsCountByUserId(1));
         jsonObject.put("title", "浏览量");

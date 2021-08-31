@@ -21,7 +21,7 @@ public class ArticleLabelMapperTest {
 
     @Test
     public void testGetArticleTypeById() {
-        System.out.println(articleLabelMapper.getArticleTypeById(13));
+        System.out.println(articleLabelMapper.getArticleTypeById(1));
     }
 
     /**
@@ -46,7 +46,7 @@ public class ArticleLabelMapperTest {
     }
 
     @Test
-    public void testGetAllTypes() {
+    public void testGetTypes() {
         System.out.println(articleLabelMapper.getTypes());
     }
 }

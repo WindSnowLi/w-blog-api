@@ -23,13 +23,13 @@ public class OssUtilsTest {
      */
     @Test
     public void testGetUploadUrl() {
-        OssUtils ossUtils = fileService.getOssUtils();
-        HashMap<String, String> headMap = new HashMap<>();
-        final HashMap<String, Object> uploadUrl = ossUtils.getUploadUrl("Blog/image/avatar/" + CodeUtils.getUUID(), false);
-
-        System.out.println(uploadUrl);
-
-        String url = "http://windsnowli.oss-cn-beijing.aliyuncs.com/Blog/image/avatar/b5af4dc0-dd32-11eb-973a-43ad923ac904?Expires=1625453143&OSSAccessKeyId=LTAI4GGJHNi11CxiSdxvq3QB&Signature=zek6pEPo5rksfvfVV1tX2ZrW8%2B4%3D";
+//        OssUtils ossUtils = fileService.getOssUtils();
+//        HashMap<String, String> headMap = new HashMap<>();
+//        final HashMap<String, Object> uploadUrl = ossUtils.getUploadUrl("Blog/image/avatar/" + CodeUtils.getUUID(), false);
+//
+//        System.out.println(uploadUrl);
+//
+//        String url = "http://windsnowli.oss-cn-beijing.aliyuncs.com/Blog/image/avatar/b5af4dc0-dd32-11eb-973a-43ad923ac904?Expires=1625453143&OSSAccessKeyId=LTAI4GGJHNi11CxiSdxvq3QB&Signature=zek6pEPo5rksfvfVV1tX2ZrW8%2B4%3D";
 //        String objectName = uploadUrl.get("GetUrl");
 //        try {
 //            ossUtils.uploadBySignedUrl(url, "E:\\Desktop\\test.txt", headMap);

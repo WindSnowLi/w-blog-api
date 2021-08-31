@@ -16,6 +16,10 @@ spring:
     testOnReturn: false
     poolPreparedStatements: false
     maxPoolPreparedStatementPerConnectionSize: 200
+  flyway:
+    encoding: UTF-8
+    locations: classpath:db/migration
+#    placeholder-replacement: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

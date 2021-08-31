@@ -120,7 +120,7 @@
     </select>
     <!--    通过类型名获取类型结束-->
     <!--    获取所有分类-->
-    <select id="getAllTypes">
+    <select id="getTypes" resultMap="labelMap">
         -- 叠加访问量
         SELECT *
         FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
