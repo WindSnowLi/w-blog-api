@@ -83,7 +83,7 @@ public class CommentController {
     /**
      * 修改评论状态
      *
-     * @param tokenTypeModel { "token": String, content: { id: "评论ID", content:"Status" }}
+     * @param idTypeModel { id: "评论ID", content:"Status" }
      * @return Msg
      */
     @ApiOperation(value = "管理员修改评论状态")
@@ -93,12 +93,8 @@ public class CommentController {
     })
     @PostMapping(value = "setCommentStatus")
     @Permission(value = {"VERIFY-COMMENT"})
-    public String setCommentStatus(@RequestBody TokenTypeModel<IdTypeModel<CommentBase.Status>> tokenTypeModel) {
-        int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        if (userId != 1) {
-            return Msg.getFailMsg();
-        }
-        commentJsonService.setCommentStatus(tokenTypeModel.getContent().getId(), tokenTypeModel.getContent().getContent());
+    public String setCommentStatus(@RequestBody IdTypeModel<CommentBase.Status> idTypeModel) {
+        commentJsonService.setCommentStatus(idTypeModel.getId(), idTypeModel.getContent());
         return Msg.getSuccessMsg();
     }
 
@@ -115,11 +111,11 @@ public class CommentController {
     })
     @PostMapping(value = "getCommentList")
     @Permission(value = {"VERIFY-COMMENT"})
-    public String getCommentListJson(@RequestBody TokenTypeModel<PageModel<CommentBase.Status>> pageModel) {
+    public String getCommentListJson(@RequestBody PageModel<CommentBase.Status> pageModel) {
         return Msg.getSuccessMsg(commentJsonService.getCommentListJson(
-                pageModel.getContent().getLimit(),
-                (pageModel.getContent().getPage() - 1) * pageModel.getContent().getLimit(),
-                pageModel.getContent().getSort(),
-                pageModel.getContent().getStatus()));
+                pageModel.getLimit(),
+                (pageModel.getPage() - 1) * pageModel.getLimit(),
+                pageModel.getSort(),
+                pageModel.getStatus()));
     }
 }

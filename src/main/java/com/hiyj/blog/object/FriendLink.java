@@ -20,7 +20,9 @@ public class FriendLink extends Link {
         //所有
         ALL,
         // 隐藏状态
-        HIDE
+        HIDE,
+        // 逻辑删除
+        DELETE
     }
 
     //    申请者邮箱

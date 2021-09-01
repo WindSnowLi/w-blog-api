@@ -73,7 +73,7 @@ public class FriendLinkController {
     /**
      * 设置友链状态
      *
-     * @param tokenTypeModel 友链信息 { "token":token, "content": {"id":int, "status":}  }
+     * @param idTypeModel 友链信息 {"id":int, "content":FriendLink.Status}
      * @return Msg
      */
     @ApiOperation(value = "设置友链状态")
@@ -83,12 +83,8 @@ public class FriendLinkController {
     })
     @PostMapping(value = "setFriendLinkStatus")
     @Permission(value = {"VERIFY-LINK"})
-    public String setFriendLinkStatus(@RequestBody TokenTypeModel<IdTypeModel<FriendLink.Status>> tokenTypeModel) {
-        int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
+    public String setFriendLinkStatus(@RequestBody IdTypeModel<FriendLink.Status> idTypeModel) {
         log.info("setFriendLinkStatus");
-        if (userId != 1) {
-            Msg.getFailMsg();
-        }
-        return friendLinkJsonService.setFriendLinkStatusJson(tokenTypeModel.getContent().getId(), tokenTypeModel.getContent().getContent());
+        return friendLinkJsonService.setFriendLinkStatusJson(idTypeModel.getId(), idTypeModel.getContent());
     }
 }
