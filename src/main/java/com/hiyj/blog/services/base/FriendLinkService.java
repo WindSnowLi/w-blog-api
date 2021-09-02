@@ -36,12 +36,11 @@ public class FriendLinkService {
     }
 
     /**
-     * 修改友链 状态
+     * 设置友链整体对象
      *
-     * @param id     友链对应ID
-     * @param status 状态
+     * @param friendLink 友链对象
      */
-    public void setFriendLinkStatus(int id, FriendLink.Status status) {
-        linkMapper.setFriendLinkStatus(id, status);
+    public void setFriendLink(FriendLink friendLink) {
+        linkMapper.setFriendLink(friendLink);
     }
 }

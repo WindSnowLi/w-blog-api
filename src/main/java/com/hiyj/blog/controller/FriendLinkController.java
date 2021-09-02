@@ -71,20 +71,20 @@ public class FriendLinkController {
     }
 
     /**
-     * 设置友链状态
+     * 设置友链整体对象
      *
-     * @param idTypeModel 友链信息 {"id":int, "content":FriendLink.Status}
+     * @param friendLink 友链对象
      * @return Msg
      */
-    @ApiOperation(value = "设置友链状态")
+    @ApiOperation(value = "设置友链状")
     @ApiResponses({
             @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
-    @PostMapping(value = "setFriendLinkStatus")
+    @PostMapping(value = "setFriendLink")
     @Permission(value = {"VERIFY-LINK"})
-    public String setFriendLinkStatus(@RequestBody IdTypeModel<FriendLink.Status> idTypeModel) {
-        log.info("setFriendLinkStatus");
-        return friendLinkJsonService.setFriendLinkStatusJson(idTypeModel.getId(), idTypeModel.getContent());
+    public String setFriendLink(@RequestBody FriendLink friendLink) {
+        log.info("setFriendLink");
+        return friendLinkJsonService.setFriendLinkJson(friendLink);
     }
 }

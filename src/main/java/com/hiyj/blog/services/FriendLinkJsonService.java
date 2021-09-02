@@ -29,14 +29,13 @@ public class FriendLinkJsonService extends FriendLinkService {
     }
 
     /**
-     * 修改友链 状态
+     * 设置友链整体对象
      *
-     * @param id     友链对应ID
-     * @param status 状态
+     * @param friendLink 友链对象
      * @return Msg
      */
-    public String setFriendLinkStatusJson(int id, FriendLink.Status status) {
-        setFriendLinkStatus(id, status);
+    public String setFriendLinkJson(FriendLink friendLink) {
+        setFriendLink(friendLink);
         return Msg.getSuccessMsg();
     }
 }

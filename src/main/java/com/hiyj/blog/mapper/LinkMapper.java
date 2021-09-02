@@ -3,6 +3,7 @@ package com.hiyj.blog.mapper;
 import com.hiyj.blog.object.FriendLink;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -23,12 +24,10 @@ public interface LinkMapper {
      */
     void applyFriendLink(@Param("friendLink") FriendLink friendLink);
 
-
     /**
-     * 修改友链 状态
+     * 设置友链整体对象
      *
-     * @param id     友链对应ID
-     * @param status 状态
+     * @param friendLink 友链对象
      */
-    void setFriendLinkStatus(@Param("id") int id, @Param("status") FriendLink.Status status);
+    void setFriendLink(@Param("friendLink") FriendLink friendLink);
 }
