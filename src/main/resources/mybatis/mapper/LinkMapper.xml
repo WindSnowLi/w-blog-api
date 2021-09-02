@@ -36,9 +36,14 @@
     </insert>
     <!--    申请友链结束-->
 
-    <update id="setFriendLinkStatus">
+    <update id="setFriendLink">
         UPDATE friend_links
-        SET status= #{status}
-        WHERE id = #{id};
+        SET link=#{friendLink.link},
+            title=#{friendLink.title},
+            `describe`=#{friendLink.describe},
+            email=#{friendLink.email},
+            status=#{friendLink.status},
+            coverPic=#{friendLink.coverPic}
+        WHERE id = #{friendLink.id}
     </update>
 </mapper>
