@@ -31,7 +31,7 @@ public class RoleService {
      * @param status 角色状态
      * @return List<Role>
      */
-    public List<Role> getRoles(int userId, PermissionRole.Status status) {
+    public List<Role> getUserRoles(int userId, PermissionRole.Status status) {
         return roleMapper.getRoles(userId, status);
     }
 
@@ -42,7 +42,7 @@ public class RoleService {
      * @param status 角色状态
      * @return 角色ID List
      */
-    public List<Integer> getRolesId(int userId, PermissionRole.Status status) {
+    public List<Integer> getUserRolesById(int userId, PermissionRole.Status status) {
         return roleMapper.getRolesId(userId, status);
     }
 
@@ -53,7 +53,7 @@ public class RoleService {
      * @param status 角色状态
      * @return 角色name List
      */
-    public List<String> getRolesName(int userId, PermissionRole.Status status) {
+    public List<String> getUserRolesByName(int userId, PermissionRole.Status status) {
         return roleMapper.getRolesName(userId, status);
     }
 

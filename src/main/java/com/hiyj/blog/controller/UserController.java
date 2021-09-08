@@ -223,7 +223,7 @@ public class UserController {
      */
     @ApiOperation(value = "通过Gitee授权码获取本地Token")
     @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = TokenModel.class),
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = CodeUrlModel.class),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "giteeLogin")

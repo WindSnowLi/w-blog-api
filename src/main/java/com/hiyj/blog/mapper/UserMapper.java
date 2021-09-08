@@ -112,4 +112,13 @@ public interface UserMapper {
      */
     @Select("SELECT id, other_id, other_platform, user_id FROM other_user WHERE other_id=#{other_id} AND other_platform=#{platform}")
     OtherUser getOtherUser(@Param("other_id") String other_id, @Param("platform") User.Platform platform);
+
+    /**
+     * 添加用户-角色映射
+     *
+     * @param userId 用户ID
+     * @param roleId 角色ID
+     */
+    @Insert("INSERT INTO user_map_role (user_id, role_id) VALUES(#{userId}, #{roleId})")
+    void addUserMapRole(@Param("userId") int userId, @Param("roleId") int roleId);
 }

@@ -1,6 +1,8 @@
 package com.hiyj.blog.services.otherlogin;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.object.Role;
+import com.hiyj.blog.services.base.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +35,13 @@ public class GiteeService {
     @Autowired
     public void setUserJsonService(UserJsonService userJsonService) {
         this.userJsonService = userJsonService;
+    }
+
+    private RoleService roleService;
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     /**
@@ -128,6 +137,8 @@ public class GiteeService {
             otherUser.setUser_id(user.getId());
             //记录授权信息
             userJsonService.addOtherUser(otherUser);
+            //添加角色映射
+            userJsonService.addUserMapRole(user.getId(), roleService.getRoleByName(Role.USER).getId());
         } else {
             //赋值本地ID
             user.setId(otherUserQuery.getUser_id());

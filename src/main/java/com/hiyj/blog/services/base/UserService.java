@@ -1,13 +1,13 @@
 package com.hiyj.blog.services.base;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.hiyj.blog.mapper.ArticleMapper;
 import com.hiyj.blog.mapper.UserMapper;
 import com.hiyj.blog.object.OtherUser;
 import com.hiyj.blog.object.User;
 import com.hiyj.blog.utils.CodeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -155,5 +155,15 @@ public class UserService {
      */
     public String encryptPasswd(String text) {
         return CodeUtils.strWithMd5(CodeUtils.strWithSha512(text));
+    }
+
+    /**
+     * 添加用户-角色映射
+     *
+     * @param userId 用户ID
+     * @param roleId 角色ID
+     */
+    public void addUserMapRole(int userId, int roleId) {
+        userMapper.addUserMapRole(userId, roleId);
     }
 }
