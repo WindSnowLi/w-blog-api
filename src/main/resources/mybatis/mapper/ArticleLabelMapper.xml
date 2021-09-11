@@ -7,67 +7,134 @@
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="coverPic" column="coverPic"/>
+        <result property="describe" column="describe"/>
+        <collection property="num" javaType="Integer" ofType="Integer"
+                    select="getLabelPV" column="id"/>
+        <collection property="pv" javaType="Integer" ofType="Integer"
+                    select="getArtSumLabel" column="id"/>
     </resultMap>
 
-    <select id="getTypeById" parameterType="int" resultMap="labelMap">
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
+    <resultMap id="typeMap" type="com.hiyj.blog.object.ArticleType">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="coverPic" column="coverPic"/>
+        <result property="describe" column="describe"/>
+        <collection property="num" javaType="Integer" ofType="Integer"
+                    select="getArtSumType" column="id"/>
+        <collection property="pv" javaType="Integer" ofType="Integer"
+                    select="getTypePV" column="id"/>
+    </resultMap>
 
--- 结果ID获取
-(
-    SELECT SUM(ta.rn) as num, ta.type_id
-    FROM (
-             SELECT 1 as rn, amt.type_id FROM article_map_type amt where amt.type_id = #{typeId}
-         ) ta
+    <!--    获取标签所属文章总数-->
+    <select id="getArtSumLabel" resultType="int">
+        SELECT IFNULL(COUNT(*), 0)
+        FROM article_map_label aml
+        WHERE aml.label_id = #{id}
+    </select>
+    <!--    获取标签所属文章总数结束-->
 
-    group By ta.type_id
-) rs_list
--- 结果ID获取结束
+    <!--    获取分类所属文章总数-->
+    <select id="getArtSumType" resultType="int">
+        SELECT IFNULL(COUNT(*), 0)
+        FROM article_map_type aml
+        WHERE aml.type_id = #{id}
+    </select>
+    <!--    获取分类所属文章总数结束-->
 
-    LEFT JOIN article_label al ON rs_list.type_id = al.id
-                   ) a
-                       Left join (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 100
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        order by t.name
-        -- 叠加访问量结束
+    <!--    通过标签ID获取标签访问量-->
+    <select id="getLabelPV" resultType="int">
+        SELECT IFNULL(SUM(pv.count), 0)
+        FROM pv
+        WHERE pv.`type` = 10
+          AND pv.target_id = #{id}
+    </select>
+    <!--    通过标签ID获取标签访问量结束-->
 
+    <!--    通过分类ID获取分类访问量-->
+    <select id="getTypePV" resultType="int">
+        SELECT IFNULL(SUM(pv.count), 0)
+        FROM pv
+        WHERE pv.`type` = 100
+          AND pv.target_id = #{id}
+    </select>
+    <!--    通过分类ID获取分类访问量结束-->
+
+    <!--    用户文章ID-->
+    <sql id="userArticles">
+        SELECT distinct uma.article_id
+        FROM user_map_article uma
+        WHERE uma.user_id = #{userId}
+    </sql>
+    <!--    用户文章ID结束-->
+
+    <!--    所有标签-->
+    <sql id="labels">
+        SELECT al.*
+        FROM (
+                 SELECT DISTINCT aml.label_id
+                 FROM article_map_label aml
+             ) aml
+                 LEFT JOIN article_label al on aml.label_id = al.id
+    </sql>
+    <!--    所有标签结束-->
+
+    <!--    所有分类-->
+    <sql id="types">
+        SELECT al.*
+        FROM (
+                 SELECT DISTINCT amt.type_id
+                 FROM article_map_type amt
+             ) amt
+                 LEFT JOIN article_label al on amt.type_id = al.id
+    </sql>
+    <!--    所有分类结束-->
+
+    <!--   各个标签/类型访问量 -->
+    <sql id="pv">
+        SELECT target_id, SUM(count) as count
+        FROM pv
+        WHERE pv.`type` = ${type}
+        GROUP BY target_id
+    </sql>
+
+    <sql id="labelsPV">
+        <include refid="pv">
+            <property name="type" value="10"/>
+        </include>
+    </sql>
+
+    <sql id="typesPV">
+        <include refid="pv">
+            <property name="type" value="100"/>
+        </include>
+    </sql>
+    <!--   各个标签/类型访问量结束 -->
+
+    <!--    获取用户所有分类信息-->
+    <sql id="userTypes">
+        SELECT al.*
+        FROM (
+        SELECT DISTINCT amt.type_id
+        FROM (
+        <include refid="userArticles"/>
+        ) uma
+        LEFT JOIN article_map_type amt ON uma.article_id = amt.article_id
+        ) types
+        LEFT JOIN article_label al ON types.type_id = al.id
+        ORDER BY al.name
+    </sql>
+    <!--    获取用户所有分类信息结束-->
+
+    <select id="getTypeById" parameterType="int" resultMap="typeMap">
+        select *
+        from article_label
+        where article_label.id = #{typeId}
     </select>
 
     <select id="getLabelById" parameterType="int" resultMap="labelMap">
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
-
--- 结果ID获取
-(
-    SELECT SUM(ta.rn) as num, ta.label_id
-    FROM (
-             SELECT 1 as rn, aml.label_id FROM article_map_label aml where aml.label_id = #{labelId}
-         ) ta
-
-    group By ta.label_id
-) rs_list
--- 结果ID获取结束
-
-    LEFT JOIN article_label al ON rs_list.label_id = al.id
-                   ) a
-                       Left join (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 10
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        order by t.name
-        -- 叠加访问量结束
+        select *
+        from article_label
+        where article_label.id = #{labelId}
     </select>
 
 
@@ -82,116 +149,25 @@
         INSERT INTO article_map_type
             (article_id, type_id)
         VALUES (#{articleId}, #{typeId});
-
     </insert>
 
+    <!--    获取所有标签完整信息-->
     <select id="getAllLabel" resultMap="labelMap">
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
--- 结果ID获取
-(
-    SELECT SUM(all_rs.rn) as num, all_rs.label_id
-    FROM (
-             SELECT 1 as rn, aml.article_id, aml.label_id, aml.id
-             FROM article_map_label aml
-         ) all_rs
-    GROUP BY all_rs.label_id
-) rs_list
--- 结果ID获取结束
-    LEFT JOIN article_label al ON rs_list.label_id = al.id
-                   ) a
-                       Left join (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 10
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        order by t.name
-        -- 叠加访问量结束
+        <include refid="labels"/>
     </select>
+    <!--    获取所有标签完整信息结束-->
     <!--通过类型名获取类型-->
-    <select id="getTypeByName" parameterType="String" resultMap="labelMap">
+    <select id="getTypeByName" parameterType="String" resultMap="typeMap">
         SELECT *
         FROM article_label al
         WHERE al.name = #{typeName}
     </select>
     <!--    通过类型名获取类型结束-->
     <!--    获取所有分类-->
-    <select id="getTypes" resultMap="labelMap">
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
--- 结果ID获取
-(
-    SELECT SUM(all_rs.rn) as num, all_rs.type_id
-    FROM (
-             SELECT 1 as rn, amt.article_id, amt.type_id, amt.id
-             FROM article_map_type amt
-         ) all_rs
-    GROUP BY all_rs.type_id
-) rs_list
--- 结果ID获取结束
-    LEFT JOIN article_label al ON rs_list.type_id = al.id
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 100
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY t.name
-        -- 叠加访问量结束
+    <select id="getTypes" resultMap="typeMap">
+        <include refid="types"/>
     </select>
     <!--    获取所有分类结束-->
-
-    <!--获取所有标签-->
-    <select id="getLabels" resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
-
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT *
-                       from article_label
-                   ) a
-                       left OUTER JOIN (SELECT target_id, SUM(count) as count
-                                        FROM visits_count vc
-                                        WHERE vc.`type` = 10
-                                        GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY t.name
-
-    </select>
-    <!--获取所有标签结束-->
-
-    <!--获取用户所属热门标签-->
-    <select id="getHotLabelsByUserId" parameterType="int"
-            resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
-
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT *
-                       from article_label al
-                       where al.id in (SELECT DISTINCT aml.label_id
-                                       from article_map_label aml
-                                       where aml.article_id in
-                                             (select DISTINCT uma.article_id
-                                              from user_map_article uma
-                                              WHERE uma.user_id = #{user_id}))
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 10
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY visitsCount
-    </select>
-    <!--获取用户所属热门标签结束-->
 
     <!-- 添加新标签-->
     <insert id="addLabels" parameterType="List" useGeneratedKeys="true" keyProperty="id">
@@ -231,85 +207,20 @@
     </select>
     <!-- 根据标签名批量查询标签对象  >>end<< -->
 
-    <!--    用户各分类访问量-->
-    <select id="getVisitCountByTypeByUserId" parameterType="int"
-            resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
-        -- 分类
-        SELECT al.*, v_count.visitsCount
-        FROM article_label al
-                 right join
-             -- 访问量
-                 (SELECT vc.target_id as id, IFNULL(sum(vc.count), 0) as visitsCount
-                  FROM
--- 用户分类ID
-(
-    SELECT DISTINCT all_rs.type_id as target_id
-    FROM (
-             SELECT aml.article_id, aml.type_id, aml.id
-             FROM (
-                      -- 用户文章
-                      SELECT distinct uma.article_id FROM user_map_article uma WHERE uma.user_id = #{userId}
-                      -- 用户文章结束
-                  ) u_a
-
-                      LEFT JOIN article_map_type aml
-                                on u_a.article_id = aml.article_id
-         ) all_rs
-) u_l_i
-    -- 用户分类ID结束
-
-
-    LEFT JOIN (
-    select *
-    from visits_count vc
-    WHERE vc.`type` = 100
-) vc on u_l_i.target_id
-                  WHERE vc.target_id = u_l_i.target_id
-                  GROUP by vc.target_id) v_count ON v_count.id = al.id limit 0,#{cut}
-        -- 访问量结束
--- 分类结束
-
+    <!--    分页获取标签-->
+    <select id="getLabelByPage" resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
+        <include refid="labels"/>
+        limit #{limit} OFFSET #{offset}
     </select>
-    <!--    用户各分类访问量结束-->
 
-
-    <!--    获取用户所有分类信息-->
-    <select id="getAllTypeByUserId" resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
-
-        -- 叠加访问量
-        SELECT *
-        FROM (SELECT a.*, IFNULL(v.count, 0) as visitsCount
-              FROM (
-                       SELECT rs_list.num as num, al.id, al.name, al.coverPic
-                       FROM
--- 结果ID获取
-(
-    SELECT SUM(all_rs.rn) as num, all_rs.type_id
-    FROM (
-             SELECT 1 as rn, amt.article_id, amt.type_id, amt.id
-             FROM (
-                      -- 用户文章
-                      SELECT distinct uma.article_id FROM user_map_article uma WHERE uma.user_id = #{userId}
-                      -- 用户文章结束
-                  ) u_a
-
-                      LEFT JOIN article_map_type amt
-                                on u_a.article_id = amt.article_id
-         ) all_rs
-    GROUP BY all_rs.type_id
-) rs_list
--- 结果ID获取结束
-    LEFT JOIN article_label al ON rs_list.type_id = al.id
-                   ) a
-                       LEFT JOIN (SELECT target_id, SUM(count) as count
-                                  FROM visits_count vc
-                                  WHERE vc.`type` = 100
-                                  GROUP BY target_id) v on v.target_id = a.id
-             ) t
-        ORDER BY t.name
-        -- 叠加访问量结束
-
-    </select>
-    <!--    获取用户所有分类信息结束-->
-
+    <!--    分页获取标签结束-->
+    <!--    设置标签内容-->
+    <update id="setLabel">
+        UPDATE article_label
+        SET name      = #{articleLabel.name},
+            `describe`= #{articleLabel.describe},
+            coverPic= #{articleLabel.coverPic}
+        WHERE id = #{articleLabel.id};
+    </update>
+    <!--    设置标签内容结束-->
 </mapper>

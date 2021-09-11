@@ -3,6 +3,7 @@ package com.hiyj.blog.mapper;
 import com.hiyj.blog.object.Article;
 import com.hiyj.blog.object.ArticleLabel;
 import com.hiyj.blog.object.User;
+import com.hiyj.blog.object.base.LabelBase;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -16,18 +17,16 @@ public interface ArticleMapper {
     /**
      * 获取用户文章数量
      *
-     * @param userId 用户ID
      * @return 数量
      */
-    int getArticleCountByUserId(@Param("userId") int userId);
+    int getArticleCount();
 
     /**
-     * 获取用户所有访问量
+     * 获取所有访问量
      *
-     * @param userId 用户ID
      * @return 访问量
      */
-    int getVisitsAllCountByUserId(@Param("userId") int userId);
+    int getPV();
 
     /**
      * 逆序分页获取文章
@@ -53,18 +52,18 @@ public interface ArticleMapper {
     /**
      * 根据ID排序，第一个为所属分类
      *
-     * @param article_id 文章ID
+     * @param id 文章ID
      * @return 标签列表
      */
-    List<ArticleLabel> getArticleMapLabels(@Param("article_id") int article_id);
+    List<LabelBase> getArticleMapLabels(@Param("id") int id);
 
     /**
      * 根据文章ID查找文章
      *
-     * @param article_id 文章ID
+     * @param id 文章ID
      * @return 文章
      */
-    Article findArticleId(@Param("article_id") int article_id);
+    Article findArticleId(@Param("id") int id);
 
     /**
      * 查找文章作者
@@ -78,21 +77,26 @@ public interface ArticleMapper {
     /**
      * 获取标签所属文章
      *
-     * @param id     标签ID
-     * @param limit  限制数
-     * @param offset 偏移量量
+     * @param labelId 标签ID
+     * @param limit   限制数
+     * @param offset  偏移量
+     * @param sort   排序方式 默认-id,
+     * @param status  文章状态
      * @return 文章列表
      */
-    List<Article> getLabelArticlePage(@Param("label_id") int id, @Param("limit") int limit, @Param("offset") int offset);
+    List<Article> getArticlesByLabel(@Param("labelId") int labelId, @Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") Article.Status status);
 
     /**
      * 获取所属分类文章
      *
-     * @param type   分类ID
+     * @param typeId 分类ID
+     * @param limit   限制数
+     * @param offset  偏移量
+     * @param sort   排序方式 默认-id,
      * @param status 文章状态，默认published，all为全部文章类型
      * @return List Article
      */
-    List<Article> getArticlesByType(@Param("label_id") int type, @Param("status") Article.Status status);
+    List<Article> getArticlesByType(@Param("typeId") int typeId, @Param("limit") int limit, @Param("offset") int offset, @Param("sort") String sort, @Param("status") Article.Status status);
 
     /**
      * 访问量加一
@@ -101,8 +105,8 @@ public interface ArticleMapper {
      * @param type      目标类型
      * @return 影响row
      */
-    @Update("UPDATE visits_count SET count=count+1 WHERE target_id=#{target_id} AND `type`=#{type} AND TIME= CURDATE();")
-    int addVisitsCount(@Param("target_id") int target_id, @Param("type") int type);
+    @Update("UPDATE pv SET count=count+1 WHERE target_id=#{target_id} AND `type`=#{type} AND TIME= CURDATE();")
+    int addPV(@Param("target_id") int target_id, @Param("type") int type);
 
     /**
      * 添加新的访问量行
@@ -110,32 +114,29 @@ public interface ArticleMapper {
      * @param target_id 目标ID
      * @param type      类型
      */
-    @Insert("INSERT INTO visits_count(`target_id`, `type`, `time`) VALUES(#{target_id}, #{type}, CURDATE());")
+    @Insert("INSERT INTO pv(`target_id`, `type`, `time`) VALUES(#{target_id}, #{type}, CURDATE());")
     void addVisitsRow(@Param("target_id") int target_id, @Param("type") int type);
 
     /**
      * 获取访问总量和趋势数据
      *
-     * @param userId 用户ID
      * @return List<Map < String, Object>>, 日期数值键值对{total=int, day_time=String}
      */
-    List<Map<String, Object>> getVisitLogByDay(@Param("userId") int userId);
+    List<Map<String, Object>> getPVLogByDay();
 
     /**
      * 获取文章创建历史
      *
-     * @param userId 用户ID
      * @return List<Map < String, Object>>, 日期数值键值对{total=int, day_time=week_time}
      */
-    List<Map<String, Object>> getArticleCreateLogByWeek(@Param("userId") int userId);
+    List<Map<String, Object>> getArticleCreateLogByWeek();
 
     /**
      * 添加文章，不含标签和文章所属用户映射
      *
      * @param article 文章对象
-     * @return 插入条
      */
-    int addArticle(@Param("article") Article article);
+    void addArticle(@Param("article") Article article);
 
     /**
      * 添加用户——文章映射
@@ -151,7 +152,7 @@ public interface ArticleMapper {
      * @param articleId     文章ID
      * @param articleLabels 文章标签对象列表
      */
-    void addArticleMapLabels(@Param("articleId") int articleId, @Param("articleLabels") List<ArticleLabel> articleLabels);
+    void addArticleMapLabels(@Param("articleId") int articleId, @Param("articleLabels") List<LabelBase> articleLabels);
 
     /**
      * 获取访问最多的文章
@@ -202,4 +203,12 @@ public interface ArticleMapper {
      */
     @Select("select * from article a where a.id < #{articleId} order by a.id desc limit 1")
     Article getPreArticle(@Param("articleId") int articleId);
+
+    /**
+     * 根据文章ID获取文章访问量
+     *
+     * @param articleId 文章ID
+     * @return 访问量
+     */
+    int getArtPV(@Param("articleId") int articleId);
 }

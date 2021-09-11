@@ -75,6 +75,10 @@ public class Msg implements Serializable {
         return Msg.makeJsonMsg(Msg.CODE_FAIL, Msg.MSG_FAIL, null);
     }
 
+    public static String getFailMsg(String msg) {
+        return Msg.makeJsonMsg(Msg.CODE_FAIL, msg, null);
+    }
+
     public static String getSuccessMsg() {
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, null);
     }

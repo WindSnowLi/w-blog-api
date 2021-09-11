@@ -1,12 +1,12 @@
 package com.hiyj.blog.services.base;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.object.base.LabelBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hiyj.blog.mapper.ArticleMapper;
 import com.hiyj.blog.object.Article;
-import com.hiyj.blog.object.ArticleLabel;
 import com.hiyj.blog.object.User;
 
 import java.util.List;
@@ -43,124 +43,119 @@ public class ArticleService {
     /**
      * 根据文章ID查找文章
      *
-     * @param article_id 文章ID
+     * @param articleId 文章ID
      * @return Article，文章
      */
-    public Article findArticle(int article_id) {
-        Article article = articleMapper.findArticleId(article_id);
+    public Article findArticle(int articleId) {
+        Article article = articleMapper.findArticleId(articleId);
         if (article == null) {
             return null;
         }
-        article.setLabels(articleMapper.getArticleMapLabels(article_id));
+        article.setLabels(articleMapper.getArticleMapLabels(articleId));
         return article;
     }
 
-    public User findArticleAuthor(int article_id) {
-        return articleMapper.findArticleAuthor(article_id);
+    public User findArticleAuthor(int articleId) {
+        return articleMapper.findArticleAuthor(articleId);
     }
 
     /**
-     * 或许标签所属文章
+     * 获取标签所属文章
      *
      * @param id     标签ID
      * @param limit  限制数
-     * @param offset 偏移量量
+     * @param offset 偏移量
+     * @param sort   排序方式 默认-id,
+     * @param status 文章状态
      * @return 文章列表
      */
-    public List<Article> getLabelArticlePage(int id, int limit, int offset) {
-        return articleMapper.getLabelArticlePage(id, limit, offset);
+    public List<Article> getArticlesByLabel(int id, int limit, int offset, String sort, Article.Status status) {
+        return articleMapper.getArticlesByLabel(id, limit, offset, sort, status);
     }
 
     /**
      * 访问量加一
      *
-     * @param target_id 目标ID
-     * @param type      目标类型
+     * @param targetId 目标ID
+     * @param type     目标类型
      */
-    private void addVisitsCount(int target_id, int type) {
-        if (articleMapper.addVisitsCount(target_id, type) < 1) {
-            articleMapper.addVisitsRow(target_id, type);
-            articleMapper.addVisitsCount(target_id, type);
+    private void addPV(int targetId, int type) {
+        if (articleMapper.addPV(targetId, type) < 1) {
+            articleMapper.addVisitsRow(targetId, type);
+            articleMapper.addPV(targetId, type);
         }
     }
 
     /**
      * 文章访问量、分类访问量、标签+1
      *
-     * @param article_id 文章ID
+     * @param articleId 文章ID
      */
-    public void addArticleVisits(int article_id) {
-        //文章访问量
-        addVisitsCount(article_id, TYPE_ARTICLE);
-        //1为分类，其余为标签
-        final List<ArticleLabel> articleMapLabels = articleMapper.getArticleMapLabels(article_id);
-        boolean type = true;
-        for (ArticleLabel articleLabel : articleMapLabels) {
-            if (type) {
-                addTypeVisitsCount(articleLabel.getId());
-                type = false;
-            } else {
-                addLabelVisitsCount(articleLabel.getId());
-            }
+    public void addArticleVisits(int articleId) {
+        //文章访问量+1
+        addPV(articleId, TYPE_ARTICLE);
+        //标签访问量+1
+        final List<LabelBase> articleMapLabels = articleMapper.getArticleMapLabels(articleId);
+        for (LabelBase articleLabel : articleMapLabels) {
+            addLabelPV(articleLabel.getId());
         }
+        LabelBase articleTypeById = articleLabelService.getArticleMapType(articleId);
+        // 添加类型访问量
+        addTypePV(articleTypeById.getId());
     }
 
     /**
      * 分类访问量+1
      *
-     * @param type_id 分类ID
+     * @param typeId 分类ID
      */
-    public void addTypeVisitsCount(int type_id) {
-        addVisitsCount(type_id, TYPE_TYPE);
+    public void addTypePV(int typeId) {
+        addPV(typeId, TYPE_TYPE);
     }
 
     /**
      * 标签访问量+1
      *
-     * @param label_id 标签ID
+     * @param labelId 标签ID
      */
-    public void addLabelVisitsCount(int label_id) {
-        addVisitsCount(label_id, TYPE_LABEL);
+    public void addLabelPV(int labelId) {
+        addPV(labelId, TYPE_LABEL);
     }
 
     /**
      * 获取用户文章数量
      *
-     * @param userId 用户ID
      * @return 数量
      */
-    public int getArticleCountByUserId(int userId) {
-        return articleMapper.getArticleCountByUserId(userId);
+    public int getArticleCount() {
+        return articleMapper.getArticleCount();
     }
 
     /**
      * 获取用户所有访问量
      *
-     * @param userId 用户ID
      * @return 访问量
      */
-    public int getVisitsCountByUserId(int userId) {
-        return articleMapper.getVisitsAllCountByUserId(userId);
+    public int getPV() {
+        return articleMapper.getPV();
     }
 
     /**
      * 获取访问总量和趋势数据
      *
-     * @param userId 用户ID
      * @return List<Map < String, Object>>, 日期数值键值对{total=int, day_time=String}
      */
-    public List<Map<String, Object>> getVisitLogByDay(int userId) {
-        return articleMapper.getVisitLogByDay(userId);
+    public List<Map<String, Object>> getVisitLogByDay() {
+        return articleMapper.getPVLogByDay();
     }
 
     /**
      * 获取文章创建历史
      *
-     * @param userId 用户ID
      * @return List<Map < String, Object>>, 日期数值键值对{total=int, week_time=String}
      */
-    public List<Map<String, Object>> getAddArticleLogByWeek(int userId) {
-        return articleMapper.getArticleCreateLogByWeek(userId);
+    public List<Map<String, Object>> getAddArticleLogByWeek() {
+        return articleMapper.getArticleCreateLogByWeek();
     }
 
     /**
@@ -200,7 +195,7 @@ public class ArticleService {
      * @param limit 获取截取
      * @return 文章列表
      */
-    public List<Article> getMostVisits(int limit) {
+    public List<Article> getMostPV(int limit) {
         return articleMapper.getMostVisits(limit);
     }
 
@@ -222,8 +217,6 @@ public class ArticleService {
      */
     public JSONObject getDetailById(int articleId) {
         Article article = findArticle(articleId);
-        article.setArticleType(articleLabelService.getArticleTypeById(articleId));
-        article.setLabels(articleMapper.getArticleMapLabels(article.getId()));
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("article", article);
         jsonObject.put("user", findArticleAuthor(articleId));

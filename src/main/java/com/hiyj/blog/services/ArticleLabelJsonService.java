@@ -1,16 +1,19 @@
 package com.hiyj.blog.services;
 
+import com.hiyj.blog.object.ArticleLabel;
 import com.hiyj.blog.services.base.ArticleLabelService;
 import org.springframework.stereotype.Service;
 import com.hiyj.blog.object.Msg;
+
+import java.util.List;
 
 @Service("articleLabelJsonService")
 public class ArticleLabelJsonService extends ArticleLabelService {
 
     /**
-     * 通过标签ID获取标签
+     * 通过类型ID获取类型
      *
-     * @param id 标签ID
+     * @param id 类型ID
      * @return 标签Json信息
      */
     public String getTypeByIdJson(int id) {
@@ -37,31 +40,23 @@ public class ArticleLabelJsonService extends ArticleLabelService {
     }
 
     /**
-     * 获取用户所有分类信息
-     *
-     * @param userId 用户ID
-     * @return Msg
-     */
-    public String getAllTypeByUserIdJson(int userId) {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, articleLabelMapper.getAllTypeByUserId(userId));
-    }
-
-
-    /**
-     * 获取文章所有分类
+     * 获取所有分类信息
      *
      * @return Msg
      */
-    public String getAllTypeJson() {
+    public String getTypes() {
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, articleLabelMapper.getTypes());
     }
 
-    public String getAllLabelsJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getAllLabels());
+    /**
+     * 分页获取标签
+     *
+     * @param limit 限制数
+     * @param page  偏移量量
+     * @return Msg
+     */
+    public String getLabelByPageJson(int limit, int page) {
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS,
+                getLabelByPage(limit, (page - 1) * limit));
     }
-
-    public String getHotLabelsJson() {
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, getHotLabels());
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.hiyj.blog.object;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.hiyj.blog.object.base.LabelBase;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,14 +34,14 @@ public class Article implements Serializable {
     //头像链接
     private String coverPic;
     //文章分类
-    private ArticleLabel articleType;
+    private LabelBase articleType;
     //文章标签
-    private List<ArticleLabel> labels;
+    private List<LabelBase> labels;
     //发布时间
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     //浏览次数
-    private int visitsCount;
+    private int pv;
     //最后更新时间
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;

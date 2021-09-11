@@ -30,7 +30,6 @@ public class OtherController {
     /**
      * 获取仪表盘折线图和panel-group部分
      *
-     * @param tokenModel 验证信息
      * @return Msg
      */
     @ApiOperation(value = "获取仪表盘折线图和panel-group部分")
@@ -39,16 +38,14 @@ public class OtherController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "getPanel")
-    public String getPanel(@RequestBody TokenModel tokenModel) {
-        int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
+    public String getPanel() {
         log.info("getPanel");
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, otherJsonService.getPanel(userId));
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, otherJsonService.getPanel());
     }
 
     /**
      * 获取图表信息
      *
-     * @param tokenModel 验证信息
      * @return Msg
      */
     @ApiOperation(value = "获取图表信息")
@@ -57,9 +54,8 @@ public class OtherController {
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
     @PostMapping(value = "getChart")
-    public String getChart(@RequestBody TokenModel tokenModel) {
-        int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
+    public String getChart() {
         log.info("getChart");
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, otherJsonService.getChart(userId));
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, otherJsonService.getChart());
     }
 }

@@ -7,9 +7,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @ApiModel
-@ToString
-@Setter
 @Getter
+@Setter
+@ToString
 public class IdModel {
     //ID
     @ApiModelProperty(value = "ID信息", required = true)

@@ -69,7 +69,7 @@ public class PermissionsInterceptor implements HandlerInterceptor {
                     method.getDeclaringClass().getAnnotation(Permission.class) :
                     method.getAnnotation(Permission.class);
             if (permissionClass.value().length == 0) {
-                response.getWriter().println(Msg.getFailMsg());
+                response.getWriter().println(Msg.getFailMsg("没有相应权限"));
                 return false;
             } else {
                 // 从 http 请求头中取出 token
@@ -86,7 +86,7 @@ public class PermissionsInterceptor implements HandlerInterceptor {
                     String userAccount = JwtUtils.getTokenUserAccount(token);
                     String userPassword = JwtUtils.getTokenUserPassword(token);
                     if (user == null || !user.getPassword().equals(userPassword) || !user.getAccount().equals(userAccount)) {
-                        response.getWriter().println(Msg.getFailMsg());
+                        response.getWriter().println(Msg.getFailMsg("身份验证错误"));
                         return false;
                     }
                     rolePermissionsName = permissionService.getUserPermissionsName(userId);
@@ -95,7 +95,7 @@ public class PermissionsInterceptor implements HandlerInterceptor {
                 for (String value : permissionClass.value()) {
                     // 如果用户不包含所需权限则不允许访问
                     if (!rolePermissionsName.contains(value)) {
-                        response.getWriter().println(Msg.getFailMsg());
+                        response.getWriter().println(Msg.getFailMsg("没有相应权限"));
                         return false;
                     }
                 }

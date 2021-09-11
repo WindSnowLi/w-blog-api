@@ -19,7 +19,7 @@ public class OtherServiceTest {
      */
     @Test
     public void testGetPanel() {
-        System.out.println(otherService.getPanel(1));
+        System.out.println(otherService.getPanel());
     }
 
     /**
@@ -27,6 +27,6 @@ public class OtherServiceTest {
      */
     @Test
     public void testGetChart() {
-        System.out.println(otherService.getChart(1));
+        System.out.println(otherService.getChart());
     }
 }

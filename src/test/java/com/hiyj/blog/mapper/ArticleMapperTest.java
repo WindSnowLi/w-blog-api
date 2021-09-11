@@ -1,6 +1,5 @@
 package com.hiyj.blog.mapper;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hiyj.blog.object.Article;
 import org.junit.jupiter.api.Test;
@@ -31,27 +30,27 @@ public class ArticleMapperTest {
 
     @Test
     public void testGetLabelArticlePage() {
-        System.out.println(articleMapper.getLabelArticlePage(2, 0, 100));
+        System.out.println(articleMapper.getArticlesByLabel(2, 0, 100, "-id", Article.Status.PUBLISHED));
     }
 
     @Test
     public void testGetArticleByType() {
-        System.out.println(articleMapper.getArticlesByType(2, Article.Status.ALL));
+        System.out.println(articleMapper.getArticlesByType(2, 1, 100, "-id", Article.Status.ALL));
     }
 
     @Test
-    public void testAddVisitsCount() {
-        articleMapper.addVisitsCount(1, 1);
+    public void testAddPV() {
+        articleMapper.addPV(1, 1);
     }
 
     @Test
     public void testGetArticleCountByUserId() {
-        System.out.println(articleMapper.getArticleCountByUserId(1));
+        System.out.println(articleMapper.getArticleCount());
     }
 
     @Test
     public void testGetVisitsAllCountByUserId() {
-        System.out.println(articleMapper.getVisitsAllCountByUserId(1));
+        System.out.println(articleMapper.getPV());
     }
 
     /**
@@ -59,7 +58,7 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetVisitHistoryCountByDay() {
-        List<Map<String, Object>> visitHistoryCountByDay = articleMapper.getVisitLogByDay(1);
+        List<Map<String, Object>> visitHistoryCountByDay = articleMapper.getPVLogByDay();
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
@@ -83,7 +82,7 @@ public class ArticleMapperTest {
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (Map<String, Object> temp : articleMapper.getArticleCreateLogByWeek(1)) {
+        for (Map<String, Object> temp : articleMapper.getArticleCreateLogByWeek()) {
             x.add((String) temp.get("week_time"));
             y.add(((Long) temp.get("total")).intValue());
         }

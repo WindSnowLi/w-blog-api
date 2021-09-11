@@ -1,6 +1,8 @@
 package com.hiyj.blog.mapper;
 
 import com.hiyj.blog.object.ArticleLabel;
+import com.hiyj.blog.object.ArticleType;
+import com.hiyj.blog.object.base.LabelBase;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +21,7 @@ public interface ArticleLabelMapper {
      * @param typeId 标签ID
      * @return 类型对象
      */
-    ArticleLabel getTypeById(@Param("typeId") int typeId);
+    LabelBase getTypeById(@Param("typeId") int typeId);
 
     /**
      * 通过类型名获取类型
@@ -27,7 +29,7 @@ public interface ArticleLabelMapper {
      * @param typeName 类型名
      * @return 类型对象
      */
-    ArticleLabel getTypeByName(@Param("typeName") String typeName);
+    ArticleType getTypeByName(@Param("typeName") String typeName);
 
     /**
      * 通过标签ID获取标签
@@ -59,14 +61,6 @@ public interface ArticleLabelMapper {
      * @return List ArticleLabel
      */
     List<ArticleLabel> getAllLabel();
-
-    /**
-     * 获取所有分类数量
-     *
-     * @return 分类数量
-     */
-    @Select("select count(distinct amt.type_id) from article_map_type amt")
-    int getTypeSize();
 
     /**
      * 清空文章标签
@@ -104,40 +98,14 @@ public interface ArticleLabelMapper {
      *
      * @return List ArticleLabel
      */
-    List<ArticleLabel> getTypes();
-
-    /**
-     * 获取所有标签
-     *
-     * @return 标签列表
-     */
-    List<ArticleLabel> getLabels();
-
-
-    int getLabelVisitsCount(@Param("labelId") int labelId);
-
-    /**
-     * 获取热门标签
-     *
-     * @return 标签列表
-     */
-    @Select("SELECT id, name FROM article_label limit 0,10")
-    List<ArticleLabel> getHotLabels();
-
-    /**
-     * 获取用户所属热门标签
-     *
-     * @param user_id 用户ID
-     * @return ArticleLabel List
-     */
-    List<ArticleLabel> getHotLabelsByUserId(@Param("user_id") int user_id);
+    List<LabelBase> getTypes();
 
     /**
      * 添加新标签
      *
      * @param articleLabels 标签列表
      */
-    void addLabels(@Param("articleLabels") List<ArticleLabel> articleLabels);
+    void addLabels(@Param("articleLabels") List<LabelBase> articleLabels);
 
     /**
      * 根据名字批量检查已经存在的标签
@@ -145,7 +113,7 @@ public interface ArticleLabelMapper {
      * @param articleLabels 文章标签对象列表
      * @return 已经存在的标签
      */
-    List<ArticleLabel> batchCheckLabelByNames(@Param("articleLabels") List<ArticleLabel> articleLabels);
+    List<LabelBase> batchCheckLabelByNames(@Param("articleLabels") List<LabelBase> articleLabels);
 
     /**
      * 根据标签名批量查询标签对象
@@ -153,22 +121,54 @@ public interface ArticleLabelMapper {
      * @param articleLabels 文章标签对象列表
      * @return 标签对象列表
      */
-    List<ArticleLabel> batchFindLabelByNames(@Param("articleLabels") List<ArticleLabel> articleLabels);
+    List<LabelBase> batchFindLabelByNames(@Param("articleLabels") List<LabelBase> articleLabels);
 
     /**
-     * 获取用户分类的访问量前cut个
+     * 分页获取标签
      *
-     * @param cut 前cut个
-     * @return list分类
+     * @param limit  限制数
+     * @param offset 偏移量
+     * @return List<LabelBase>
      */
-    List<ArticleLabel> getVisitCountByTypeByUserId(@Param("userId") int userId, @Param("cut") int cut);
+    List<LabelBase> getLabelByPage(@Param("limit") int limit, @Param("offset") int offset);
 
     /**
-     * 获取用户所有分类信息
+     * 设置标签内容
      *
-     * @param userId 用户ID
-     * @return 分类信息
+     * @param articleLabel 标签对象
      */
-    List<ArticleLabel> getAllTypeByUserId(@Param("userId") int userId);
+    void setLabel(@Param("articleLabel") ArticleLabel articleLabel);
+
+    /**
+     * 获取标签所属文章总数
+     *
+     * @param id 标签ID
+     * @return 总数
+     */
+    int getArtSumLabel(@Param("id") int id);
+
+    /**
+     * 获取标签所属文章总数
+     *
+     * @param id 分类ID
+     * @return 总数
+     */
+    int getArtSumType(@Param("id") int id);
+
+    /**
+     * 通过标签ID获取标签访问量
+     *
+     * @param id 标签ID
+     * @return 总数
+     */
+    int getLabelPV(@Param("id") int id);
+
+    /**
+     * 通过分类ID获取分类访问量
+     *
+     * @param id 分类ID
+     * @return 总数
+     */
+    int getTypePV(@Param("id") int id);
 
 }

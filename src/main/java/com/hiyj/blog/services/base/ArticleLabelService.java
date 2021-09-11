@@ -1,11 +1,13 @@
 package com.hiyj.blog.services.base;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.hiyj.blog.mapper.ArticleLabelMapper;
 import com.hiyj.blog.mapper.ArticleMapper;
 import com.hiyj.blog.object.Article;
 import com.hiyj.blog.object.ArticleLabel;
+import com.hiyj.blog.object.ArticleType;
+import com.hiyj.blog.object.base.LabelBase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +30,12 @@ public class ArticleLabelService {
     }
 
     /**
-     * 通过标签ID获取标签
+     * 通过类型ID获取类型
      *
-     * @param id 标签ID
-     * @return 标签对象
+     * @param id 类型ID
+     * @return 类型对象
      */
-    public ArticleLabel getTypeById(int id) {
+    public LabelBase getTypeById(int id) {
         return articleLabelMapper.getTypeById(id);
     }
 
@@ -44,7 +46,7 @@ public class ArticleLabelService {
      * @param articleId 文章ID
      * @return 文章类型对象
      */
-    public ArticleLabel getArticleTypeById(int articleId) {
+    public LabelBase getArticleMapType(int articleId) {
         int articleTypeById = articleLabelMapper.getArticleTypeById(articleId);
         return getTypeById(articleTypeById);
     }
@@ -84,12 +86,12 @@ public class ArticleLabelService {
      * @param typeName 类型名
      * @return 类型对象
      */
-    public ArticleLabel getTypeByName(String typeName) {
-        ArticleLabel typeByName = articleLabelMapper.getTypeByName(typeName);
+    public LabelBase getTypeByName(String typeName) {
+        ArticleType typeByName = articleLabelMapper.getTypeByName(typeName);
         if (typeByName == null) {
             return null;
         }
-        ArticleLabel typeById = getTypeById(typeByName.getId());
+        LabelBase typeById = getTypeById(typeByName.getId());
         if (typeById == null) {
             return typeByName;
         }
@@ -113,9 +115,9 @@ public class ArticleLabelService {
      */
     public void addProperty(Article article) {
         //文章标签信息
-        List<ArticleLabel> labels = article.getLabels();
+        List<LabelBase> labels = article.getLabels();
         //已经存在的标签
-        List<ArticleLabel> articleLabels = articleLabelMapper.batchCheckLabelByNames(labels);
+        List<LabelBase> articleLabels = articleLabelMapper.batchCheckLabelByNames(labels);
         if (articleLabels.size() != 0) {
             //先添加已存在的标签
             articleMapper.addArticleMapLabels(article.getId(), articleLabels);
@@ -123,12 +125,12 @@ public class ArticleLabelService {
 
         //整理出已存在的标签名
         ArrayList<String> existentLabels = new ArrayList<>();
-        for (ArticleLabel articleLabel : articleLabels) {
+        for (LabelBase articleLabel : articleLabels) {
             existentLabels.add(articleLabel.getName());
         }
         //获取目前不存在的标签
-        ArrayList<ArticleLabel> noExistentLabels = new ArrayList<>();
-        for (ArticleLabel articleLabel : labels) {
+        ArrayList<LabelBase> noExistentLabels = new ArrayList<>();
+        for (LabelBase articleLabel : labels) {
             if (!existentLabels.contains(articleLabel.getName())) {
                 noExistentLabels.add(articleLabel);
             }
@@ -140,9 +142,9 @@ public class ArticleLabelService {
             articleMapper.addArticleMapLabels(article.getId(), noExistentLabels);
         }
 
-        ArticleLabel typeByName = getTypeByName(article.getArticleType().getName());
+        LabelBase typeByName = getTypeByName(article.getArticleType().getName());
         if (typeByName == null) {
-            ArrayList<ArticleLabel> typeList = new ArrayList<>();
+            ArrayList<LabelBase> typeList = new ArrayList<>();
             typeList.add(article.getArticleType());
             //新添加的标签
             articleLabelMapper.addLabels(typeList);
@@ -163,40 +165,41 @@ public class ArticleLabelService {
     }
 
     /**
-     * 获取所有分类数量
+     * 分页获取标签
      *
-     * @return 分类数量
-     */
-    public int getTypeSize() {
-        return articleLabelMapper.getTypeSize();
-    }
-
-    /**
-     * 获取所有标签
-     *
-     * @return 标签列表
-     */
-    public List<ArticleLabel> getAllLabels() {
-        return articleLabelMapper.getLabels();
-    }
-
-    /**
-     * 获取热门标签
-     *
-     * @return 标签列表
-     */
-    public List<ArticleLabel> getHotLabels() {
-        return articleLabelMapper.getHotLabels();
-    }
-
-    /**
-     * 获取用户分类的访问量前10个
-     *
-     * @param userId 用户ID
-     * @param cut    前cut个
+     * @param limit  限制数
+     * @param offset 偏移量量
      * @return List<ArticleLabel>
      */
-    public List<ArticleLabel> getVisitCountByTypeByUserId(int userId, int cut) {
-        return articleLabelMapper.getVisitCountByTypeByUserId(userId, cut);
+    public List<LabelBase> getLabelByPage(int limit, int offset) {
+        return articleLabelMapper.getLabelByPage(limit, offset);
+    }
+
+    /**
+     * 设置标签内容
+     *
+     * @param articleLabel 标签对象
+     */
+    public void setLabel(ArticleLabel articleLabel) {
+        articleLabelMapper.setLabel(articleLabel);
+    }
+
+    /**
+     * 通过用户ID按照访问量排序分页获取用户分类
+     *
+     * @param limit  限制数
+     * @param offset 偏移量
+     * @return List<LabelBase>
+     */
+    public List<LabelBase> getTypeOfPVPage(int limit, int offset) {
+        List<LabelBase> allType = articleLabelMapper.getTypes();
+        if (offset + limit > allType.size()) {
+            limit = allType.size() - offset;
+        }
+        if (limit < 1) {
+            return null;
+        }
+        allType.sort((o1, o2) -> Integer.compare(o2.getPv(), o1.getPv()));
+        return allType.subList(offset, offset + limit);
     }
 }

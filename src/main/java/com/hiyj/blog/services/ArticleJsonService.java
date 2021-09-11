@@ -14,14 +14,13 @@ public class ArticleJsonService extends ArticleService {
     /**
      * 分页获取文章列表
      *
-     * @param userId 用户ID
      * @param limit  限制条
      * @param page   第几页
      * @param sort   排序方式
      * @param status 文章状态，默认published，all为全部文章类型
      * @return Msg 内含文章列表
      */
-    public String getArticlesByPageJson(int userId, int limit, int page, String sort, Article.Status status) {
+    public String getArticlesByPageJson(int limit, int page, String sort, Article.Status status) {
         if (page <= 0) {
             return Msg.getFailMsg();
         }
@@ -31,7 +30,7 @@ public class ArticleJsonService extends ArticleService {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("items", arrayList);
-        jsonObject.put("total", articleMapper.getArticleCountByUserId(userId));
+        jsonObject.put("total", articleMapper.getArticleCount());
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
     }
 
@@ -49,10 +48,10 @@ public class ArticleJsonService extends ArticleService {
             return Msg.getFailMsg();
         }
         ArrayList<JSONObject> rs = new ArrayList<>();
-        for (int id : articleMapper.getArticleIdByPage(limit, (page - 1) * limit, sort, status)) {
+        for (Article article : articleMapper.getArticlesByPage(limit, (page - 1) * limit, sort, status)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id", id);
-            jsonObject.put("updateTime", articleMapper.findArticleId(id).getUpdateTime());
+            jsonObject.put("id", article.getId());
+            jsonObject.put("updateTime", article.getUpdateTime());
             rs.add(jsonObject);
         }
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, rs);
@@ -69,17 +68,22 @@ public class ArticleJsonService extends ArticleService {
     /**
      * 获取标签所属文章
      *
-     * @param id    标签ID
-     * @param limit 限制数
-     * @param page  页数
+     * @param id     标签ID
+     * @param limit  限制数
+     * @param page   页数
+     * @param sort   排序方式 默认-id,
+     * @param status 文章状态
      * @return Msg
      */
-    public String getLabelArticlePageJson(int id, int limit, int page) {
-        ArrayList<JSONObject> arrayList = new ArrayList<>();
-        for (Article article : getLabelArticlePage(id, limit, (page - 1) * limit)) {
-            arrayList.add(getDetailById(article));
-        }
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, arrayList);
+    public String getArticlesByLabelJson(int id,
+                                         int limit,
+                                         int page,
+                                         String sort,
+                                         Article.Status status) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("items", getArticlesByLabel(id, limit, (page - 1) * limit, sort, status));
+        jsonObject.put("total", "");
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
     }
 
     /**
@@ -87,14 +91,15 @@ public class ArticleJsonService extends ArticleService {
      *
      * @param type   分类ID
      * @param status 文章状态，默认PUBLISHED，ALL为全部文章类型
+     * @param limit  限制数
+     * @param page   页数
      * @return Msg
      */
-    public String getArticleByTypeJson(int type, Article.Status status) {
-        ArrayList<JSONObject> arrayList = new ArrayList<>();
-        for (Article article : articleMapper.getArticlesByType(type, status)) {
-            arrayList.add(getDetailById(article));
-        }
-        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, arrayList);
+    public String getArticleByTypeJson(int type, int limit, int page, String sort, Article.Status status) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("items", articleMapper.getArticlesByType(type, limit, (page - 1) * page, sort, status));
+        jsonObject.put("total", "");
+        return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
     }
 
     /**
@@ -133,9 +138,9 @@ public class ArticleJsonService extends ArticleService {
      * @param limit 获取截取
      * @return 文章列表Msg
      */
-    public String getMostVisitsJson(int limit) {
+    public String getMostPVJson(int limit) {
         ArrayList<JSONObject> arrayList = new ArrayList<>();
-        for (Article article : getMostVisits(limit)) {
+        for (Article article : getMostPV(limit)) {
             if (findArticle(article.getId()) == null) {
                 continue;
             }

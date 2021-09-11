@@ -10,6 +10,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ArticleLabel extends LabelBase {
+public class ArticleType extends LabelBase {
 
 }

@@ -8,29 +8,50 @@
         <result property="title" column="title"/>
         <result property="summary" column="summary"/>
         <result property="content" column="content"/>
-        <result property="cover_pic" column="cover_pic"/>
-        <result property="time" column="time"/>
-        <result property="visitsCount" column="visitsCount"/>
+        <result property="coverPic" column="cover_pic"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="createTime" column="createTime"/>
+        <result property="status" column="status"/>
+        <collection property="pv" javaType="Integer"
+                    select="getArtPV" column="id"/>
         <collection property="labels" javaType="ArrayList" ofType="com.hiyj.blog.object.ArticleLabel"
                     select="getArticleMapLabels" column="id"/>
+        <collection property="articleType" ofType="com.hiyj.blog.object.ArticleType"
+                    select="getArticleMapType" column="id"/>
     </resultMap>
 
-    <select id="getArticleCountByUserId" parameterType="int" resultType="int">
-        select count(uma.article_id)
-        from user_map_article uma
-        where uma.user_id = #{userId}
+    <sql id="sort">
+        <if test="sort == null or sort == '-id'">
+            ORDER BY a.id DESC
+        </if>
+        <if test="sort == '+id'">
+            ORDER BY a.id ASC
+        </if>
+    </sql>
+
+    <!--    根据文章ID获取文章访问量-->
+    <select id="getArtPV" resultType="int">
+        SELECT IFNULL(SUM(count), 0)
+        FROM pv
+        WHERE pv.`type` = 1
+          AND pv.target_id = #{articleId}
+    </select>
+    <!--    根据文章ID获取文章访问量结束-->
+
+    <select id="getArticleCount" parameterType="int" resultType="int">
+        select count(*)
+        from article
     </select>
 
-    <select id="getVisitsAllCountByUserId" parameterType="int" resultType="int">
-        SELECT IFNULL(SUM(vc.count), 0)
-        from visits_count vc
-        where vc.`type` = 1
-          and vc.target_id in (SELECT uma.article_id from user_map_article uma where uma.user_id = #{userId})
+    <select id="getPV" resultType="int">
+        SELECT IFNULL(SUM(pv.count), 0)
+        from pv
+        where pv.`type` = 1
     </select>
 
     <!--    分页查询文章-->
     <select id="getArticlesByPage" resultMap="articleMap">
-        SELECT a.id, a.title, a.summary, a.coverPic, a.createTime, a.updateTime, v.count as visitsCount
+        SELECT a.id, a.title, a.summary, a.coverPic, a.createTime, a.updateTime, v.count as pv
         FROM (SELECT *
         FROM article
         <choose>
@@ -46,15 +67,10 @@
         </choose>
         ) a
         LEFT JOIN (SELECT target_id, SUM(count) as count
-        FROM visits_count vc
-        WHERE vc.`type` = 1
+        FROM pv
+        WHERE pv.`type` = 1
         GROUP BY target_id) v on v.target_id = a.id
-        <if test="sort == null or sort == '-id'">
-            ORDER BY a.id DESC
-        </if>
-        <if test="sort == '+id'">
-            ORDER BY a.id ASC
-        </if>
+        <include refid="sort"/>
         LIMIT #{limit} OFFSET #{offset}
     </select>
     <!--    分页查询文章结束-->
@@ -75,13 +91,7 @@
             </otherwise>
         </choose>
         ) a
-        <if test="sort == null or sort == '-id'">
-            ORDER BY a.id DESC
-        </if>
-        <if test="sort == '+id'">
-            ORDER BY a.id ASC
-        </if>
-
+        <include refid="sort"/>
         LIMIT #{limit} OFFSET #{offset}
     </select>
     <!--分页获取文章ID结束-->
@@ -89,34 +99,33 @@
     <!--   获取文章标签 -->
     <select id="getArticleMapLabels" parameterType="int"
             resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.labelMap">
-
-        SELECT a.id, a.name, IFNULL(v.count, 0) as visitsCount
+        SELECT al.*
         FROM (
-                 select distinct aml.id as aml_id, article_label.id, article_label.name
-                 from article_label
-                          LEFT JOIN
-                      (SELECT article_map_label.id, article_map_label.label_id
-                       FROM article_map_label
-                       WHERE article_id = #{article_id}) aml ON article_label.id
-                 WHERE article_label.id = aml.label_id
-             ) a
-                 LEFT JOIN (SELECT target_id, SUM(count) as count
-                            FROM visits_count vc
-                            WHERE vc.`type` = 10
-                            GROUP BY target_id) v on v.target_id = a.id
-        ORDER BY a.aml_id
+                 SELECT aml.label_id
+                 FROM article_map_label aml
+                 WHERE aml.article_id = #{id}
+             ) aml
+                 LEFT JOIN article_label al ON aml.label_id = al.id
     </select>
     <!--   获取文章标签结束 -->
 
+    <select id="getArticleMapType" resultMap="com.hiyj.blog.mapper.ArticleLabelMapper.typeMap">
+        SELECT al.*
+        FROM (
+                 SELECT amt.type_id
+                 FROM article_map_type amt
+                 WHERE amt.article_id = #{id}
+             ) amt
+                 LEFT JOIN article_label al ON amt.type_id = al.id
+    </select>
+
     <!--    获取分类所属文章-->
     <select id="getArticlesByType" parameterType="int" resultMap="articleMap">
-
-        SELECT a.*, IFNULL(v.count, 0) as visitsCount
-        FROM (
         select *
         from article a
         where a.id in (
-        select amt.article_id from article_map_type amt where amt.type_id = #{label_id}
+        select amt.article_id FROM article_map_type amt
+        WHERE amt.type_id = #{typeId}
         )
         <choose>
             <when test="status != null and status.toString == 'ALL'">
@@ -129,60 +138,57 @@
                 AND a.status = 'PUBLISHED'
             </otherwise>
         </choose>
-        ) a
-        LEFT JOIN (SELECT target_id, SUM(count) as count
-        FROM visits_count vc
-        WHERE vc.`type` = 1
-        GROUP BY target_id) v on v.target_id = a.id
-        ORDER BY a.id desc
+        <include refid="sort"/>
+        limit #{limit} OFFSET #{offset}
     </select>
     <!--    获取分类所属文章结束-->
 
-
+    <!--    根据文章ID查找文章-->
     <select id="findArticleId" parameterType="int" resultMap="articleMap">
-        SELECT a.*, v.count as visitsCount
-        FROM (SELECT * FROM article WHERE id = #{article_id}) a
-                 LEFT JOIN (SELECT target_id, SUM(count) as count
-                            FROM visits_count vc
-                            WHERE vc.target_id = #{article_id}
-                              and vc.`type` = 1
-                            GROUP BY target_id) v on a.id = v.target_id
+        SELECT *
+        FROM article a
+        WHERE a.id = #{id}
     </select>
+    <!--    根据文章ID查找文章结束-->
 
+    <!--    获取标签所属文章-->
+    <select id="getArticlesByLabel" parameterType="int" resultMap="articleMap">
+        select *
+        from article a
+        where a.id in (
+        select aml.article_id FROM article_map_label aml
+        WHERE aml.label_id = #{labelId}
+        )
+        <choose>
+            <when test="status != null and status.toString == 'ALL'">
 
-    <select id="getLabelArticlePage" parameterType="int" resultMap="articleMap">
-        SELECT a.*, IFNULL(v.count, 0) as visitsCount
-        FROM (
-                 SELECT *
-                 from article
-                 where id in (SELECT article_id from article_map_label aml where aml.label_id = #{label_id})
-                 limit #{limit} OFFSET #{offset}
-             ) a
-                 LEFT JOIN (SELECT target_id, SUM(count) as count
-                            FROM visits_count vc
-                            WHERE vc.`type` = 1
-                            GROUP BY target_id) v
-                           on v.target_id = a.id
-        ORDER BY a.id desc
+            </when>
+            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
+                AND a.status = #{status}
+            </when>
+            <otherwise>
+                AND a.status = 'PUBLISHED'
+            </otherwise>
+        </choose>
+        <include refid="sort"/>
+        limit #{limit} OFFSET #{offset}
     </select>
+    <!--    获取标签所属文章结束-->
 
-    <select id="getVisitLogByDay" parameterType="int" resultType="map">
+    <select id="getPVLogByDay" parameterType="int" resultType="map">
         SELECT DATE_FORMAT(count_list.time, '%Y-%m-%d') day_time, sum(count_list.count) total
         FROM (
                  -- 访问计数表
-                 SELECT vc.time, vc.count
-                 FROM
+                 SELECT pv.time, pv.count
+                 FROM (
+                          SELECT article.id as target_id
+                          FROM article
+                      ) article_id_list
 
-                     -- 查找用户所属文章ID
-                     (
-                         SELECT uma.article_id as target_id FROM user_map_article uma WHERE uma.user_id = #{userId}
-                     ) article_id_list
-                         -- 查找用户所属文章ID结束
-
-                         LEFT JOIN
-                     visits_count vc on article_id_list.target_id = vc.target_id
-                         AND vc.`type` = 1
-                 ORDER BY vc.`time` DESC
+                          LEFT JOIN
+                      pv on article_id_list.target_id = pv.target_id
+                          AND pv.`type` = 1
+                 ORDER BY pv.`time` DESC
              ) count_list
              -- 访问计数表结束
         GROUP BY day_time
@@ -200,7 +206,8 @@
 
                      -- 查找用户所属文章ID
                      (
-                         SELECT uma.article_id as id FROM user_map_article uma WHERE uma.user_id = #{userId}
+                         SELECT article.id
+                         FROM article
                      ) article_id_list
                          -- 查找用户所属文章ID结束
 
@@ -249,12 +256,12 @@
 
     <!--    获取访问最多的文章列表-->
     <select id="getMostVisits" parameterType="int" resultMap="articleMap">
-        SELECT visits.id, visits.num as visitsCount, a.title, a.summary, a.coverPic, a.createTime, a.updateTime
+        SELECT visits.id, visits.num as pv, a.title, a.summary, a.coverPic, a.createTime, a.updateTime
         FROM (
                  -- 访问前五的文章
-                 SELECT vc.target_id as id, SUM(vc.count) as num
-                 FROM visits_count vc
-                 WHERE vc.`type` = 1
+                 SELECT pv.target_id as id, SUM(pv.count) as num
+                 FROM pv
+                 WHERE pv.`type` = 1
                  GROUP BY target_id
                  ORDER BY num DESC
                  -- 访问前五的文章

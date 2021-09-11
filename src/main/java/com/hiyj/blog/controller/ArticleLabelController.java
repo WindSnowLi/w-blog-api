@@ -1,6 +1,8 @@
 package com.hiyj.blog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.annotation.Permission;
+import com.hiyj.blog.model.request.PageBaseModel;
 import com.hiyj.blog.object.ArticleLabel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,10 +35,10 @@ public class ArticleLabelController {
     }
 
     /**
-     * 通过标签ID获取标签
+     * 通过类型ID获取类型
      *
-     * @param idModel 标签ID  {id:int}
-     * @return 标签信息串
+     * @param idModel 类型ID  {id:int}
+     * @return 类型信息串
      */
     @ApiOperation(value = "通过标签ID获取标签")
     @ApiResponses({
@@ -76,12 +78,12 @@ public class ArticleLabelController {
      */
     @ApiOperation(value = "通过标签ID获取标签")
     @ApiResponses({
-            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ArrayList.class),
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS, response = ArticleLabel.class),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
-    @PostMapping(value = "getLabelByIdJson")
+    @PostMapping(value = "getLabelById")
     @PassToken
-    public String getLabelByIdJson(@RequestBody IdModel idModel) {
+    public String getLabelById(@RequestBody IdModel idModel) {
         log.info("getLabelByIdJson\t标签ID{}", idModel.getId());
         return articleLabelJsonService.getLabelByIdJson(idModel.getId());
     }
@@ -103,7 +105,7 @@ public class ArticleLabelController {
     @PostMapping(value = "labels")
     @PassToken
     public String labels() {
-        final List<ArticleLabel> allLabels = articleLabelJsonService.getAllLabels();
+        final List<ArticleLabel> allLabels = articleLabelJsonService.getAllLabel();
         final ArrayList<JSONObject> labelList = new ArrayList<>();
         for (ArticleLabel label : allLabels) {
             JSONObject temp = new JSONObject();
@@ -115,21 +117,57 @@ public class ArticleLabelController {
     }
 
     /**
-     * 获取用户所有分类
+     * 获取所有分类
      *
-     * @param idModel 用户信息{id:int}
      * @return 分类表
      */
-    @ApiOperation(value = "获取用户所有分类")
+    @ApiOperation(value = "获取所有分类")
     @ApiResponses({
             @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
             @ApiResponse(code = -1, message = Msg.MSG_FAIL)
     })
-    @PostMapping(value = "getAllTypeByUserId")
+    @PostMapping(value = "getAllType")
     @PassToken
-    public String getAllTypeByUserId(@RequestBody IdModel idModel) {
-        log.info("getAllTypeByUserId");
-        return articleLabelJsonService.getAllTypeByUserIdJson(idModel.getId());
+    public String getAllType() {
+        log.info("getAllType");
+        return articleLabelJsonService.getTypes();
+    }
+
+    /**
+     * 分页获取标签
+     *
+     * @param pageBaseModel 分页信息
+     * @return 分类表
+     */
+    @ApiOperation(value = "分页获取标签")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getLabelByPage")
+    @PassToken
+    public String getLabelByPage(@RequestBody PageBaseModel pageBaseModel) {
+        log.info("getLabelByPage");
+        return articleLabelJsonService.getLabelByPageJson(pageBaseModel.getLimit(),
+                pageBaseModel.getPage());
+    }
+
+    /**
+     * 设置标签内容
+     *
+     * @return Msg
+     */
+    @ApiOperation(value = "设置标签内容")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "setLabel")
+    @Permission(value = {"UPDATE-ARTICLE-LABEL"})
+    public String setLabel(@RequestBody ArticleLabel articleLabel) {
+        log.info("setLabel");
+        articleLabelJsonService.setLabel(articleLabel);
+        return Msg.getSuccessMsg();
     }
 }
 

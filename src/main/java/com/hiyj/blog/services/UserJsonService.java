@@ -81,7 +81,7 @@ public class UserJsonService extends UserService {
      */
     public String getWorkByUserIdJson(int userId) {
         final List<Object> activityByUserId = this.getWorkByUserId(userId);
-        int allArticleCount = articleMapper.getArticleCountByUserId(userId);
+        int allArticleCount = articleMapper.getArticleCount();
         List<JSONObject> rs = new ArrayList<>();
         for (Object temp : activityByUserId) {
             final HashMap<String, Object> temp1 = (HashMap) temp;

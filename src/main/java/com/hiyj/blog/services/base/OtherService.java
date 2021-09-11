@@ -82,26 +82,24 @@ public class OtherService {
     /**
      * 获取Panel的访问量部分折线图
      *
-     * @param userId 用户ID
      * @return PanelData
      */
-    public PanelData getPanelOfVisits(int userId) {
+    public PanelData getPanelOfVisits() {
         return getPanelOfData("浏览量",
-                articleJsonService.getVisitsCountByUserId(userId),
-                articleJsonService.getVisitLogByDay(userId),
+                articleJsonService.getPV(),
+                articleJsonService.getVisitLogByDay(),
                 "day_time");
     }
 
     /**
      * 获取Panel的文章创建历史部分折线图
      *
-     * @param userId 用户ID
      * @return PanelData
      */
-    public PanelData getPanelOfArticle(int userId) {
+    public PanelData getPanelOfArticle() {
         return getPanelOfData("创作篇",
-                articleJsonService.getArticleCountByUserId(userId),
-                articleJsonService.getAddArticleLogByWeek(userId),
+                articleJsonService.getArticleCount(),
+                articleJsonService.getAddArticleLogByWeek(),
                 "week_time");
     }
 
@@ -132,13 +130,12 @@ public class OtherService {
     /**
      * 获取仪表盘折线图和panel-group部分
      *
-     * @param userId 用户ID
      * @return JSONObject
      */
-    public JSONObject getPanel(int userId) {
+    public JSONObject getPanel() {
         JSONObject panelJson = new JSONObject();
-        panelJson.put("visits", getPanelOfVisits(userId));
-        panelJson.put("articles", getPanelOfArticle(userId));
+        panelJson.put("pv", getPanelOfVisits());
+        panelJson.put("articles", getPanelOfArticle());
         panelJson.put("comments", getPanelOfComments());
         panelJson.put("verifyComments", getPanelOfVerifyComments());
         return panelJson;
@@ -182,16 +179,15 @@ public class OtherService {
     /**
      * 访问量圆饼图数据
      *
-     * @param userId 用户ID
      * @return CakeChartData
      */
-    public CakeChartData getChartOfVisit(int userId) {
+    public CakeChartData getChartOfVisit() {
         // 访问量圆饼图数据
         return getCakeChartOfData(
                 JSON.parseObject(JSONObject.toJSONString(
-                        articleLabelService.getVisitCountByTypeByUserId(userId, 9)), new TypeReference<>() {
+                        articleLabelService.getTypeOfPVPage(9, 0)), new TypeReference<>() {
                 }),
-                articleJsonService.getVisitsCountByUserId(userId), "visitsCount");
+                articleJsonService.getPV(), "pv");
     }
 
     /**
@@ -205,7 +201,7 @@ public class OtherService {
                 JSON.parseObject(JSONObject.toJSONString(
                         articleLabelService.getArticleCountByType(9)), new TypeReference<>() {
                 }),
-                articleJsonService.getArticleCountByUserId(1), "value");
+                articleJsonService.getArticleCount(), "value");
     }
 
     /**
@@ -257,12 +253,11 @@ public class OtherService {
     /**
      * 获取图表信息
      *
-     * @param userId 用户ID
      * @return JSONObject
      */
-    public JSONObject getChart(int userId) {
+    public JSONObject getChart() {
         JSONObject chartJson = new JSONObject();
-        chartJson.put("visits", getChartOfVisit(userId));
+        chartJson.put("pv", getChartOfVisit());
         chartJson.put("article", getChartOfArticle());
         chartJson.put("commentLineSeries", getChartOfCommentLineSeries());
         return chartJson;

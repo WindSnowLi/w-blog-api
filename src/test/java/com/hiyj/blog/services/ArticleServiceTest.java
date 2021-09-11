@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.hiyj.blog.object.Article;
-import com.hiyj.blog.object.ArticleLabel;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -31,7 +30,7 @@ public class ArticleServiceTest {
 
     @Test
     public void testGetLabelArticlePageJson() {
-        System.out.println(articleJsonService.getLabelArticlePageJson(2, 10, 1));
+        System.out.println(articleJsonService.getArticlesByLabelJson(2, 10, 1, "-id", Article.Status.PUBLISHED));
     }
 
     /**
@@ -63,14 +62,14 @@ public class ArticleServiceTest {
         JSONObject jsonObject = new JSONObject();
         ArrayList<String> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        List<Map<String, Object>> visitLogByDay = articleJsonService.getVisitLogByDay(1);
+        List<Map<String, Object>> visitLogByDay = articleJsonService.getVisitLogByDay();
         if (visitLogByDay != null && !visitLogByDay.contains(null)) {
             for (Object temp : visitLogByDay) {
                 x.add((String) ((HashMap) temp).get("day_time"));
                 y.add(((BigDecimal) ((HashMap) temp).get("total")).intValue());
             }
         }
-        jsonObject.put("visitsAllCount", articleJsonService.getVisitsCountByUserId(1));
+        jsonObject.put("visitsAllCount", articleJsonService.getPV());
         jsonObject.put("title", "浏览量");
         //图从左至右，数据应逆序
         Collections.reverse(x);
