@@ -48,7 +48,6 @@ public class ArticleLabelController {
     @PostMapping(value = "getTypeById")
     @PassToken
     public String getTypeById(@RequestBody IdModel idModel) {
-        log.info("getTypeById\t类型ID：{}", idModel.getId());
         return articleLabelJsonService.getTypeByIdJson(idModel.getId());
     }
 
@@ -65,7 +64,6 @@ public class ArticleLabelController {
     @PostMapping(value = "getAllLabel")
     @PassToken
     public String getAllLabel() {
-        log.info("getAllLabel");
         return articleLabelJsonService.getAllLabelJson();
     }
 
@@ -84,7 +82,6 @@ public class ArticleLabelController {
     @PostMapping(value = "getLabelById")
     @PassToken
     public String getLabelById(@RequestBody IdModel idModel) {
-        log.info("getLabelByIdJson\t标签ID{}", idModel.getId());
         return articleLabelJsonService.getLabelByIdJson(idModel.getId());
     }
 
@@ -129,7 +126,6 @@ public class ArticleLabelController {
     @PostMapping(value = "getAllType")
     @PassToken
     public String getAllType() {
-        log.info("getAllType");
         return articleLabelJsonService.getTypes();
     }
 
@@ -147,7 +143,6 @@ public class ArticleLabelController {
     @PostMapping(value = "getLabelByPage")
     @PassToken
     public String getLabelByPage(@RequestBody PageBaseModel pageBaseModel) {
-        log.info("getLabelByPage");
         return articleLabelJsonService.getLabelByPageJson(pageBaseModel.getLimit(),
                 pageBaseModel.getPage());
     }
@@ -165,7 +160,6 @@ public class ArticleLabelController {
     @PostMapping(value = "setLabel")
     @Permission(value = {"UPDATE-ARTICLE-LABEL"})
     public String setLabel(@RequestBody ArticleLabel articleLabel) {
-        log.info("setLabel");
         articleLabelJsonService.setLabel(articleLabel);
         return Msg.getSuccessMsg();
     }

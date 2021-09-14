@@ -39,7 +39,6 @@ public class OtherController {
     })
     @PostMapping(value = "getPanel")
     public String getPanel() {
-        log.info("getPanel");
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, otherJsonService.getPanel());
     }
 
@@ -55,7 +54,6 @@ public class OtherController {
     })
     @PostMapping(value = "getChart")
     public String getChart() {
-        log.info("getChart");
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, otherJsonService.getChart());
     }
 }

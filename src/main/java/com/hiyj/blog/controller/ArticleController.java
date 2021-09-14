@@ -56,7 +56,6 @@ public class ArticleController {
     @PostMapping(value = "getArticlesByPage")
     @PassToken
     public String getArticlesByPage(@RequestBody PageModel<Article.Status> pageModel) {
-        log.info("getArticlesByPage");
         return articleJsonService.getArticlesByPageJson(
                 pageModel.getLimit(),
                 pageModel.getPage(),
@@ -83,7 +82,6 @@ public class ArticleController {
     @PostMapping(value = "getArticleIdByPage")
     @PassToken
     public String getArticleIdByPage(@RequestBody PageModel<Article.Status> pageModel) {
-        log.info("getArticleIdByPage");
         return articleJsonService.getArticleIdByPageJson(
                 pageModel.getLimit(),
                 pageModel.getPage(),
@@ -105,7 +103,6 @@ public class ArticleController {
     @PostMapping(value = "getArticleById")
     @PassToken
     public String getArticleById(@RequestBody IdModel idModel) {
-        log.info("getArticleById\t文章ID：{}", idModel.getId());
         articleJsonService.addArticleVisits(idModel.getId());
         return articleJsonService.findArticleJson(idModel.getId());
     }
@@ -180,7 +177,6 @@ public class ArticleController {
     @PostMapping(value = "getArticlesByType")
     @PassToken
     public String getArticleByType(@RequestBody IdTypeModel<PageModel<Article.Status>> idTypeModel) {
-        log.info("getArticlesByType\t文章ID：{}", idTypeModel.getId());
         Article.Status status = idTypeModel.getContent().getStatus();
         if (status == null) {
             status = Article.Status.PUBLISHED;
@@ -212,7 +208,6 @@ public class ArticleController {
     @Permission(value = {"CREATE-ARTICLE"})
     public String createArticle(@RequestBody TokenTypeModel<JSONObject> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("createArticle\t用户ID：{}", userId);
         // 整理标签
         ArrayList<LabelBase> articleLabels = new ArrayList<>();
         JSONObject articleJson = tokenTypeModel.getContent();
@@ -225,7 +220,6 @@ public class ArticleController {
         String articleTypeName = (String) articleJson.get("articleType");
         LabelBase articleType = new LabelBase();
         articleType.setName(articleTypeName);
-
         articleJson.remove("labels");
         articleJson.remove("articleType");
         //整理对象
@@ -268,7 +262,6 @@ public class ArticleController {
         Article article = JSONObject.parseObject(contentModel.getContent().toJSONString(), Article.class);
         article.setArticleType(articleType);
         article.setLabels(articleLabels);
-        log.info("updateArticle 文章ID：{}", article.getId());
         return articleJsonService.updateArticleJson(article);
     }
 
@@ -286,7 +279,6 @@ public class ArticleController {
     @PostMapping(value = "getMostPV")
     @PassToken
     public String getMostPV(@RequestBody JSONObject jsonObject) {
-        log.info("getMostVisitsJson\t限制条数：{}", jsonObject.getIntValue("limit"));
         return articleJsonService.getMostPVJson(jsonObject.getIntValue("limit"));
     }
 
@@ -307,7 +299,6 @@ public class ArticleController {
     @PostMapping(value = "setStatus")
     @Permission(value = {"UPDATE-ARTICLE"})
     public String setStatus(@RequestBody IdTypeModel<Article.Status> idTypeModel) {
-        log.info("setStatus");
         return articleJsonService.setStatusJson(idTypeModel.getId(), idTypeModel.getContent());
     }
 
@@ -325,7 +316,6 @@ public class ArticleController {
     @PostMapping(value = "delArticle")
     @Permission(value = {"DELETE-ARTICLE"})
     public String delArticle(@RequestBody IdModel idModel) {
-        log.info("delArticle");
         return articleJsonService.setStatusJson(idModel.getId(), Article.Status.DELETED);
     }
 }

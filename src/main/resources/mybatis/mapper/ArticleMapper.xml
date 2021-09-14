@@ -8,7 +8,7 @@
         <result property="title" column="title"/>
         <result property="summary" column="summary"/>
         <result property="content" column="content"/>
-        <result property="coverPic" column="cover_pic"/>
+        <result property="coverPic" column="coverPic"/>
         <result property="updateTime" column="updateTime"/>
         <result property="createTime" column="createTime"/>
         <result property="status" column="status"/>
@@ -51,25 +51,19 @@
 
     <!--    分页查询文章-->
     <select id="getArticlesByPage" resultMap="articleMap">
-        SELECT a.id, a.title, a.summary, a.coverPic, a.createTime, a.updateTime, v.count as pv
-        FROM (SELECT *
-        FROM article
+        SELECT *
+        FROM article a
         <choose>
             <when test="status != null and status.toString == 'ALL'">
 
             </when>
             <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
-                WHERE article.status = #{status}
+                WHERE a.status = #{status}
             </when>
             <otherwise>
-                WHERE article.status = 'PUBLISHED'
+                WHERE a.status = 'PUBLISHED'
             </otherwise>
         </choose>
-        ) a
-        LEFT JOIN (SELECT target_id, SUM(count) as count
-        FROM pv
-        WHERE pv.`type` = 1
-        GROUP BY target_id) v on v.target_id = a.id
         <include refid="sort"/>
         LIMIT #{limit} OFFSET #{offset}
     </select>

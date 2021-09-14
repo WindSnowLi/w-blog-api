@@ -48,7 +48,6 @@ public class FriendLinkController {
     @PostMapping(value = "getFriendLinks")
     @PassToken
     public String getFriendLinks(@RequestBody ReqFriendLinkStatusModel fiendLinkStatusModel) {
-        log.info("getFriendLinks");
         return friendLinkJsonService.getFriendLinksJson(fiendLinkStatusModel.getStatus());
     }
 
@@ -66,7 +65,6 @@ public class FriendLinkController {
     @PostMapping(value = "applyFriendLink")
     @PassToken
     public String applyFriendLink(@RequestBody ReqFriendLinkModel fiendLinkModel) {
-        log.info("applyFriendLink");
         return friendLinkJsonService.applyFriendLinkJson(fiendLinkModel);
     }
 
@@ -84,7 +82,6 @@ public class FriendLinkController {
     @PostMapping(value = "setFriendLink")
     @Permission(value = {"VERIFY-LINK"})
     public String setFriendLink(@RequestBody FriendLink friendLink) {
-        log.info("setFriendLink");
         return friendLinkJsonService.setFriendLinkJson(friendLink);
     }
 }

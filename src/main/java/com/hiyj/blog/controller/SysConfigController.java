@@ -57,7 +57,6 @@ public class SysConfigController {
         } else {
             return Msg.getFailMsg();
         }
-        log.info("用户ID：{}  请求getUiConfig", userId);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, sysConfigJsonService.getUiConfigByUserId(userId));
     }
 
@@ -79,7 +78,6 @@ public class SysConfigController {
     @Permission(value = {"UI-SETTING"})
     public String setUiConfig(@RequestBody TokenTypeModel<String> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("用户ID：{}  setUiConfig", userId);
         return sysConfigJsonService.setUiConfigByUserIdJson(userId, JSON.parseObject(tokenTypeModel.getContent()));
     }
 
@@ -96,7 +94,6 @@ public class SysConfigController {
     @PostMapping(value = "getStorageConfig")
     @Permission(value = {"STORE-SETTING"})
     public String getStorageConfig() {
-        log.info("getStorageConfig");
         return sysConfigJsonService.getStorageConfigJson();
     }
 
@@ -114,7 +111,6 @@ public class SysConfigController {
     @PostMapping(value = "setStorageConfig")
     @Permission(value = {"STORE-SETTING"})
     public String setStorageConfig(@RequestBody ContentModel<JSONObject> contentModel) {
-        log.info("setStorageConfig");
         return sysConfigJsonService.setStorageConfigJson(contentModel.getContent());
 
     }
@@ -132,7 +128,6 @@ public class SysConfigController {
     @PostMapping(value = "getSysConfig")
     @PassToken
     public String getSysConfig() {
-        log.info("getSysConfig");
         return sysConfigJsonService.getSysConfigJson();
     }
 
@@ -150,7 +145,6 @@ public class SysConfigController {
     @PostMapping(value = "setSysConfig")
     @Permission(value = {"SYS-SETTING"})
     public String setSysConfig(@RequestBody ContentModel<JSONObject> contentModel) {
-        log.info("getSysConfig");
         return sysConfigJsonService.setSysConfigJson(JSONObject.parseObject(contentModel.getContent().toJSONString(), new TypeReference<>() {
         }));
     }

@@ -50,7 +50,6 @@ public class CommentController {
     @Permission(value = {"COMMENT"})
     public String addComment(@RequestBody TokenTypeModel<Comment> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("用户ID：{}  addComment", userId);
         tokenTypeModel.getContent().setFromUser(userId);
         if (tokenTypeModel.getContent().getContent() == null || tokenTypeModel.getContent().getContent().length() == 0) {
             Msg.makeJsonMsg(Msg.CODE_FAIL, "内容不可为空", null);
@@ -73,7 +72,6 @@ public class CommentController {
     @PostMapping(value = "getTargetComments")
     @PassToken
     public String getTargetComments(@RequestBody ReqCommentModel reqCommentModel) {
-        log.info("getTargetComments");
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS,
                 commentJsonService.getTargetCommentsJson(reqCommentModel.getTargetId(),
                         reqCommentModel.getSessionType(),

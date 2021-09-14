@@ -56,7 +56,7 @@ public class FileController {
             return Msg.getFailMsg();
         }
         userJsonService.addUserFile(userId, fileName);
-        log.info("upload file\t用户ID：{}\t文件：{}", userId, fileName);
+        
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, null);
     }
 
@@ -75,7 +75,7 @@ public class FileController {
     @Permission(value = {"UPLOAD-FILE"})
     public String getUploadAvatarUrl(@RequestBody TokenModel tokenModel) {
         int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
-        log.info("getUploadAvatarUrl\t用户ID：{}", userId);
+        
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, fileJsonService.getUploadAvatarMap(tokenModel.getToken()));
     }
 
@@ -93,8 +93,6 @@ public class FileController {
     @PostMapping(value = "getUploadArticleCoverImageUrl")
     @Permission(value = {"UPLOAD-FILE"})
     public String getUploadArticleCoverImageUrl(@RequestBody TokenModel tokenModel) {
-        int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
-        log.info("getUploadArticleCoverImageUrl\t用户ID：{}", userId);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, fileJsonService.getUploadArticleCoverImageUrl(tokenModel.getToken()));
     }
 
@@ -112,8 +110,6 @@ public class FileController {
     @PostMapping(value = "getUploadArticleImageUrl")
     @Permission(value = {"UPLOAD-FILE"})
     public String getUploadArticleImageUrl(@RequestBody TokenModel tokenModel) {
-        int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
-        log.info("getUploadArticleImageUrl\t用户ID：{}", userId);
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, fileJsonService.getUploadArticleImageUrl(tokenModel.getToken()));
     }
 
@@ -134,7 +130,6 @@ public class FileController {
     @Permission(value = {"DELETE-FILE"})
     public String deleteObject(@RequestBody TokenTypeModel<String> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("deleteObject\t用户ID：{}", userId);
         fileJsonService.deleteUserFile(userId, tokenTypeModel.getContent());
         return Msg.getSuccessMsg();
     }

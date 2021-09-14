@@ -57,7 +57,6 @@ public class UserController {
     @PassToken
     public String login(@RequestBody JSONObject userJson) {
         final User user = JSONObject.parseObject(userJson.toJSONString(), User.class);
-        log.info("账号：{} 登录", user.getAccount());
         return userJsonService.loginJson(user);
     }
 
@@ -75,8 +74,6 @@ public class UserController {
     @PostMapping(value = "getInfo")
     @Permission(value = {"BACKGROUND-LOGIN"})
     public String getInfo(@RequestBody TokenModel tokenModel) {
-        int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
-        log.info("getInfo\t用户ID：{}", userId);
         return userJsonService.getInfoJson(tokenModel.getToken());
     }
 
@@ -94,7 +91,6 @@ public class UserController {
     @PostMapping(value = "getVisitorInfo")
     @PassToken
     public String getVisitorInfo(@RequestBody IdModel idModel) {
-        log.info("getVisitorInfo\t  请求ID：{}", idModel.getId());
         return userJsonService.visitorGetAuthorInfo(idModel.getId());
     }
 
@@ -116,7 +112,7 @@ public class UserController {
     @Permission(value = {"USER-BASE-INFO"})
     public String setInfo(@RequestBody TokenTypeModel<JSONObject> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("setInfo\t用户ID：{}", userId);
+        
         User user = JSONObject.parseObject(tokenTypeModel.getContent().toJSONString(), User.class);
         user.setId(userId);
         return userJsonService.setInfoJson(user);
@@ -136,7 +132,6 @@ public class UserController {
     @PostMapping(value = "logout")
     @PassToken
     public String logout(@RequestBody TokenModel tokenModel) {
-        log.info("logout\t用户ID：{}", JwtUtils.getTokenUserId(tokenModel.getToken()));
         return Msg.getSuccessMsg();
     }
 
@@ -155,7 +150,6 @@ public class UserController {
     @Permission(value = {"BACKGROUND-LOGIN"})
     public String getActivity(@RequestBody TokenModel tokenModel) {
         int userId = JwtUtils.getTokenUserId(tokenModel.getToken());
-        log.info("getWork\t用户ID：{}", userId);
         return userJsonService.getWorkByUserIdJson(userId);
     }
 
@@ -174,7 +168,6 @@ public class UserController {
     @Permission(value = {"USER-BASE-INFO"})
     public String setAvatar(@RequestBody TokenTypeModel<String> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("setAvatar\t用户ID：{}", userId);
         return userJsonService.setAvatarJson(userId, tokenTypeModel.getContent());
     }
 
@@ -192,7 +185,6 @@ public class UserController {
     @PostMapping(value = "getAboutByUserId")
     @PassToken
     public String getAbout(@RequestBody IdModel idModel) {
-        log.info("getAboutByUserId\t用户ID：{}", idModel.getId());
         return userJsonService.getAboutByUserIdJson(idModel.getId());
     }
 
@@ -211,7 +203,6 @@ public class UserController {
     @Permission(value = {"ABOUT-INFO"})
     public String setAbout(@RequestBody TokenTypeModel<String> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        log.info("setAboutByUserToken\t用户ID：{}", userId);
         return userJsonService.setAboutByUserTokenJson(userId, tokenTypeModel.getContent());
     }
 
@@ -229,7 +220,6 @@ public class UserController {
     @PostMapping(value = "giteeLogin")
     @PassToken
     public String giteeLogin(@RequestBody CodeUrlModel codeUrlModel) {
-        log.info("giteeLogin");
         return Msg.getSuccessMsg(giteeService.getLocalToken(codeUrlModel.getCode(), codeUrlModel.getRedirect()));
     }
 }

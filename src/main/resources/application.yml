@@ -1,3 +1,5 @@
+server:
+  port: 9000
 spring:
   profiles:
     active: dev
@@ -26,6 +28,4 @@ spring:
 #配置Mapper.xml映射文件
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/*.xml
-logging:
-  config: classpath:logback-spring.xml
 

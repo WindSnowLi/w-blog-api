@@ -111,9 +111,9 @@ public class ArticleMapperTest {
      */
     @Test
     public void testGetArticlesByPage() {
-        System.out.println(articleMapper.getArticlesByPage(3, 0, null, Article.Status.PUBLISHED).size());
-        System.out.println(articleMapper.getArticlesByPage(3, 1, null, Article.Status.PUBLISHED).size());
-        System.out.println(articleMapper.getArticlesByPage(3, 2, null, Article.Status.PUBLISHED).size());
+        System.out.println(articleMapper.getArticlesByPage(3, 0, null, Article.Status.PUBLISHED));
+        System.out.println(articleMapper.getArticlesByPage(3, 1, null, Article.Status.PUBLISHED));
+        System.out.println(articleMapper.getArticlesByPage(3, 2, null, Article.Status.PUBLISHED));
     }
 
     /**

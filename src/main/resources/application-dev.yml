@@ -1,5 +1,3 @@
-server:
-  port: 8888
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.NonRegisteringDriver
@@ -7,8 +5,5 @@ spring:
     username: root
     password: root
     name: w-blog-api-dev
-logback:
-  logdir: ./log/w-blog-api
-  appname: w-blog-dev
 knife4j:
   enable: true
