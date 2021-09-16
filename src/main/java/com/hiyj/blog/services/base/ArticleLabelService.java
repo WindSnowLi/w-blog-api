@@ -202,4 +202,24 @@ public class ArticleLabelService {
         allType.sort((o1, o2) -> Integer.compare(o2.getPv(), o1.getPv()));
         return allType.subList(offset, offset + limit);
     }
+
+    /**
+     * 获取标签所属文章总数
+     *
+     * @param id 标签ID
+     * @return 总数
+     */
+    public int getArtSumLabel(int id) {
+        return articleLabelMapper.getArtSumLabel(id);
+    }
+
+    /**
+     * 获取分类所属文章总数
+     *
+     * @param id 分类ID
+     * @return 总数
+     */
+    public int getArtSumType(int id) {
+        return articleLabelMapper.getArtSumType(id);
+    }
 }

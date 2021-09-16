@@ -82,7 +82,7 @@ public class ArticleJsonService extends ArticleService {
                                          Article.Status status) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("items", getArticlesByLabel(id, limit, (page - 1) * limit, sort, status));
-        jsonObject.put("total", "");
+        jsonObject.put("total", articleLabelService.getArtSumLabel(id));
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
     }
 
@@ -98,7 +98,7 @@ public class ArticleJsonService extends ArticleService {
     public String getArticleByTypeJson(int type, int limit, int page, String sort, Article.Status status) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("items", articleMapper.getArticlesByType(type, limit, (page - 1) * page, sort, status));
-        jsonObject.put("total", "");
+        jsonObject.put("total", articleLabelService.getArtSumType(type));
         return Msg.makeJsonMsg(Msg.CODE_SUCCESS, Msg.MSG_SUCCESS, jsonObject);
     }
 

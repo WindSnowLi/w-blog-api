@@ -148,7 +148,7 @@ public interface ArticleLabelMapper {
     int getArtSumLabel(@Param("id") int id);
 
     /**
-     * 获取标签所属文章总数
+     * 获取分类所属文章总数
      *
      * @param id 分类ID
      * @return 总数
