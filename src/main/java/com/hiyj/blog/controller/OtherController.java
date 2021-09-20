@@ -1,18 +1,17 @@
 package com.hiyj.blog.controller;
 
+import com.hiyj.blog.annotation.Permission;
+import com.hiyj.blog.object.Msg;
+import com.hiyj.blog.services.OtherJsonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.hiyj.blog.annotation.PassToken;
-import com.hiyj.blog.annotation.Permission;
-import com.hiyj.blog.model.request.TokenModel;
-import com.hiyj.blog.object.Msg;
-import com.hiyj.blog.services.OtherJsonService;
-import com.hiyj.blog.utils.JwtUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController

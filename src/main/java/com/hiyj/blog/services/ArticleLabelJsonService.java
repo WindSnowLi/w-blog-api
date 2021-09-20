@@ -1,11 +1,8 @@
 package com.hiyj.blog.services;
 
-import com.hiyj.blog.object.ArticleLabel;
+import com.hiyj.blog.object.Msg;
 import com.hiyj.blog.services.base.ArticleLabelService;
 import org.springframework.stereotype.Service;
-import com.hiyj.blog.object.Msg;
-
-import java.util.List;
 
 @Service("articleLabelJsonService")
 public class ArticleLabelJsonService extends ArticleLabelService {

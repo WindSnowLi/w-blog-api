@@ -12,7 +12,6 @@ ENV LANG="en_US.UTF-8"
 # 环境配置文件
 ENV active="dev"
 
-EXPOSE 8888
-EXPOSE 9999
+EXPOSE 9000
 
 ENTRYPOINT ["sh","-c","java -jar w-blog.jar --spring.profiles.active=$active"]
