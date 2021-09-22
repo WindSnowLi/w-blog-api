@@ -47,4 +47,6 @@ public class Article implements Serializable {
     private Date updateTime;
     //状态 PUBLISHED发布、DRAFT草稿
     private Status status;
+    //文章是否禁用评论，默认不禁用
+    private boolean commentDisabled;
 }

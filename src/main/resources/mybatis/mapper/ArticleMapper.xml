@@ -12,6 +12,7 @@
         <result property="updateTime" column="updateTime"/>
         <result property="createTime" column="createTime"/>
         <result property="status" column="status"/>
+        <result property="commentDisabled" column="comment_disabled"/>
         <collection property="pv" javaType="Integer"
                     select="getArtPV" column="id"/>
         <collection property="labels" javaType="ArrayList" ofType="com.hiyj.blog.object.ArticleLabel"
@@ -54,10 +55,8 @@
         SELECT *
         FROM article a
         <choose>
-            <when test="status != null and status.toString == 'ALL'">
-
-            </when>
-            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
+            <when test="status != null and status.toString == 'ALL'"/>
+            <when test="status != null and (status.toString == 'DRAFT' or status.toString == 'DELETED')">
                 WHERE a.status = #{status}
             </when>
             <otherwise>
@@ -74,10 +73,8 @@
         SELECT a.id FROM (SELECT article.id
         FROM article
         <choose>
-            <when test="status != null and status.toString == 'ALL'">
-
-            </when>
-            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
+            <when test="status != null and status.toString == 'ALL'"/>
+            <when test="status != null and (status.toString == 'DRAFT' or status.toString == 'DELETED')">
                 WHERE article.status = #{status}
             </when>
             <otherwise>
@@ -122,10 +119,8 @@
         WHERE amt.type_id = #{typeId}
         )
         <choose>
-            <when test="status != null and status.toString == 'ALL'">
-
-            </when>
-            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
+            <when test="status != null and status.toString == 'ALL'"/>
+            <when test="status != null and (status.toString == 'DRAFT' or status.toString == 'DELETED')">
                 AND a.status = #{status}
             </when>
             <otherwise>
@@ -154,10 +149,8 @@
         WHERE aml.label_id = #{labelId}
         )
         <choose>
-            <when test="status != null and status.toString == 'ALL'">
-
-            </when>
-            <when test="status != null and status.toString == 'DRAFT' or status.toString == 'DELETED'">
+            <when test="status != null and status.toString == 'ALL'"/>
+            <when test="status != null and (status.toString == 'DRAFT' or status.toString == 'DELETED')">
                 AND a.status = #{status}
             </when>
             <otherwise>
@@ -215,12 +208,13 @@
     </select>
     <!--添加文章，不含标签和文章所属用户映射-->
     <insert id="addArticle" parameterType="com.hiyj.blog.object.Article" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO article(title, summary, content, coverPic, status)
+        INSERT INTO article(title, summary, content, coverPic, status, comment_disabled)
         VALUES (#{article.title},
                 #{article.summary},
                 #{article.content},
                 #{article.coverPic},
-                #{article.status});
+                #{article.status},
+                #{article.commentDisabled});
     </insert>
     <!--添加文章，不含标签和文章所属用户映射    >>end<<-->
 
@@ -276,7 +270,8 @@
             summary=#{article.summary},
             content=#{article.content},
             coverPic=#{article.coverPic},
-            status=#{article.status}
+            status=#{article.status},
+            comment_disabled=#{article.commentDisabled}
         WHERE id = #{article.id};
     </update>
     <!--   修改文章 -->

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.26, for Linux (x86_64)
 --
--- Host: localhost    Database: blog
+-- Host: 127.0.0.1    Database: blog
 -- ------------------------------------------------------
 -- Server version	8.0.26
 
@@ -24,18 +24,19 @@ DROP TABLE IF EXISTS `article`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `article`
 (
-    `id`         int                                                                             NOT NULL AUTO_INCREMENT,
-    `title`      varchar(100)                                                                    NOT NULL COMMENT '标题',
-    `summary`    longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '摘要',
-    `content`    longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '内容',
-    `coverPic`   longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '文章封面图片',
-    `createTime` datetime                                                                        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
-    `updateTime` datetime                                                                                 DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `status`     enum ('PUBLISHED','DRAFT','DELETED') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'PUBLISHED' COMMENT '文章状态',
+    `id`               int                                                                                   NOT NULL AUTO_INCREMENT,
+    `title`            varchar(100)                                                                          NOT NULL COMMENT '标题',
+    `summary`          longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '摘要',
+    `content`          longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '内容',
+    `coverPic`         longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '文章封面图片',
+    `createTime`       datetime                                                                              NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+    `updateTime`       datetime                                                                                       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `status`           enum ('PUBLISHED','DRAFT','DELETED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'PUBLISHED' COMMENT '文章状态',
+    `comment_disabled` tinyint                                                                               NOT NULL DEFAULT '0' COMMENT '文章是否禁用评论，默认不禁用',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +49,7 @@ LOCK TABLES `article` WRITE;
 INSERT INTO `article`
 VALUES (1, '这是一个草率的开始', '项目的初始化与运行',
         '# w-blog\n\n## 描述\n\n一个后端使用Spring Boot 2.x、前台使用nuxtJs、后台使用vue的个人博客\n\n## 简介\n\n1. 链接\n* Gitee链接：\n   * [api](https://gitee.com/windsnowli/w-blog-api)： `https://gitee.com/windsnowli/w-blog-api`\n\n   * [前台](https://gitee.com/windsnowli/vue-ssr-blog)： `https://gitee.com/windsnowli/vue-ssr-blog`\n\n   * [后台](https://gitee.com/windsnowli/vue-admin-blog)： `https://gitee.com/windsnowli/vue-admin-blog`\n\n* GitHub链接：\n   * [api](https://github.com/WindSnowLi/w-blog-api)： `https://github.com/WindSnowLi/w-blog-api`\n\n   * [前台](https://github.com/WindSnowLi/vue-ssr-blog)： `https://github.com/WindSnowLi/vue-ssr-blog`\n\n   * [后台](https://github.com/WindSnowLi/vue-admin-blog)： `https://github.com/WindSnowLi/vue-admin-blog`\n\n2. 一个简单的的个人博客项目，共分为了 `前台`、 `后台`、 `api`三个部分。\n\n3. api\n   后端基于 `SpringBoot` 。主要依赖 `mybatis` 、 `fastjson` 、 `DruidDataSource` 、 `Lombok` 、 `java-jwt` 、 `aliyun-sdk-oss` 、 `knife4j` 等，数据库使用的是 `MySQL8.0+`\n\n4. 前台\n   前台的主要样式是来源于网络上了一个 `BizBlog` 模板，最初来源于哪我不得而知，在原本的基础上改写成了 `nuxtJs` 项目。\n5. 后台\n   后台UI套用的[vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)，基本是直接拿来用了，想自己定制着实实力不允许。\n6. 示例：[绿色食品——菜狗](https://www.blog.hiyj.cn/)\n\n## 本地启动\n\n### api：前台后台请求的api使用的是同一个项目\n\n1. `git clone https://gitee.com/WindSnowLi/w-blog-api.git`或`git clone https://github.com/WindSnowLi/w-blog-api.git` 克隆项目到本地\n2. `mvn clean install dependency:tree` 安装依赖\n3. 修改开发环境 `application-dev.yml` 和生产环境 `application-prod.yml` 中的数据库配置信息； `knife4j` 只在开发环境中激活。\n4. 创建数据库配置中指定名称的空数据库，`UTF8`编码\n5. `mvn clean package -Dmaven.test.skip=true` 跳过测试并生成 `jar` 包\n6. `java -jar 生成的包名.jar` 运行开发配置环境，初次运行会自动初始化数据库\n7. 访问 `http://127.0.0.1:8888/doc.html` 查看 `api` 文档\n8. *推荐使用IDEA打开项目文件夹自动处理依赖、方便运行*\n\n### 前台\n\n1. `git clone https://gitee.com/WindSnowLi/vue-ssr-blog.git`或`git clone https://github.com/WindSnowLi/vue-ssr-blog.git` 克隆项目到本地\n2. `npm install` 安装依赖\n3. 可修改 `config/sitemap.xml` 文件中的 `host` 地址，用于生成访问地图\n4. 可修改 `nuxt.config.js` 中的端口号\n5. 可修改 `package.json` 文件中的 `script` 中的 `BASE_URL` 来指定后端 `api` 地址\n6. `npm run build` 编译\n7. `npm start` 本地运行\n\n### 后台\n\n1. `git clone https://gitee.com/WindSnowLi/vue-admin-blog.git`或`git clone https://github.com/WindSnowLi/vue-admin-blog.git` 克隆项目到本地\n2. `npm install` 安装依赖\n3. `npm run dev` 使用模拟数据预览界面\n4. 修改 `.env.production` 文件中的 `VUE_APP_BASE_API` 地址为后端 `api` 的地址\n5. `npm run build:prod` 编译\n6. `dist` 文件夹下的为编译好的文件，可放到 `http` 服务器下（可以使用 `npm` 安装 `http-server` ）进行访问\n7. 默认账号:`admin@163.com`,密码:`123456`\n\n## 界面展示\n\n### 前台\n\n![首页](https://pic.hiyj.cn/images/2021/08/30/8be350dc4ad9f76c10f7daa8f0ec2f83.png)\n\n<br>\n\n![文章详情](https://pic.hiyj.cn/images/2021/08/30/d921a4e9d688c8e42e4cb491e81ea29f.png)\n\n<br>\n\n![友链](https://pic.hiyj.cn/images/2021/08/30/1e6a95dba9dffe2c518fb1114d27f9ef.png)\n\n<br>\n\n![关于信息](https://pic.hiyj.cn/images/2021/08/30/2a71cb94b94aed68d5628ee41beb0359.png)\n\n### 后台\n\n![首页](https://pic.hiyj.cn/images/2021/08/30/c058c6879cad0dc8db994a7dc57f1de6.png)\n\n<br>\n\n![创建文章](https://pic.hiyj.cn/images/2021/08/30/5a9b1e429a934801704cc9ef9526ff60.png)\n\n<br>\n\n![管理文章](https://pic.hiyj.cn/images/2021/08/30/b9a4cc395e4e02ff996c198f39c10895.png)\n\n![文章列表](https://pic.hiyj.cn/images/2021/08/30/7e69e00b415213d37034dd49d236d18e.png)\n\n<br>\n\n![友链管理](https://pic.hiyj.cn/images/2021/08/30/2cd2f03ab3eab5ea0e14a7ced2695d09.png)\n\n<br>\n\n![关于信息](https://pic.hiyj.cn/images/2021/08/30/5582f506f1a93b114baef9d9977841ea.png)\n\n## License\n\n[MIT](https://github.com/WindSnowLi/w-blog-api/blob/master/LICENSE)\n\nCopyright (c) 2021 WindSnowLi\n',
-        NULL, '2021-08-31 12:01:53', '2021-09-11 11:49:56', 'PUBLISHED');
+        NULL, '2021-08-31 12:01:53', '2021-09-11 11:49:56', 'PUBLISHED', 0);
 /*!40000 ALTER TABLE `article`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -64,13 +65,13 @@ CREATE TABLE `article_label`
 (
     `id`       int          NOT NULL AUTO_INCREMENT,
     `name`     varchar(100) NOT NULL COMMENT 'lable名称',
-    `coverPic` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'https://www.pic.firstmeet.xyz/images/2021/05/26/d593adeb90a35948f7f7680a8bf7416b.md.jpg' COMMENT '封面',
-    `describe` varchar(510)                                            DEFAULT NULL COMMENT '标签描述',
+    `coverPic` varchar(510) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'https://www.pic.firstmeet.xyz/images/2021/05/26/d593adeb90a35948f7f7680a8bf7416b.md.jpg' COMMENT '封面',
+    `describe` varchar(510)                                                  DEFAULT NULL COMMENT '标签描述',
     PRIMARY KEY (`id`),
     UNIQUE KEY `article_label_UN` (`name`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +106,7 @@ CREATE TABLE `article_map_label`
     CONSTRAINT `article_map_label_FK_1` FOREIGN KEY (`label_id`) REFERENCES `article_label` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +141,7 @@ CREATE TABLE `article_map_type`
     CONSTRAINT `article_map_type_FK_1` FOREIGN KEY (`type_id`) REFERENCES `article_label` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,14 +167,14 @@ DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment`
 (
     `id`           int                             NOT NULL AUTO_INCREMENT COMMENT '评论会话ID',
-    `target_id`    int                                                                                        DEFAULT NULL COMMENT '评论所属内容ID',
-    `session_type` enum ('ARTICLE','TAG','TYPE','ABOUT','MESSAGE') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '评论类型',
+    `target_id`    int                                                                                              DEFAULT NULL COMMENT '评论所属内容ID',
+    `session_type` enum ('ARTICLE','TAG','TYPE','ABOUT','MESSAGE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '评论类型',
     `from_user`    int                             NOT NULL COMMENT '评论来源用户',
-    `parent_id`    int                                                                                        DEFAULT NULL COMMENT '所属根会话ID',
-    `status`       enum ('PASS','VERIFY','DELETE') NOT NULL                                                   DEFAULT 'VERIFY' COMMENT '评论状态',
+    `parent_id`    int                                                                                              DEFAULT NULL COMMENT '所属根会话ID',
+    `status`       enum ('PASS','VERIFY','DELETE') NOT NULL                                                         DEFAULT 'VERIFY' COMMENT '评论状态',
     `content`      longtext COMMENT '评论内容',
-    `time`         datetime                                                                                   DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
-    `to_user`      int                                                                                        DEFAULT NULL COMMENT '回复给的用户ID',
+    `time`         datetime                                                                                         DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
+    `to_user`      int                                                                                              DEFAULT NULL COMMENT '回复给的用户ID',
     PRIMARY KEY (`id`),
     KEY `comment_FK` (`from_user`),
     KEY `comment_FK_1` (`to_user`),
@@ -181,7 +182,7 @@ CREATE TABLE `comment`
     CONSTRAINT `comment_FK_1` FOREIGN KEY (`to_user`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,6 +198,8 @@ VALUES (1, 1, 'ARTICLE', 1, NULL, 'PASS', '评论测试', '2021-08-31 17:07:56',
     ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+
 --
 -- Table structure for table `friend_links`
 --
@@ -206,20 +209,20 @@ DROP TABLE IF EXISTS `friend_links`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `friend_links`
 (
-    `id`         int                                                                                       NOT NULL AUTO_INCREMENT,
-    `link`       varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci                                   NOT NULL COMMENT '链接的值',
-    `title`      varchar(255)                                                                                       DEFAULT NULL COMMENT '链接的主题',
-    `describe`   varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci                                            DEFAULT NULL COMMENT '描述',
-    `email`      varchar(100)                                                                              NOT NULL COMMENT '链接申请的邮箱',
-    `status`     enum ('PASS','REFUSE','APPLY','HIDE','DELETE') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'APPLY' COMMENT '申请状态',
-    `coverPic`   varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci                                            DEFAULT NULL COMMENT '图片url地址',
-    `createTime` datetime                                                                                  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
-    `updateTime` datetime                                                                                           DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`         int                                                                                             NOT NULL AUTO_INCREMENT,
+    `link`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci                                   NOT NULL COMMENT '链接的值',
+    `title`      varchar(255)                                                                                             DEFAULT NULL COMMENT '链接的主题',
+    `describe`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci                                            DEFAULT NULL COMMENT '描述',
+    `email`      varchar(100)                                                                                    NOT NULL COMMENT '链接申请的邮箱',
+    `status`     enum ('PASS','REFUSE','APPLY','HIDE','DELETE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'APPLY' COMMENT '申请状态',
+    `coverPic`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci                                            DEFAULT NULL COMMENT '图片url地址',
+    `createTime` datetime                                                                                        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+    `updateTime` datetime                                                                                                 DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `links_UN` (`link`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,10 +249,10 @@ DROP TABLE IF EXISTS `other_user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `other_user`
 (
-    `id`             int                                                     NOT NULL AUTO_INCREMENT,
-    `other_id`       varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '第三方身份标识符',
-    `other_platform` enum ('GITEE','GITHUB')                                 NOT NULL COMMENT '第三方平台名称',
-    `user_id`        int                                                     NOT NULL COMMENT '对应本地的用户ID',
+    `id`             int                                                           NOT NULL AUTO_INCREMENT,
+    `other_id`       varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '第三方身份标识符',
+    `other_platform` enum ('GITEE','GITHUB')                                       NOT NULL COMMENT '第三方平台名称',
+    `user_id`        int                                                           NOT NULL COMMENT '对应本地的用户ID',
     `access_token`   varchar(255) DEFAULT NULL COMMENT '身份密钥信息',
     `refresh_token`  varchar(255) DEFAULT NULL COMMENT '过期后用于刷新密钥信息',
     `scope`          varchar(255) DEFAULT NULL COMMENT '授权信息',
@@ -261,7 +264,7 @@ CREATE TABLE `other_user`
     CONSTRAINT `other_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 7
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,17 +287,17 @@ DROP TABLE IF EXISTS `permission`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `permission`
 (
-    `id`         int                                                                 NOT NULL AUTO_INCREMENT COMMENT '权限ID',
-    `name`       varchar(100)                                                        NOT NULL COMMENT '权限名称',
-    `intro`      varchar(255)                                                                 DEFAULT NULL COMMENT '权限介绍',
-    `createTime` datetime                                                                     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updateTime` datetime                                                                     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `status`     enum ('NORMAL','IGNORE') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'NORMAL' COMMENT '权限状态',
+    `id`         int                                                                       NOT NULL AUTO_INCREMENT COMMENT '权限ID',
+    `name`       varchar(100)                                                              NOT NULL COMMENT '权限名称',
+    `intro`      varchar(255)                                                                       DEFAULT NULL COMMENT '权限介绍',
+    `createTime` datetime                                                                           DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updateTime` datetime                                                                           DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `status`     enum ('NORMAL','IGNORE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'NORMAL' COMMENT '权限状态',
     PRIMARY KEY (`id`),
     UNIQUE KEY `permission_un` (`name`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 17
-  DEFAULT CHARSET = utf8mb3;
+  AUTO_INCREMENT = 18
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,6 +330,37 @@ VALUES (1, 'COMMENT', '评论权限', '2021-08-26 11:49:30', '2021-08-26 17:46:1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `pv`
+--
+
+DROP TABLE IF EXISTS `pv`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pv`
+(
+    `id`        int      NOT NULL AUTO_INCREMENT,
+    `target_id` int      NOT NULL COMMENT '目标ID',
+    `type`      int      NOT NULL COMMENT '类型，1文章，10标签，100分类',
+    `count`     int      NOT NULL DEFAULT '0' COMMENT '总次数',
+    `time`      datetime NOT NULL COMMENT '某天访问量',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `pv_UN` (`target_id`, `type`, `time`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pv`
+--
+
+LOCK TABLES `pv` WRITE;
+/*!40000 ALTER TABLE `pv`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `pv`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `role`
 --
 
@@ -345,7 +379,7 @@ CREATE TABLE `role`
     UNIQUE KEY `role_un` (`name`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -381,8 +415,8 @@ CREATE TABLE `role_map_permission`
     CONSTRAINT `role_map_permission_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `role_map_permission_FK_1` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 22
-  DEFAULT CHARSET = utf8mb3;
+  AUTO_INCREMENT = 23
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -429,13 +463,13 @@ DROP TABLE IF EXISTS `sys_setting`;
 CREATE TABLE `sys_setting`
 (
     `id`    int NOT NULL AUTO_INCREMENT,
-    `item`  enum ('filing_icp','filing_security','background_list','oss','admin_url','other_login','sundry') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '项',
-    `value` longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '值',
+    `item`  enum ('filing_icp','filing_security','background_list','oss','admin_url','other_login','sundry') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '项',
+    `value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '值',
     PRIMARY KEY (`id`),
     UNIQUE KEY `sys_setting_UN` (`item`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 22
-  DEFAULT CHARSET = utf8mb3 COMMENT ='系统设置';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='系统设置';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -468,16 +502,16 @@ DROP TABLE IF EXISTS `ui_config`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ui_config`
 (
-    `id`      int                                                                                                                        NOT NULL AUTO_INCREMENT,
-    `user_id` int                                                                                                                        NOT NULL COMMENT '所属用户ID',
-    `item`    enum ('main_title','topbar_title','footer','background_list','about','contact') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '所属配置项',
-    `value`   longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '该项值',
+    `id`      int                                                                                                                              NOT NULL AUTO_INCREMENT,
+    `user_id` int                                                                                                                              NOT NULL COMMENT '所属用户ID',
+    `item`    enum ('main_title','topbar_title','footer','background_list','about','contact') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '所属配置项',
+    `value`   longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '该项值',
     PRIMARY KEY (`id`),
     UNIQUE KEY `ui_config_UN` (`user_id`, `item`),
     CONSTRAINT `ui_config_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 134
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -511,15 +545,15 @@ CREATE TABLE `user`
     `id`           int          NOT NULL AUTO_INCREMENT,
     `account`      varchar(100) NOT NULL COMMENT '账户',
     `password`     varchar(100) NOT NULL COMMENT '密码',
-    `avatar`       longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '头像',
+    `avatar`       longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '头像',
     `nickname`     varchar(100) NOT NULL COMMENT '昵称',
-    `qq`           varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT 'QQ',
-    `introduction` varchar(100)                                            DEFAULT NULL COMMENT '个人介绍',
+    `qq`           varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'QQ',
+    `introduction` varchar(100)                                                  DEFAULT NULL COMMENT '个人介绍',
     PRIMARY KEY (`id`),
     UNIQUE KEY `user_UN` (`account`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -556,7 +590,7 @@ CREATE TABLE `user_map_article`
     CONSTRAINT `user_map_article_FK_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,15 +615,15 @@ DROP TABLE IF EXISTS `user_map_file`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_map_file`
 (
-    `id`        int                                                     NOT NULL AUTO_INCREMENT,
-    `user_id`   int                                                     NOT NULL COMMENT '用户id',
-    `file_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '所属文件路径',
+    `id`        int                                                           NOT NULL AUTO_INCREMENT,
+    `user_id`   int                                                           NOT NULL COMMENT '用户id',
+    `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '所属文件路径',
     PRIMARY KEY (`id`),
     UNIQUE KEY `user_map_file_UN` (`user_id`, `file_name`),
     CONSTRAINT `user_map_file_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 21
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -622,7 +656,7 @@ CREATE TABLE `user_map_role`
     CONSTRAINT `user_map_role_FK_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb3;
+  DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -639,37 +673,6 @@ VALUES (1, 1, 2);
 UNLOCK TABLES;
 
 --
--- Table structure for table `pv`
---
-
-DROP TABLE IF EXISTS `pv`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pv`
-(
-    `id`        int      NOT NULL AUTO_INCREMENT,
-    `target_id` int      NOT NULL COMMENT '目标ID',
-    `type`      int      NOT NULL COMMENT '类型，1文章，10标签，100分类',
-    `count`     int      NOT NULL DEFAULT '0' COMMENT '总次数',
-    `time`      datetime NOT NULL COMMENT '某天访问量',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `pv_UN` (`target_id`, `type`, `time`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `pv`
---
-
-LOCK TABLES `pv` WRITE;
-/*!40000 ALTER TABLE `pv`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `pv`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping routines for database 'blog'
 --
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
@@ -682,4 +685,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2021-09-09 13:01:09
+-- Dump completed on 2021-09-22 11:27:55

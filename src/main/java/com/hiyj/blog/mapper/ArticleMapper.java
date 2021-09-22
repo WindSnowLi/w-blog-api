@@ -80,7 +80,7 @@ public interface ArticleMapper {
      * @param labelId 标签ID
      * @param limit   限制数
      * @param offset  偏移量
-     * @param sort   排序方式 默认-id,
+     * @param sort    排序方式 默认-id,
      * @param status  文章状态
      * @return 文章列表
      */
@@ -90,8 +90,8 @@ public interface ArticleMapper {
      * 获取所属分类文章
      *
      * @param typeId 分类ID
-     * @param limit   限制数
-     * @param offset  偏移量
+     * @param limit  限制数
+     * @param offset 偏移量
      * @param sort   排序方式 默认-id,
      * @param status 文章状态，默认published，all为全部文章类型
      * @return List Article
@@ -192,7 +192,7 @@ public interface ArticleMapper {
      * @param articleId 当前文章ID
      * @return 文章对象
      */
-    @Select("select * from article a where a.id > #{articleId} limit 1")
+    @Select("select * from article a where a.status = 'PUBLISHED' AND a.id > #{articleId} limit 1")
     Article getNextArticle(@Param("articleId") int articleId);
 
     /**
@@ -201,7 +201,7 @@ public interface ArticleMapper {
      * @param articleId 当前文章ID
      * @return 文章对象
      */
-    @Select("select * from article a where a.id < #{articleId} order by a.id desc limit 1")
+    @Select("select * from article a where a.status = 'PUBLISHED' AND a.id < #{articleId} order by a.id desc limit 1")
     Article getPreArticle(@Param("articleId") int articleId);
 
     /**
