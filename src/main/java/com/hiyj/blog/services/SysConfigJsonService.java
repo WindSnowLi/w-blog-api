@@ -24,15 +24,13 @@ public class SysConfigJsonService extends SysConfigService {
         });
         HashMap<String, String> configTable = new HashMap<>();
 
-        String []ready={"main_title","topbar_title","footer","background_list"};
+        String[] ready = {"main_title", "topbar_title", "footer", "background_list"};
 
         for (String key : ready) {
             configTable.put(key, systemConfig.get(key));
         }
-        configTable.remove("user_id");
-        if (configTable.size() != 0) {
-            this.setUiConfigByUserId(user_id, configTable);
-        }
+        this.setUiConfigByUserId(user_id, configTable);
+
         return Msg.getSuccessMsg();
     }
 

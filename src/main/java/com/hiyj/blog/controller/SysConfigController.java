@@ -76,9 +76,9 @@ public class SysConfigController {
     })
     @PostMapping(value = "setUiConfig")
     @Permission(value = {"UI-SETTING"})
-    public String setUiConfig(@RequestBody TokenTypeModel<String> tokenTypeModel) {
+    public String setUiConfig(@RequestBody TokenTypeModel<JSONObject> tokenTypeModel) {
         int userId = JwtUtils.getTokenUserId(tokenTypeModel.getToken());
-        return sysConfigJsonService.setUiConfigByUserIdJson(userId, JSON.parseObject(tokenTypeModel.getContent()));
+        return sysConfigJsonService.setUiConfigByUserIdJson(userId, tokenTypeModel.getContent());
     }
 
     /**
