@@ -14,17 +14,21 @@ import lombok.ToString;
 public class UiConfigModel {
     @JSONField(name = "topbar_title")
     @ApiModelProperty(name = "topbar_title",value = "顶栏标题")
-    String topBarTitle;
+    private String topBarTitle;
 
     @JSONField(name = "footer")
     @ApiModelProperty(name = "footer",value = "页脚代码块")
-    String footer;
+    private String footer;
 
     @JSONField(name = "main_title")
     @ApiModelProperty(name = "main_title",value = "浏览器新页标签标题")
-    String mainTitle;
+    private String mainTitle;
 
     @JSONField(name = "background_list")
     @ApiModelProperty(name = "background_list",value = "背景图片链接，一行一个")
-    String backgroundList;
+    private String backgroundList;
+
+    @JSONField(name = "include")
+    @ApiModelProperty(name = "include",value = "全局引入")
+    private String include;
 }

@@ -24,7 +24,7 @@ public class SysConfigJsonService extends SysConfigService {
         });
         HashMap<String, String> configTable = new HashMap<>();
 
-        String[] ready = {"main_title", "topbar_title", "footer", "background_list"};
+        String[] ready = {"main_title", "topbar_title", "footer", "background_list", "include"};
 
         for (String key : ready) {
             configTable.put(key, systemConfig.get(key));
