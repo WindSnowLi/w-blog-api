@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.hiyj.blog.mapper.CommentMapper">
+    <cache type="org.mybatis.caches.redis.RedisCache" />
     <resultMap id="commentMap" type="com.hiyj.blog.object.Comment">
         <id property="id" column="id"/>
         <result property="targetId" column="target_id"/>

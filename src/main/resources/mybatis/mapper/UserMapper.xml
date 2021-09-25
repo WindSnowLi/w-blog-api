@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.hiyj.blog.mapper.UserMapper">
+    <cache type="org.mybatis.caches.redis.RedisCache" />
     <!--    获取用户喜好分类占比-->
     <select id="getActivityByUserId" parameterType="int" resultType="map">
         -- 标签以及值

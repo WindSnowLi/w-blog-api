@@ -11,12 +11,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
-public class PanelData {
+public class PanelData implements Serializable {
     private String title;
     private int total;
     private List<String> X;

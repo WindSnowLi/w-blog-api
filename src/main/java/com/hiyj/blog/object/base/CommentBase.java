@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ApiModel
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
-public class CommentBase {
+public class CommentBase implements Serializable {
 
     public enum SessionType {
         //文章评论

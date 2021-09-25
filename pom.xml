@@ -94,6 +94,13 @@
             <version>5.2.4</version>
         </dependency>
         <!-- flyway 结束-->
+        <!--   MyBatis Redis-->
+        <dependency>
+            <groupId>org.mybatis.caches</groupId>
+            <artifactId>mybatis-redis</artifactId>
+            <version>1.0.0-beta2</version>
+        </dependency>
+        <!--   MyBatis Redis end-->
     </dependencies>
     <build>
         <plugins>

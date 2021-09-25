@@ -7,11 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ApiModel
 @Setter
 @Getter
 @ToString
-public class FriendLink extends Link {
+public class FriendLink extends Link implements Serializable {
     public enum Status {
         // 通过
         PASS,

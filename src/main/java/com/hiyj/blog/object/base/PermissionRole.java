@@ -13,12 +13,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @Setter
 @ToString
-public class PermissionRole {
+public class PermissionRole implements Serializable {
     public enum Status {
         //正常
         NORMAL,

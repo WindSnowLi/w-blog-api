@@ -11,13 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
 @ToString
-public class CakeChartData {
+public class CakeChartData implements Serializable {
     private List<String> dataName;
     private List<Map<String, Object>> data;
 }

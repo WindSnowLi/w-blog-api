@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.hiyj.blog.mapper.ArticleLabelMapper">
+    <cache type="org.mybatis.caches.redis.RedisCache" />
     <resultMap id="labelMap" type="com.hiyj.blog.object.ArticleLabel">
         <id property="id" column="id"/>
         <result property="name" column="name"/>

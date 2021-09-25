@@ -11,6 +11,7 @@
 
 
 <mapper namespace="com.hiyj.blog.mapper.RoleMapper">
+    <cache type="org.mybatis.caches.redis.RedisCache" />
     <resultMap id="roleMap" type="com.hiyj.blog.object.Role">
         <id property="id" column="id"/>
         <result property="name" column="name"/>

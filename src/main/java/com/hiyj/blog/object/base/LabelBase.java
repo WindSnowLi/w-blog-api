@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ApiModel
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
-public class LabelBase {
+public class LabelBase implements Serializable {
     //label ID
     @ApiModelProperty(name = "id", value = "label ID")
     protected int id;

@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @ApiModel
 @Getter
 @Setter
 @ToString
-public class Comment extends CommentBase {
+public class Comment extends CommentBase implements Serializable {
 
     //评论人
     @ApiModelProperty(name = "fromUser", value = "评论人", required = true)

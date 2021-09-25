@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
 @ToString
-public class OtherUser {
+public class OtherUser implements Serializable {
     private int id;
     //其他平台身份识别ID
     private String other_id;
