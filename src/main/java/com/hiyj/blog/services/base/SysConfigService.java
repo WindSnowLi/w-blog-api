@@ -5,9 +5,8 @@ import com.alibaba.fastjson.parser.Feature;
 import com.hiyj.blog.mapper.SysConfigMapper;
 import com.hiyj.blog.mapper.UserMapper;
 import com.hiyj.blog.model.response.ClientIdModel;
-import com.hiyj.blog.model.response.UiConfigModel;
+import com.hiyj.blog.object.SysUiConfig;
 import com.hiyj.blog.model.share.ClientModel;
-import com.hiyj.blog.object.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,42 +30,22 @@ public class SysConfigService {
     }
 
     /**
-     * 获取用户配置
-     *
-     * @param user_id 用户ID
-     * @return 配置对象
-     */
-    public SystemConfig getConfigByUserId(int user_id) {
-        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(user_id);
-        HashMap<String, String> rs = new HashMap<>();
-        for (JSONObject json : sysUiConfigByUserId) {
-            rs.put(json.getString("item"), json.getString("value"));
-        }
-        Map<String, String> sysUiConfig = getSysConfig();
-        rs.put("filing_icp", sysUiConfig.getOrDefault("filing_icp", ""));
-        rs.put("filing_security", sysUiConfig.getOrDefault("filing_security", ""));
-        rs.put("admin_url", sysUiConfig.getOrDefault("admin_url", ""));
-        if (sysUiConfigByUserId.size() > 0) {
-            rs.put("user_id", sysUiConfigByUserId.get(0).getString("user_id"));
-        }
-        //oss配置不可轻易发送至前台
-        return JSONObject.parseObject(JSONObject.toJSONString(rs), SystemConfig.class);
-    }
-
-    /**
      * 获取用户UI配置
      *
      * @param user_id 用户ID
      * @return 配置表
      */
-    public UiConfigModel getUiConfigByUserId(int user_id) {
-        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(user_id);
+    public SysUiConfig getUiConfigByUserId(int user_id) {
+        final List<Map<String, String>> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(user_id);
         HashMap<String, String> rs = new HashMap<>();
-        for (JSONObject json : sysUiConfigByUserId) {
-            rs.put(json.getString("item"), json.getString("value"));
+        for (Map<String, String> map : sysUiConfigByUserId) {
+            rs.put(map.get("item"), map.get("value"));
         }
-        rs.remove("about");
-        return JSONObject.parseObject(JSONObject.toJSONString(rs), UiConfigModel.class);
+        JSONObject baseSysConfig = getFixedConfig().getJSONObject("sys");
+        rs.put("filing_icp", baseSysConfig.getOrDefault("filing_icp", "").toString());
+        rs.put("filing_security", baseSysConfig.getOrDefault("filing_security", "").toString());
+        rs.put("admin_url", baseSysConfig.getOrDefault("admin_url", "").toString());
+        return JSONObject.parseObject(JSONObject.toJSONString(rs), SysUiConfig.class);
     }
 
     /**
@@ -74,22 +53,19 @@ public class SysConfigService {
      *
      * @return 系统配置表
      */
-    public Map<String, String> getSysConfig() {
-        List<JSONObject> sysUiConfig = sysConfigMapper.getSysConfig();
-        Map<String, String> rs = new HashMap<>();
-        for (JSONObject temp : sysUiConfig) {
-            rs.put(temp.getString("item"), temp.getString("value"));
-        }
-        return rs;
+    public JSONObject getFixedConfig() {
+        return JSONObject.parseObject(sysConfigMapper.getFixedConfig());
     }
 
     /**
      * 设置系统配置
      *
-     * @param configMap 配置表
+     * @param config 配置表
      */
-    public void setSysConfig(Map<String, String> configMap) {
-        sysConfigMapper.setSysConfig(configMap);
+    public void setFixedConfig(JSONObject config) {
+        JSONObject configJson = getFixedConfig();
+        configJson.put("sys", config);
+        sysConfigMapper.setFixedConfig(configJson.toJSONString());
     }
 
     /**
@@ -147,25 +123,5 @@ public class SysConfigService {
         JSONObject config = JSONObject.parseObject(sysConfigMapper.getOtherLoginConfig());
         config.getJSONObject("gitee").put("client", clientModel);
         sysConfigMapper.setGiteeConfig(config.toJSONString());
-    }
-
-    /**
-     * 获取杂项设置,含格式描述
-     *
-     * @return Msg
-     */
-    public JSONObject getSundry() {
-        return JSONObject.parseObject(sysConfigMapper.getSundry());
-    }
-
-    /**
-     * 设置杂项
-     *
-     * @param config 杂项配置
-     */
-    public void setSundry(JSONObject config) {
-        JSONObject sundry = getSundry();
-        sundry.put("sundry", config);
-        sysConfigMapper.setSundry(sundry.toJSONString());
     }
 }

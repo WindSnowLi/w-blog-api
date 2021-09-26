@@ -18,7 +18,7 @@ public interface SysConfigMapper {
      * @param userId 用户ID
      * @return 配置表
      */
-    List<JSONObject> getUiConfigByUserId(@Param("userId") int userId);
+    List<Map<String, String>> getUiConfigByUserId(@Param("userId") int userId);
 
     /**
      * 删除用户的所有UI配置
@@ -48,15 +48,15 @@ public interface SysConfigMapper {
      *
      * @return 系统配置表
      */
-    @Select("SELECT item, value FROM sys_setting WHERE item != \"oss\"")
-    List<JSONObject> getSysConfig();
+    @Select("SELECT value FROM sys_setting WHERE item = 'base_sys'")
+    String getFixedConfig();
 
     /**
      * 设置系统配置
      *
-     * @param configMap 配置表
+     * @param config 配置表
      */
-    void setSysConfig(@Param("configMap") Map<String, String> configMap);
+    void setFixedConfig(@Param("config") String config);
 
     /**
      * 设置系统存储配置文件
@@ -79,19 +79,4 @@ public interface SysConfigMapper {
      */
     @Update("UPDATE sys_setting SET value=#{config} WHERE item='other_login'")
     void setGiteeConfig(@Param("config") String config);
-
-    /**
-     * 设置杂项
-     *
-     * @param config 杂项配置
-     */
-    void setSundry(String config);
-
-    /**
-     * 获取杂项设置,含格式描述
-     *
-     * @return Msg
-     */
-    @Select("SELECT value FROM sys_setting WHERE item = 'sundry'")
-    String getSundry();
 }

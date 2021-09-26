@@ -5,7 +5,7 @@
 <mapper namespace="com.hiyj.blog.mapper.SysConfigMapper">
     <cache type="org.mybatis.caches.redis.RedisCache" />
     <!--    获取用户配置表-->
-    <select id="getUiConfigByUserId" parameterType="int" resultType="com.alibaba.fastjson.JSONObject">
+    <select id="getUiConfigByUserId" parameterType="int" resultType="map">
         SELECT ui_config.id, #{userId} as user_id, ui_config.item, ui_config.value
         FROM ui_config
         where ui_config.user_id = #{userId}
@@ -35,20 +35,8 @@
     </insert>
     <!--    设置某个用户的UI配置 结束-->
 
-    <update id="setSysConfig">
+    <update id="setFixedConfig">
         REPLACE INTO sys_setting(item, value)
-        VALUES
-        <foreach collection="configMap" index="key" item="value" separator=",">
-            (
-            #{key}, #{value}
-            )
-        </foreach>
-        ;
+        VALUES('base_sys', #{config})
     </update>
-    <!--    设置杂项-->
-    <update id="setSundry">
-        REPLACE INTO sys_setting(item, value)
-        VALUES('sundry', #{config})
-    </update>
-    <!--    设置杂项结束-->
 </mapper>

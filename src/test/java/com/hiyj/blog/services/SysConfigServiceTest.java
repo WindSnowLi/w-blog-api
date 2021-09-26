@@ -1,6 +1,5 @@
 package com.hiyj.blog.services;
 
-import com.hiyj.blog.object.SystemConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,16 +13,6 @@ public class SysConfigServiceTest {
     @Autowired
     public void setSysConfigJsonService(SysConfigJsonService sysConfigJsonService) {
         this.sysConfigJsonService = sysConfigJsonService;
-    }
-
-    /**
-     * 获取用户配置Json
-     */
-    @Test
-    public void testGetUserSettingJson() {
-        final SystemConfig userSetting = sysConfigJsonService.getConfigByUserId(1);
-        System.out.println(userSetting);
-        System.out.println(userSetting.getBackground_list());
     }
 
     /**
@@ -43,7 +32,7 @@ public class SysConfigServiceTest {
      */
     @Test
     public void testGetSysConfig() {
-        System.out.println(sysConfigJsonService.getSysConfigJson());
+        System.out.println(sysConfigJsonService.getFixedConfigJson());
     }
 
     /**

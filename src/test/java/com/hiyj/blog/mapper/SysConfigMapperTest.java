@@ -1,12 +1,10 @@
 package com.hiyj.blog.mapper;
 
-import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;
-import java.util.List;
 
 @SpringBootTest
 public class SysConfigMapperTest {
@@ -23,15 +21,7 @@ public class SysConfigMapperTest {
      */
     @Test
     public void testGetSysUiConfigByUserId() {
-        final List<JSONObject> sysUiConfigByUserId = sysConfigMapper.getUiConfigByUserId(1);
-        HashMap<String, String> rs = new HashMap<>();
-        for (JSONObject json : sysUiConfigByUserId) {
-            rs.put(json.getString("item"), json.getString("value"));
-        }
-        if (sysUiConfigByUserId.size() > 0) {
-            rs.put("user_id", sysUiConfigByUserId.get(0).getString("user_id"));
-        }
-        System.out.println(rs);
+        System.out.println(sysConfigMapper.getUiConfigByUserId(1));
     }
 
     /**
@@ -57,7 +47,7 @@ public class SysConfigMapperTest {
      */
     @Test
     public void testGetSysUiConfig() {
-        System.out.println(sysConfigMapper.getSysConfig());
+        System.out.println(sysConfigMapper.getFixedConfig());
     }
 
     @Test
