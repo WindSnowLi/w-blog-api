@@ -14,4 +14,4 @@ ENV active="dev"
 
 EXPOSE 9000
 
-ENTRYPOINT ["sh","-c","java -jar w-blog.jar --spring.profiles.active=$active"]
+CMD ["sh","-c","java -jar w-blog.jar --spring.profiles.active=$active"]
