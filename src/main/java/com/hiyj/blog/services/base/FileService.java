@@ -30,7 +30,6 @@ public class FileService {
         this.fileMapper = fileMapper;
     }
 
-
     //项目文件存储根路径
     protected String rootPath;
     //文章封面存储路径

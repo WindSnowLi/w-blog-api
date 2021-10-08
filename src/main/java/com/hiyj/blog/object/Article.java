@@ -23,6 +23,15 @@ public class Article implements Serializable {
         ALL
     }
 
+    public enum PublishType {
+        //原创
+        ORIGINAL,
+        //转载
+        REPRINT,
+        //翻译
+        TRANSLATE
+    }
+
     //文章ID
     private int id;
     //文章标题
@@ -49,4 +58,6 @@ public class Article implements Serializable {
     private Status status;
     //文章是否禁用评论，默认不禁用
     private boolean commentDisabled;
+    //发布类型
+    private PublishType publishType;
 }
