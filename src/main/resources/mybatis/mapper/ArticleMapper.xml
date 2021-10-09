@@ -231,7 +231,7 @@
     <!--    添加用户——文章映射   >>end<<-->
 
     <!-- 添加文章——标签映射   -->
-    <select id="addArticleMapLabels" parameterType="List">
+    <insert id="addArticleMapLabels" parameterType="List">
         INSERT INTO article_map_label
         (article_id, label_id)
         VALUES
@@ -242,7 +242,7 @@
         </foreach>
         ;
 
-    </select>
+    </insert>
     <!-- 添加文章——标签映射   >>end<< -->
 
     <!--    获取访问最多的文章列表-->
