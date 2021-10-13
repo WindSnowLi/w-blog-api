@@ -7,3 +7,12 @@ spring:
     name: w-blog-api-dev
 knife4j:
   enable: true
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  connectionTimeout: 10000
+  soTimeout: 10000
+  timeout: 10
+  #  password: w-blog
+  database: 0

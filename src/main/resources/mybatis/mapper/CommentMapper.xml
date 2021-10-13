@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.hiyj.blog.mapper.CommentMapper">
-    <cache type="org.mybatis.caches.redis.RedisCache" />
+    <cache type="com.hiyj.blog.caches.redis.RedisCache"/>
     <resultMap id="commentMap" type="com.hiyj.blog.object.Comment">
         <id property="id" column="id"/>
         <result property="targetId" column="target_id"/>
@@ -139,4 +139,9 @@
         </choose>
     </select>
     <!--    获取当前状态评论总量结束-->
+    <update id="setCommentStatus">
+        UPDATE comment
+        SET status=#{status}
+        WHERE id = #{commentId}
+    </update>
 </mapper>

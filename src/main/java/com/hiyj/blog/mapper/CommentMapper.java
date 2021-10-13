@@ -49,7 +49,6 @@ public interface CommentMapper {
      * @param commentId 评论ID
      * @param status    新状态
      */
-    @Update("UPDATE comment SET status=#{status} WHERE id=#{commentId}")
     void setCommentStatus(@Param("commentId") int commentId, @Param("status") CommentBase.Status status);
 
     /**

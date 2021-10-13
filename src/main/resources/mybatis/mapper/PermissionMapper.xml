@@ -11,7 +11,7 @@
 
 
 <mapper namespace="com.hiyj.blog.mapper.PermissionMapper">
-    <cache type="org.mybatis.caches.redis.RedisCache" />
+    <cache type="com.hiyj.blog.caches.redis.RedisCache"/>
     <resultMap id="permissionMap" type="com.hiyj.blog.object.Permission">
         <id property="id" column="id"/>
         <result property="name" column="name"/>

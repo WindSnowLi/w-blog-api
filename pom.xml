@@ -96,9 +96,9 @@
         <!-- flyway 结束-->
         <!--   MyBatis Redis-->
         <dependency>
-            <groupId>org.mybatis.caches</groupId>
-            <artifactId>mybatis-redis</artifactId>
-            <version>1.0.0-beta2</version>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.7.0</version>
         </dependency>
         <!--   MyBatis Redis end-->
     </dependencies>

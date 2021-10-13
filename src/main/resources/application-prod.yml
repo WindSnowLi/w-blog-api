@@ -7,3 +7,12 @@ spring:
     name: w-blog-api-prod
   flyway:
     clean-disabled: true
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  connectionTimeout: 10000
+  soTimeout: 10000
+  timeout: 3600
+  password: w-blog
+  database: 0
