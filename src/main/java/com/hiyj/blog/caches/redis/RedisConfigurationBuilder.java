@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component;
  * @author Eduardo Macarron
  */
 @Getter
-@Setter
 @Component
 public final class RedisConfigurationBuilder implements ApplicationContextAware {
 
