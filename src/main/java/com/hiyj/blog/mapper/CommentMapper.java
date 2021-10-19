@@ -16,12 +16,6 @@ public interface CommentMapper {
      *
      * @param comment 评论对象
      */
-    @Insert("INSERT INTO comment" +
-            "(target_id, session_type, from_user, parent_id, content, to_user)" +
-            "VALUES(" +
-            "#{comment.targetId}, #{comment.sessionType}, #{comment.fromUser}, " +
-            "#{comment.parentId}, #{comment.content}, #{comment.toUser}" +
-            ");")
     void addComment(@Param("comment") Comment comment);
 
     /**
@@ -69,7 +63,7 @@ public interface CommentMapper {
      * @param status 查询的评论状态
      * @return List<Map>, 日期数值键值对{total=int, day_time=String}
      */
-    List<Map<String,Object>> getCommentLogByDay(@Param("limit") int limit, @Param("status") CommentBase.Status status);
+    List<Map<String, Object>> getCommentLogByDay(@Param("limit") int limit, @Param("status") CommentBase.Status status);
 
     /**
      * 获取当前状态评论总量
@@ -78,4 +72,12 @@ public interface CommentMapper {
      * @return 总数
      */
     int getCommentCount(@Param("status") CommentBase.Status status);
+
+    /**
+     * 获取所有文章最新的评论
+     *
+     * @param limit 条数限制
+     * @return Comment list
+     */
+    List<Comment> getRecentComment(int limit);
 }

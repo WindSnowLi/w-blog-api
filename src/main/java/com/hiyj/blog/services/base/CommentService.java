@@ -7,6 +7,7 @@
 
 package com.hiyj.blog.services.base;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,5 +131,21 @@ public class CommentService {
         return commentMapper.getCommentCount(status);
     }
 
+    /**
+     * 获取所有文章最新的评论
+     *
+     * @param limit 条数限制
+     * @return Comment json list
+     */
+    public List<JSONObject> getRecentComment(int limit) {
+        ArrayList<JSONObject> commentList = new ArrayList<>();
+        for (Comment c : commentMapper.getRecentComment(limit)) {
+            JSONObject comment = (JSONObject) JSONObject.toJSON(c);
+            comment.put("user", userService.findUserById(comment.getInteger("fromUser")));
+            comment.put("target", articleService.findArticle(comment.getInteger("targetId")));
+            commentList.add(comment);
+        }
+        return commentList;
+    }
 
 }

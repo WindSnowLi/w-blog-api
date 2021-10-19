@@ -16,6 +16,15 @@
         <result property="sessionType" column="session_type"/>
     </resultMap>
 
+    <!--  添加评论-->
+    <insert id="addComment">
+        INSERT INTO comment
+            (target_id, session_type, from_user, parent_id, content, to_user)
+        VALUES (#{comment.targetId}, #{comment.sessionType}, #{comment.fromUser},
+                #{comment.parentId}, #{comment.content}, #{comment.toUser});
+    </insert>
+    <!--  添加评论结束-->
+
     <!--    获取目标的评论-->
     <select id="getTargetComments" resultMap="commentMap">
         SELECT id,
@@ -139,9 +148,20 @@
         </choose>
     </select>
     <!--    获取当前状态评论总量结束-->
+    <!--设置文章状态-->
     <update id="setCommentStatus">
         UPDATE comment
         SET status=#{status}
         WHERE id = #{commentId}
     </update>
+    <!--设置文章状态结束-->
+    <!--  获取所有文章最新的评论  -->
+    <select id="getRecentComment" resultMap="commentMap">
+        SELECT *
+        FROM comment c
+        WHERE c.session_type = 'ARTICLE'
+        ORDER by c.id DESC
+        LIMIT #{limit}
+    </select>
+    <!--  获取所有文章最新的评论结束  -->
 </mapper>

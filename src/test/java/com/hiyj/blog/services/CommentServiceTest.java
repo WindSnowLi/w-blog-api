@@ -1,6 +1,7 @@
 package com.hiyj.blog.services;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.object.Comment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,5 +36,15 @@ public class CommentServiceTest {
     @Test
     public void testGetCommentListJson() {
         System.out.println(commentJsonService.getCommentListJson(5, 2 * 5, "-id", CommentBase.Status.ALL));
+    }
+
+    /**
+     * 获取所有文章最新的评论
+     */
+    @Test
+    public void testGetRecentComment() {
+        for (JSONObject comment : commentJsonService.getRecentComment(5)) {
+            System.out.println(comment);
+        }
     }
 }

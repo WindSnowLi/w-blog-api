@@ -1,5 +1,7 @@
 package com.hiyj.blog.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hiyj.blog.model.request.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -12,16 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hiyj.blog.annotation.PassToken;
 import com.hiyj.blog.annotation.Permission;
-import com.hiyj.blog.model.request.IdTypeModel;
-import com.hiyj.blog.model.request.PageModel;
-import com.hiyj.blog.model.request.ReqCommentModel;
-import com.hiyj.blog.model.request.TokenTypeModel;
 import com.hiyj.blog.model.response.RspCommentsModel;
 import com.hiyj.blog.object.Comment;
 import com.hiyj.blog.object.Msg;
 import com.hiyj.blog.object.base.CommentBase;
 import com.hiyj.blog.services.CommentJsonService;
 import com.hiyj.blog.utils.JwtUtils;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -115,5 +115,22 @@ public class CommentController {
                 (pageModel.getPage() - 1) * pageModel.getLimit(),
                 pageModel.getSort(),
                 pageModel.getStatus()));
+    }
+
+    /**
+     * 获取所有文章最新的评论
+     *
+     * @param limit 条数限制 {"limit": "int"}
+     * @return Comment json list
+     */
+    @ApiOperation(value = "获取所有文章最新的评论")
+    @ApiResponses({
+            @ApiResponse(code = 20000, message = Msg.MSG_SUCCESS),
+            @ApiResponse(code = -1, message = Msg.MSG_FAIL)
+    })
+    @PostMapping(value = "getRecentComment")
+    @PassToken
+    public String getRecentComment(@RequestBody ContentModel<Integer> limit) {
+        return Msg.getSuccessMsg(commentJsonService.getRecentComment(limit.getContent()));
     }
 }

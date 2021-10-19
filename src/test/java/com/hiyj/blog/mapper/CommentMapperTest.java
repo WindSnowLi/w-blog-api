@@ -56,4 +56,14 @@ public class CommentMapperTest {
         System.out.println(commentMapper.getCommentLogByDay(10, CommentBase.Status.DELETE));
         System.out.println(commentMapper.getCommentLogByDay(10, CommentBase.Status.ALL));
     }
+
+    /**
+     * 获取所有文章最新的评论
+     */
+    @Test
+    public void testGetRecentComment() {
+        for (Comment comment : commentMapper.getRecentComment(5)) {
+            System.out.println(comment);
+        }
+    }
 }
