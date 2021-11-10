@@ -10,9 +10,9 @@
         <result property="coverPic" column="coverPic"/>
         <result property="describe" column="describe"/>
         <collection property="num" javaType="Integer" ofType="Integer"
-                    select="getLabelPV" column="id"/>
-        <collection property="pv" javaType="Integer" ofType="Integer"
                     select="getArtSumLabel" column="id"/>
+        <collection property="pv" javaType="Integer" ofType="Integer"
+                    select="getLabelPV" column="id"/>
     </resultMap>
 
     <resultMap id="typeMap" type="com.hiyj.blog.object.ArticleType">
