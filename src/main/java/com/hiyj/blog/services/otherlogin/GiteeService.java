@@ -83,8 +83,6 @@ public class GiteeService {
         assert userBody != null;
         user.setAvatar(userBody.getString("avatar_url"));
         user.setNickname(userBody.getString("name"));
-        //取消明文密码
-        user.setPassword(userJsonService.encryptPasswd(CodeUtils.getUUID()));
         user.setId(userBody.getInteger("id"));
         return user;
     }
@@ -131,6 +129,8 @@ public class GiteeService {
         otherUser.setOther_platform(User.Platform.GITEE);
         otherUser.setOther_id(String.valueOf(giteeId));
         if (otherUserQuery == null) {
+            //取消明文密码
+            user.setPassword(userJsonService.encryptPasswd(CodeUtils.getUUID()));
             //添加用户信息，ID为自增，不影响,添加后自动获取新的自增用户ID
             userJsonService.addUser(user);
             //赋值本地ID
@@ -146,6 +146,8 @@ public class GiteeService {
             userJsonService.refreshKeyInfo(otherUser);
             //刷新本地信息
             userJsonService.setInfo(user);
+            //设置验证密码
+            user.setPassword(userJsonService.findUserById(user.getId()).getPassword());
         }
         // 返回本地Token
         return new TokenModel(JwtUtils.getToken(user));
