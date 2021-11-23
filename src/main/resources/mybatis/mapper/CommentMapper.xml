@@ -55,6 +55,9 @@
         </choose>
 
         <choose>
+            <when test="status == null">
+                AND status = 'PASS'
+            </when>
             <when test="status.toString == 'ALL'"/>
             <otherwise>
                 AND status = #{status}
@@ -94,9 +97,10 @@
         to_user
         FROM comment
         <choose>
-            <when test="status.toString == 'ALL'">
-
+            <when test="status == null">
+                WHERE status = 'PASS'
             </when>
+            <when test="status.toString == 'ALL'"/>
             <otherwise>
                 WHERE status = #{status}
             </otherwise>
@@ -122,9 +126,10 @@
         (
         select 1 as unit, c.time from comment c
         <choose>
-            <when test="status.toString == 'ALL'">
-
+            <when test="status == null">
+                WHERE c.status = 'PASS'
             </when>
+            <when test="status.toString == 'ALL'"/>
             <otherwise>
                 WHERE c.status = #{status}
             </otherwise>
@@ -141,6 +146,9 @@
     <select id="getCommentCount" resultType="int">
         select count(*) from comment c
         <choose>
+            <when test="status == null">
+                WHERE c.status = 'PASS'
+            </when>
             <when test="status.toString == 'ALL'"/>
             <otherwise>
                 WHERE c.status = #{status}
@@ -160,6 +168,7 @@
         SELECT *
         FROM comment c
         WHERE c.session_type = 'ARTICLE'
+        AND c.status = 'PASS'
         ORDER by c.id DESC
         LIMIT #{limit}
     </select>
